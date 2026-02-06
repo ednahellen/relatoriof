@@ -50,5 +50,82 @@ namespace GPSFA_WinForms
             abrir.Show();
             this.Close();
         }
+
+        private void btnCadastrar_Click(object sender, EventArgs e)
+        {
+            if (txtDescricao.Text.Equals(""))
+            {
+                MessageBox.Show("Favor inserir valores!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
+                txtDescricao.Focus();
+            }     
+            else
+            {
+
+                //Regex utilizado para remover espaços extras entre as palavras.
+
+                int resp = cadastrarProdutos(Regex.Replace(txtDescricao.Text, @"\s+", " ").Trim().ToUpper(), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, 1);
+
+                if (resp.Equals(1))
+                {
+                    MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);                    
+                    txtDescricao.Clear();
+                    txtDescricao.Enabled = false;
+                    btnNovo.Enabled = true;
+                    btnNovo.Focus();
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+
+                   
+                    btnCadastrar.Enabled = false;
+                    btnLimpar.Enabled = false;
+                    btnNovo.Enabled = true;
+                    txtDescricao.Enabled = false;
+
+                }
+            }
+        }
+
+        public int cadastrarProdutos(string descricao, int peso, string unidade, int codUni)
+        {
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = "INSERT INTO tbLista(descricao, peso, unidade, codUni)VALUES(@descricao, @peso, @unidade, @codUni);";
+            comm.CommandType = CommandType.Text;
+
+            comm.Parameters.Clear();
+            comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = descricao;
+            comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
+            comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 20).Value = unidade;
+            comm.Parameters.Add("@codUni", MySqlDbType.Int32).Value = codUni;
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+
+            try
+            {
+                int resp = comm.ExecuteNonQuery();
+
+                DataBaseConnection.CloseConnection();
+
+                return resp;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Este registro já existe!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+            }
+            return 0;
+        }
     }
 }

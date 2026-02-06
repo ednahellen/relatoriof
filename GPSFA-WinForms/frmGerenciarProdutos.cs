@@ -28,6 +28,7 @@ namespace GPSFA_WinForms
             InitializeComponent();
             carregarUnidadesCbb();
             carregarOrigemCbb();
+            carregarProdutoCbb();
         }
 
         private void frmCadastrarAlimentos_Load(object sender, EventArgs e)
@@ -122,6 +123,24 @@ namespace GPSFA_WinForms
             while (DR.Read())
             {
                 cbbOrigemDoacao.Items.Add(DR.GetString(1));
+            }
+
+            DataBaseConnection.CloseConnection();
+        }
+
+        private void carregarProdutoCbb()
+        {
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = "SELECT * FROM tbLista ORDER BY descricao ASC;";
+            comm.CommandType = CommandType.Text;
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+
+            MySqlDataReader DR = comm.ExecuteReader();
+
+            while (DR.Read())
+            {
+               cbbDescricao.Items.Add(DR.GetString(1));
             }
 
             DataBaseConnection.CloseConnection();

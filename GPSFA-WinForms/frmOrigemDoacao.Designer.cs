@@ -254,7 +254,7 @@
             "Tocantins (TO)"});
             this.cbbEstado.Location = new System.Drawing.Point(533, 309);
             this.cbbEstado.Name = "cbbEstado";
-            this.cbbEstado.Size = new System.Drawing.Size(305, 39);
+            this.cbbEstado.Size = new System.Drawing.Size(303, 39);
             this.cbbEstado.TabIndex = 12;
             // 
             // lblBairro
@@ -379,7 +379,7 @@
             this.lblCidade.AutoSize = true;
             this.lblCidade.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCidade.ForeColor = System.Drawing.Color.Black;
-            this.lblCidade.Location = new System.Drawing.Point(858, 278);
+            this.lblCidade.Location = new System.Drawing.Point(860, 277);
             this.lblCidade.Name = "lblCidade";
             this.lblCidade.Size = new System.Drawing.Size(97, 29);
             this.lblCidade.TabIndex = 62;
@@ -389,7 +389,7 @@
             // 
             this.cbbCidade.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbbCidade.FormattingEnabled = true;
-            this.cbbCidade.Location = new System.Drawing.Point(859, 310);
+            this.cbbCidade.Location = new System.Drawing.Point(861, 309);
             this.cbbCidade.Name = "cbbCidade";
             this.cbbCidade.Size = new System.Drawing.Size(325, 39);
             this.cbbCidade.TabIndex = 13;

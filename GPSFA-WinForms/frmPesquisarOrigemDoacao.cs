@@ -78,21 +78,41 @@ namespace GPSFA_WinForms
             }
             else
             {
-                while (DR.Read())
-                {
+              
+                    while (DR.Read())
+                    {
                     ltbPesquisarOrigem.Items.Add(DR.GetString(0));
-                    cpfconsulta = DR.GetString(1);                   
-                    cnpjconsulta = DR.GetString(2);     
-                    cepconsulta = DR.GetString(3);
-                    ruaconsulta = DR.GetString(4);
-                    numeroconsulta = DR.GetString(5);
-                    complementoconsulta = DR.GetString(6);
-                    bairroconsulta = DR.GetString(7);
-                    cidadeconsulta = DR.GetString(8);
-                    estadoconsulta = DR.GetString(9);
-                    telCelconsulta = DR.GetString(10);
-                    referenciaconsulta = DR.GetString(11);
+
+                    try
+                    {
+                        cpfconsulta = DR.GetString(1);
+                    }
+                    catch (Exception) 
+                    {
+                        cpfconsulta = "";
+                    }
+                    try
+                    {
+                        cnpjconsulta = DR.GetString(2);
+                    }    
+                    catch (Exception)
+                    {
+                        cnpjconsulta = "";
+                    }                  
+
+                        cepconsulta = DR.GetString(3);
+                        ruaconsulta = DR.GetString(4);
+                        numeroconsulta = DR.GetString(5);
+                        complementoconsulta = DR.GetString(6);
+                        bairroconsulta = DR.GetString(7);
+                        cidadeconsulta = DR.GetString(8);
+                        estadoconsulta = DR.GetString(9);
+                        telCelconsulta = DR.GetString(10);
+                        referenciaconsulta = DR.GetString(11);
+                        
                 }
+                
+                
             }
             DataBaseConnection.CloseConnection();
         }        
@@ -146,25 +166,29 @@ namespace GPSFA_WinForms
                 btnPesquisarOrigem.Enabled = false;
                 btnLimpar.Enabled = false;
             }
-        }
+        }     
+        
         private void ltbPesquisarOrigem_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string nome = ltbPesquisarOrigem.SelectedItem.ToString();
-            string cpf = cpfconsulta;
-            string cnpj = cnpjconsulta;
-            string cep = cepconsulta;
-            string rua = ruaconsulta;
-            string numero = numeroconsulta;
-            string complemento = complementoconsulta;
-            string bairro = bairroconsulta;
-            string cidade = cidadeconsulta;
-            string estado = estadoconsulta;
-            string telCel = telCelconsulta;
-            string referencia = referenciaconsulta;
+        {            
+            
+                string nome = ltbPesquisarOrigem.SelectedItem.ToString();
+                string cpf = cpfconsulta;
+                string cnpj = cnpjconsulta;
+                string cep = cepconsulta;
+                string rua = ruaconsulta;
+                string numero = numeroconsulta;
+                string complemento = complementoconsulta;
+                string bairro = bairroconsulta;
+                string cidade = cidadeconsulta;
+                string estado = estadoconsulta;
+                string telCel = telCelconsulta;
+                string referencia = referenciaconsulta;
 
-            frmOrigemDoacao abrir = new frmOrigemDoacao(nome, cpf, cnpj, cep, rua, numero, complemento, bairro, cidade, estado, telCel, referencia);
-            abrir.Show();
-            this.Hide();
+                frmOrigemDoacao abrir = new frmOrigemDoacao(nome, cpf, cnpj, cep, rua, numero, complemento, bairro, cidade, estado, telCel, referencia);
+                abrir.Show();
+                this.Hide();          
+           
         }
+            
     }
 }

@@ -188,8 +188,8 @@ namespace GPSFA_WinForms
             mskTelefone.Clear();
             mskCpf.Clear();
             mskCnpj.Clear();
-            cbbEstado.Items.Clear();
-            cbbCidade.Items.Clear();            
+            cbbEstado.Text = "";
+            cbbCidade.Text = "";         
         }
 
         public int cadastrarFornecedores(string nome, string cpf, string cnpj, string cep, string rua, string numero, string complemento, string bairro, string cidade, string estado, string telCel, string referencia)
@@ -231,26 +231,6 @@ namespace GPSFA_WinForms
             }
             return 0;
         }
-
-        //private int buscaOrigemDoacao(string nome)
-        //{
-        //    MySqlCommand comm = new MySqlCommand();
-        //    comm.CommandText = $"SELECT nome FROM tborigemdoacao WHERE nome LIKE '%{nome}%';";
-        //    comm.CommandType = CommandType.Text;
-
-        //    comm.Parameters.Clear();
-
-        //    comm.Parameters.Add("@nome", MySqlDbType.VarChar, 100).Value = nome;
-
-
-        //    comm.Connection = DataBaseConnection.OpenConnection();
-
-        //    int resp = comm.ExecuteNonQuery();
-
-        //    DataBaseConnection.CloseConnection();
-
-        //    return resp;
-        //}
 
         private void frmOrigemDoacao_Load(object sender, EventArgs e)
         {
@@ -320,11 +300,12 @@ namespace GPSFA_WinForms
             //        MessageBoxDefaultButton.Button1);
             //    txtNomeFornecedor.Focus();
             //}
-            else
+            else if (rdbCpf.Checked.Equals(true))
             {
+                string cnpj = null;
                 //Regex utilizado para remover espaços extras entre as palavras.
 
-                int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), mskCpf.Text, mskCnpj.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);               
+                int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), mskCpf.Text, cnpj, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
 
                 if (resp.Equals(1))
                 {
@@ -333,7 +314,40 @@ namespace GPSFA_WinForms
                     MessageBoxIcon.Information,
                     MessageBoxDefaultButton.Button1);
                     desativarBotoes();
-                    limparCampos();
+                    limparCamposNovo();
+                    desativarCampos();
+                    btnNovo.Enabled = true;
+                    btnNovo.Focus();
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+
+                    //limparCampos();
+                    btnCadastrar.Enabled = false;
+                    btnLimpar.Enabled = false;
+                    btnNovo.Enabled = true;
+                    desativarCampos();
+
+                }
+            }
+            else if (rdbCnpj.Checked) {
+                string cpf = null;
+                //Regex utilizado para remover espaços extras entre as palavras.
+
+                int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), cpf, mskCnpj.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
+
+                if (resp.Equals(1))
+                {
+                    MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
+                    desativarBotoes();
+                    limparCamposNovo();
                     desativarCampos();
                     btnNovo.Enabled = true;
                     btnNovo.Focus();
