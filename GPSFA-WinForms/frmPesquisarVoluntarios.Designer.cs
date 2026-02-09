@@ -1,6 +1,6 @@
 ﻿namespace GPSFA_WinForms
 {
-    partial class frmListaVoluntarios
+    partial class frmPesquisarVoluntarios
     {
         /// <summary>
         /// Required designer variable.
@@ -28,15 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmListaVoluntarios));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmPesquisarVoluntarios));
             this.gpbListaVoluntarios = new System.Windows.Forms.GroupBox();
+            this.btnLimpar = new System.Windows.Forms.Button();
+            this.btnPesquisar = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtDescricao = new System.Windows.Forms.TextBox();
             this.lblDescricao = new System.Windows.Forms.Label();
             this.dgvVoluntarios = new System.Windows.Forms.DataGridView();
             this.btnVoltar = new System.Windows.Forms.Button();
-            this.btnLimpar = new System.Windows.Forms.Button();
-            this.btnPesquisar = new System.Windows.Forms.Button();
             this.gpbListaVoluntarios.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvVoluntarios)).BeginInit();
             this.SuspendLayout();
@@ -49,84 +49,22 @@
             this.gpbListaVoluntarios.Controls.Add(this.txtDescricao);
             this.gpbListaVoluntarios.Controls.Add(this.lblDescricao);
             this.gpbListaVoluntarios.Controls.Add(this.dgvVoluntarios);
-            this.gpbListaVoluntarios.Location = new System.Drawing.Point(12, 12);
+            this.gpbListaVoluntarios.Location = new System.Drawing.Point(9, 10);
+            this.gpbListaVoluntarios.Margin = new System.Windows.Forms.Padding(2);
             this.gpbListaVoluntarios.Name = "gpbListaVoluntarios";
-            this.gpbListaVoluntarios.Size = new System.Drawing.Size(1302, 697);
+            this.gpbListaVoluntarios.Padding = new System.Windows.Forms.Padding(2);
+            this.gpbListaVoluntarios.Size = new System.Drawing.Size(976, 566);
             this.gpbListaVoluntarios.TabIndex = 0;
             this.gpbListaVoluntarios.TabStop = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Black;
-            this.label1.Location = new System.Drawing.Point(14, 159);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(299, 36);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Lista de Voluntários";
-            // 
-            // txtDescricao
-            // 
-            this.txtDescricao.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtDescricao.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDescricao.Location = new System.Drawing.Point(20, 96);
-            this.txtDescricao.Margin = new System.Windows.Forms.Padding(4);
-            this.txtDescricao.MaxLength = 20;
-            this.txtDescricao.Name = "txtDescricao";
-            this.txtDescricao.Size = new System.Drawing.Size(708, 47);
-            this.txtDescricao.TabIndex = 7;
-            this.txtDescricao.TextChanged += new System.EventHandler(this.txtDescricao_TextChanged);
-            // 
-            // lblDescricao
-            // 
-            this.lblDescricao.AutoSize = true;
-            this.lblDescricao.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescricao.ForeColor = System.Drawing.Color.Black;
-            this.lblDescricao.Location = new System.Drawing.Point(14, 56);
-            this.lblDescricao.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblDescricao.Name = "lblDescricao";
-            this.lblDescricao.Size = new System.Drawing.Size(156, 36);
-            this.lblDescricao.TabIndex = 8;
-            this.lblDescricao.Text = "Descrição";
-            // 
-            // dgvVoluntarios
-            // 
-            this.dgvVoluntarios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvVoluntarios.Location = new System.Drawing.Point(6, 207);
-            this.dgvVoluntarios.Name = "dgvVoluntarios";
-            this.dgvVoluntarios.RowHeadersWidth = 51;
-            this.dgvVoluntarios.RowTemplate.Height = 24;
-            this.dgvVoluntarios.Size = new System.Drawing.Size(1290, 483);
-            this.dgvVoluntarios.TabIndex = 6;
-            this.dgvVoluntarios.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVoluntarios_CellContentClick);
-            // 
-            // btnVoltar
-            // 
-            this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnVoltar.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
-            this.btnVoltar.Location = new System.Drawing.Point(1137, 716);
-            this.btnVoltar.Margin = new System.Windows.Forms.Padding(4);
-            this.btnVoltar.Name = "btnVoltar";
-            this.btnVoltar.Size = new System.Drawing.Size(177, 68);
-            this.btnVoltar.TabIndex = 23;
-            this.btnVoltar.Text = "&Voltar";
-            this.btnVoltar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnVoltar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnVoltar.UseVisualStyleBackColor = true;
-            this.btnVoltar.Click += new System.EventHandler(this.btnVoltar_Click);
             // 
             // btnLimpar
             // 
             this.btnLimpar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnLimpar.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLimpar.Image = ((System.Drawing.Image)(resources.GetObject("btnLimpar.Image")));
-            this.btnLimpar.Location = new System.Drawing.Point(917, 94);
-            this.btnLimpar.Margin = new System.Windows.Forms.Padding(4);
+            this.btnLimpar.Location = new System.Drawing.Point(688, 56);
             this.btnLimpar.Name = "btnLimpar";
-            this.btnLimpar.Size = new System.Drawing.Size(173, 49);
+            this.btnLimpar.Size = new System.Drawing.Size(130, 40);
             this.btnLimpar.TabIndex = 24;
             this.btnLimpar.Text = "&Limpar";
             this.btnLimpar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -139,10 +77,9 @@
             this.btnPesquisar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnPesquisar.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPesquisar.Image = ((System.Drawing.Image)(resources.GetObject("btnPesquisar.Image")));
-            this.btnPesquisar.Location = new System.Drawing.Point(736, 94);
-            this.btnPesquisar.Margin = new System.Windows.Forms.Padding(4);
+            this.btnPesquisar.Location = new System.Drawing.Point(552, 56);
             this.btnPesquisar.Name = "btnPesquisar";
-            this.btnPesquisar.Size = new System.Drawing.Size(173, 49);
+            this.btnPesquisar.Size = new System.Drawing.Size(130, 40);
             this.btnPesquisar.TabIndex = 23;
             this.btnPesquisar.Text = "&Pesquisar";
             this.btnPesquisar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -150,18 +87,79 @@
             this.btnPesquisar.UseVisualStyleBackColor = true;
             this.btnPesquisar.Click += new System.EventHandler(this.btnPesquisar_Click);
             // 
-            // frmListaVoluntarios
+            // label1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Black;
+            this.label1.Location = new System.Drawing.Point(10, 129);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(243, 29);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Lista de Voluntários";
+            // 
+            // txtDescricao
+            // 
+            this.txtDescricao.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtDescricao.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDescricao.Location = new System.Drawing.Point(15, 58);
+            this.txtDescricao.MaxLength = 20;
+            this.txtDescricao.Name = "txtDescricao";
+            this.txtDescricao.Size = new System.Drawing.Size(532, 39);
+            this.txtDescricao.TabIndex = 7;
+            this.txtDescricao.TextChanged += new System.EventHandler(this.txtDescricao_TextChanged);
+            // 
+            // lblDescricao
+            // 
+            this.lblDescricao.AutoSize = true;
+            this.lblDescricao.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescricao.ForeColor = System.Drawing.Color.Black;
+            this.lblDescricao.Location = new System.Drawing.Point(10, 26);
+            this.lblDescricao.Name = "lblDescricao";
+            this.lblDescricao.Size = new System.Drawing.Size(130, 29);
+            this.lblDescricao.TabIndex = 8;
+            this.lblDescricao.Text = "Descrição";
+            // 
+            // dgvVoluntarios
+            // 
+            this.dgvVoluntarios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvVoluntarios.Location = new System.Drawing.Point(4, 168);
+            this.dgvVoluntarios.Margin = new System.Windows.Forms.Padding(2);
+            this.dgvVoluntarios.Name = "dgvVoluntarios";
+            this.dgvVoluntarios.RowHeadersWidth = 51;
+            this.dgvVoluntarios.RowTemplate.Height = 24;
+            this.dgvVoluntarios.Size = new System.Drawing.Size(968, 392);
+            this.dgvVoluntarios.TabIndex = 6;
+            this.dgvVoluntarios.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVoluntarios_CellContentClick);
+            // 
+            // btnVoltar
+            // 
+            this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnVoltar.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
+            this.btnVoltar.Location = new System.Drawing.Point(853, 582);
+            this.btnVoltar.Name = "btnVoltar";
+            this.btnVoltar.Size = new System.Drawing.Size(133, 55);
+            this.btnVoltar.TabIndex = 23;
+            this.btnVoltar.Text = "&Voltar";
+            this.btnVoltar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnVoltar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnVoltar.UseVisualStyleBackColor = true;
+            this.btnVoltar.Click += new System.EventHandler(this.btnVoltar_Click);
+            // 
+            // frmPesquisarVoluntarios
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
-            this.ClientSize = new System.Drawing.Size(1326, 797);
+            this.ClientSize = new System.Drawing.Size(994, 648);
             this.Controls.Add(this.btnVoltar);
             this.Controls.Add(this.gpbListaVoluntarios);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmListaVoluntarios";
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.Name = "frmPesquisarVoluntarios";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Grupo Socorrista São Francisco de Assis - Lista de Voluntarios";
+            this.Text = "Grupo Socorrista São Francisco de Assis - Pesquisa de Voluntarios";
             this.Load += new System.EventHandler(this.frmListaVoluntarios_Load);
             this.gpbListaVoluntarios.ResumeLayout(false);
             this.gpbListaVoluntarios.PerformLayout();

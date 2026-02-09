@@ -165,6 +165,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="classes\ViaCepResponse.cs" />
     <Compile Include="data.dbfransisco\DataBaseConnection.cs" />
     <Compile Include="classes\FiltroDeBuscaBD.cs" />
     <Compile Include="frmGerenciarProdutos.cs">
@@ -195,11 +196,11 @@
     <Compile Include="frmListaProdutos.Designer.cs">
       <DependentUpon>frmListaProdutos.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmListaVoluntarios.cs">
+    <Compile Include="frmPesquisarVoluntarios.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmListaVoluntarios.Designer.cs">
-      <DependentUpon>frmListaVoluntarios.cs</DependentUpon>
+    <Compile Include="frmPesquisarVoluntarios.Designer.cs">
+      <DependentUpon>frmPesquisarVoluntarios.cs</DependentUpon>
     </Compile>
     <Compile Include="frmLogin.cs">
       <SubType>Form</SubType>
@@ -272,8 +273,8 @@
     <EmbeddedResource Include="frmListaProdutos.resx">
       <DependentUpon>frmListaProdutos.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmListaVoluntarios.resx">
-      <DependentUpon>frmListaVoluntarios.cs</DependentUpon>
+    <EmbeddedResource Include="frmPesquisarVoluntarios.resx">
+      <DependentUpon>frmPesquisarVoluntarios.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>

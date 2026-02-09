@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace GPSFA_WinForms
 {
-    public partial class frmListaVoluntarios : Form
+    public partial class frmPesquisarVoluntarios : Form
     {
         const int MF_BYCOMMAND = 0X400;
         [DllImport("user32")]
@@ -22,7 +22,7 @@ namespace GPSFA_WinForms
         [DllImport("user32")]
         static extern int GetMenuItemCount(IntPtr hWnd);
 
-        public frmListaVoluntarios()
+        public frmPesquisarVoluntarios()
         {
             InitializeComponent();
             desabilitarBotoes();
@@ -62,7 +62,9 @@ namespace GPSFA_WinForms
             //// Ajustar seleção de célula
             dgvVoluntarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
-            dgvVoluntarios.MultiSelect = false; DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
+            dgvVoluntarios.MultiSelect = false; 
+            
+            DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
             buttonColumn.HeaderText = "Action";
             buttonColumn.Name = "EditarDados"; // Name for programmatic reference
             buttonColumn.Text = "Editar"; // The text displayed on the button
@@ -80,7 +82,7 @@ namespace GPSFA_WinForms
             {
                 StringBuilder query = new StringBuilder();
 
-                query.Append("SELECT codVol, nome, cpf, telCel FROM tbVoluntarios WHERE nome LIKE '%@descricao%' OR cpf LIKE '%@descricao%' OR telCel LIKE '%@descricao%';");
+                query.Append("SELECT codVol, nome, cpf, telCel FROM tbVoluntarios WHERE LOWER(nome) LIKE LOWER(@descricao) OR cpf LIKE @descricao OR telCel LIKE @descricao;");
 
                 MySqlCommand comm = new MySqlCommand();
                 comm.Connection = conexao;
@@ -88,7 +90,7 @@ namespace GPSFA_WinForms
                 comm.CommandText = query.ToString();
 
                 comm.Parameters.Clear();
-                comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = descricao;
+                comm.Parameters.AddWithValue("@descricao", "%" + descricao + "%");
 
                 MySqlDataAdapter DA = new MySqlDataAdapter(comm);
                 DA.Fill(tabela);
@@ -169,9 +171,9 @@ namespace GPSFA_WinForms
         private void btnLimpar_Click(object sender, EventArgs e)
         {
             txtDescricao.Clear();
-            ConfigDgvVoluntarios();
             CarregarDadosNaListaDeVoluntarios();
             desabilitarBotoes();
+            ConfigDgvVoluntarios();
         }
 
         private void txtDescricao_TextChanged(object sender, EventArgs e)

@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmVoluntarios));
             this.gpbCamposDoProduto = new System.Windows.Forms.GroupBox();
+            this.txtCidade = new System.Windows.Forms.TextBox();
+            this.ckbUsuarioAtivo = new System.Windows.Forms.CheckBox();
             this.lblSenha = new System.Windows.Forms.Label();
             this.txtSenha = new System.Windows.Forms.TextBox();
             this.lblUsuario = new System.Windows.Forms.Label();
@@ -51,7 +53,6 @@
             this.lblCep = new System.Windows.Forms.Label();
             this.lblCpf = new System.Windows.Forms.Label();
             this.lblCidade = new System.Windows.Forms.Label();
-            this.cbbCidade = new System.Windows.Forms.ComboBox();
             this.lblNome = new System.Windows.Forms.Label();
             this.txtNomeVoluntario = new System.Windows.Forms.TextBox();
             this.pnlCrud = new System.Windows.Forms.Panel();
@@ -69,6 +70,8 @@
             // gpbCamposDoProduto
             // 
             this.gpbCamposDoProduto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
+            this.gpbCamposDoProduto.Controls.Add(this.txtCidade);
+            this.gpbCamposDoProduto.Controls.Add(this.ckbUsuarioAtivo);
             this.gpbCamposDoProduto.Controls.Add(this.lblSenha);
             this.gpbCamposDoProduto.Controls.Add(this.txtSenha);
             this.gpbCamposDoProduto.Controls.Add(this.lblUsuario);
@@ -90,7 +93,6 @@
             this.gpbCamposDoProduto.Controls.Add(this.lblCep);
             this.gpbCamposDoProduto.Controls.Add(this.lblCpf);
             this.gpbCamposDoProduto.Controls.Add(this.lblCidade);
-            this.gpbCamposDoProduto.Controls.Add(this.cbbCidade);
             this.gpbCamposDoProduto.Controls.Add(this.lblNome);
             this.gpbCamposDoProduto.Controls.Add(this.txtNomeVoluntario);
             this.gpbCamposDoProduto.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -99,6 +101,27 @@
             this.gpbCamposDoProduto.Size = new System.Drawing.Size(1214, 453);
             this.gpbCamposDoProduto.TabIndex = 0;
             this.gpbCamposDoProduto.TabStop = false;
+            // 
+            // txtCidade
+            // 
+            this.txtCidade.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCidade.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCidade.Location = new System.Drawing.Point(711, 243);
+            this.txtCidade.MaxLength = 100;
+            this.txtCidade.Name = "txtCidade";
+            this.txtCidade.Size = new System.Drawing.Size(333, 39);
+            this.txtCidade.TabIndex = 86;
+            // 
+            // ckbUsuarioAtivo
+            // 
+            this.ckbUsuarioAtivo.AutoSize = true;
+            this.ckbUsuarioAtivo.Location = new System.Drawing.Point(25, 314);
+            this.ckbUsuarioAtivo.Name = "ckbUsuarioAtivo";
+            this.ckbUsuarioAtivo.Size = new System.Drawing.Size(157, 31);
+            this.ckbUsuarioAtivo.TabIndex = 85;
+            this.ckbUsuarioAtivo.Text = "Usuário ativo";
+            this.ckbUsuarioAtivo.UseVisualStyleBackColor = true;
+            this.ckbUsuarioAtivo.CheckedChanged += new System.EventHandler(this.ckbUsuarioAtivo_CheckedChanged);
             // 
             // lblSenha
             // 
@@ -119,7 +142,7 @@
             this.txtSenha.MaxLength = 100;
             this.txtSenha.Name = "txtSenha";
             this.txtSenha.PasswordChar = 'l';
-            this.txtSenha.Size = new System.Drawing.Size(402, 34);
+            this.txtSenha.Size = new System.Drawing.Size(229, 34);
             this.txtSenha.TabIndex = 12;
             // 
             // lblUsuario
@@ -155,11 +178,12 @@
             // mskCep
             // 
             this.mskCep.Font = new System.Drawing.Font("Microsoft YaHei", 18F);
-            this.mskCep.Location = new System.Drawing.Point(25, 222);
+            this.mskCep.Location = new System.Drawing.Point(896, 57);
             this.mskCep.Mask = "00000-000";
             this.mskCep.Name = "mskCep";
-            this.mskCep.Size = new System.Drawing.Size(135, 39);
-            this.mskCep.TabIndex = 7;
+            this.mskCep.Size = new System.Drawing.Size(148, 39);
+            this.mskCep.TabIndex = 4;
+            this.mskCep.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mskCep_KeyDown);
             // 
             // mskCpf
             // 
@@ -186,7 +210,7 @@
             this.lblEstado.AutoSize = true;
             this.lblEstado.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblEstado.ForeColor = System.Drawing.Color.Black;
-            this.lblEstado.Location = new System.Drawing.Point(530, 190);
+            this.lblEstado.Location = new System.Drawing.Point(374, 211);
             this.lblEstado.Name = "lblEstado";
             this.lblEstado.Size = new System.Drawing.Size(94, 29);
             this.lblEstado.TabIndex = 78;
@@ -224,7 +248,7 @@
             "São Paulo (SP)",
             "Sergipe (SE)",
             "Tocantins (TO)"});
-            this.cbbEstado.Location = new System.Drawing.Point(535, 221);
+            this.cbbEstado.Location = new System.Drawing.Point(379, 242);
             this.cbbEstado.Name = "cbbEstado";
             this.cbbEstado.Size = new System.Drawing.Size(303, 39);
             this.cbbEstado.TabIndex = 9;
@@ -234,7 +258,7 @@
             this.lblBairro.AutoSize = true;
             this.lblBairro.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblBairro.ForeColor = System.Drawing.Color.Black;
-            this.lblBairro.Location = new System.Drawing.Point(176, 190);
+            this.lblBairro.Location = new System.Drawing.Point(20, 211);
             this.lblBairro.Name = "lblBairro";
             this.lblBairro.Size = new System.Drawing.Size(84, 29);
             this.lblBairro.TabIndex = 75;
@@ -244,7 +268,7 @@
             // 
             this.txtBairro.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtBairro.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtBairro.Location = new System.Drawing.Point(181, 222);
+            this.txtBairro.Location = new System.Drawing.Point(25, 243);
             this.txtBairro.MaxLength = 100;
             this.txtBairro.Name = "txtBairro";
             this.txtBairro.Size = new System.Drawing.Size(333, 39);
@@ -255,7 +279,7 @@
             this.lblComplemento.AutoSize = true;
             this.lblComplemento.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblComplemento.ForeColor = System.Drawing.Color.Black;
-            this.lblComplemento.Location = new System.Drawing.Point(860, 108);
+            this.lblComplemento.Location = new System.Drawing.Point(841, 115);
             this.lblComplemento.Name = "lblComplemento";
             this.lblComplemento.Size = new System.Drawing.Size(176, 29);
             this.lblComplemento.TabIndex = 73;
@@ -265,18 +289,18 @@
             // 
             this.txtComplemento.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtComplemento.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtComplemento.Location = new System.Drawing.Point(863, 140);
+            this.txtComplemento.Location = new System.Drawing.Point(844, 147);
             this.txtComplemento.MaxLength = 100;
             this.txtComplemento.Name = "txtComplemento";
             this.txtComplemento.Size = new System.Drawing.Size(325, 39);
-            this.txtComplemento.TabIndex = 6;
+            this.txtComplemento.TabIndex = 7;
             // 
             // lblNumero
             // 
             this.lblNumero.AutoSize = true;
             this.lblNumero.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNumero.ForeColor = System.Drawing.Color.Black;
-            this.lblNumero.Location = new System.Drawing.Point(672, 108);
+            this.lblNumero.Location = new System.Drawing.Point(702, 115);
             this.lblNumero.Name = "lblNumero";
             this.lblNumero.Size = new System.Drawing.Size(106, 29);
             this.lblNumero.TabIndex = 71;
@@ -286,18 +310,18 @@
             // 
             this.txtNumero.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtNumero.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtNumero.Location = new System.Drawing.Point(677, 140);
+            this.txtNumero.Location = new System.Drawing.Point(707, 147);
             this.txtNumero.MaxLength = 5;
             this.txtNumero.Name = "txtNumero";
-            this.txtNumero.Size = new System.Drawing.Size(161, 39);
-            this.txtNumero.TabIndex = 5;
+            this.txtNumero.Size = new System.Drawing.Size(119, 39);
+            this.txtNumero.TabIndex = 6;
             // 
             // lblRua
             // 
             this.lblRua.AutoSize = true;
             this.lblRua.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRua.ForeColor = System.Drawing.Color.Black;
-            this.lblRua.Location = new System.Drawing.Point(20, 108);
+            this.lblRua.Location = new System.Drawing.Point(20, 115);
             this.lblRua.Name = "lblRua";
             this.lblRua.Size = new System.Drawing.Size(59, 29);
             this.lblRua.TabIndex = 69;
@@ -307,18 +331,18 @@
             // 
             this.txtRua.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtRua.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRua.Location = new System.Drawing.Point(25, 140);
+            this.txtRua.Location = new System.Drawing.Point(25, 147);
             this.txtRua.MaxLength = 100;
             this.txtRua.Name = "txtRua";
-            this.txtRua.Size = new System.Drawing.Size(627, 39);
-            this.txtRua.TabIndex = 4;
+            this.txtRua.Size = new System.Drawing.Size(660, 39);
+            this.txtRua.TabIndex = 5;
             // 
             // lblCep
             // 
             this.lblCep.AutoSize = true;
             this.lblCep.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCep.ForeColor = System.Drawing.Color.Black;
-            this.lblCep.Location = new System.Drawing.Point(20, 190);
+            this.lblCep.Location = new System.Drawing.Point(891, 25);
             this.lblCep.Name = "lblCep";
             this.lblCep.Size = new System.Drawing.Size(65, 29);
             this.lblCep.TabIndex = 67;
@@ -340,20 +364,11 @@
             this.lblCidade.AutoSize = true;
             this.lblCidade.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCidade.ForeColor = System.Drawing.Color.Black;
-            this.lblCidade.Location = new System.Drawing.Point(862, 189);
+            this.lblCidade.Location = new System.Drawing.Point(706, 210);
             this.lblCidade.Name = "lblCidade";
             this.lblCidade.Size = new System.Drawing.Size(97, 29);
             this.lblCidade.TabIndex = 62;
             this.lblCidade.Text = "Cidade";
-            // 
-            // cbbCidade
-            // 
-            this.cbbCidade.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbbCidade.FormattingEnabled = true;
-            this.cbbCidade.Location = new System.Drawing.Point(863, 221);
-            this.cbbCidade.Name = "cbbCidade";
-            this.cbbCidade.Size = new System.Drawing.Size(325, 39);
-            this.cbbCidade.TabIndex = 10;
             // 
             // lblNome
             // 
@@ -534,7 +549,6 @@
         private System.Windows.Forms.Label lblCep;
         private System.Windows.Forms.Label lblCpf;
         private System.Windows.Forms.Label lblCidade;
-        private System.Windows.Forms.ComboBox cbbCidade;
         private System.Windows.Forms.Label lblNome;
         private System.Windows.Forms.TextBox txtNomeVoluntario;
         private System.Windows.Forms.Label lblSenha;
@@ -549,5 +563,7 @@
         private System.Windows.Forms.Button btnExcluir;
         private System.Windows.Forms.Button btnCadastrar;
         private System.Windows.Forms.Button btnNovo;
+        private System.Windows.Forms.CheckBox ckbUsuarioAtivo;
+        private System.Windows.Forms.TextBox txtCidade;
     }
 }
