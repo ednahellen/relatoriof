@@ -164,7 +164,7 @@ namespace GPSFA_WinForms
             try
             {
                 respAlterar = comm.ExecuteNonQuery();
-            DataBaseConnection.CloseConnection();
+                DataBaseConnection.CloseConnection();
             }
 
             catch (Exception)
