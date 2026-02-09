@@ -167,12 +167,6 @@
   <ItemGroup>
     <Compile Include="data.dbfransisco\DataBaseConnection.cs" />
     <Compile Include="classes\FiltroDeBuscaBD.cs" />
-    <Compile Include="frmCadastrarVoluntarios.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmCadastrarVoluntarios.Designer.cs">
-      <DependentUpon>frmCadastrarVoluntarios.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmGerenciarProdutos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -195,17 +189,17 @@
     <Compile Include="frmEstoque.Designer.cs">
       <DependentUpon>frmEstoque.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmGerenciarDadosDoVoluntario.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmGerenciarDadosDoVoluntario.Designer.cs">
-      <DependentUpon>frmGerenciarDadosDoVoluntario.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmListaProdutos.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmListaProdutos.Designer.cs">
       <DependentUpon>frmListaProdutos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmListaVoluntarios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmListaVoluntarios.Designer.cs">
+      <DependentUpon>frmListaVoluntarios.cs</DependentUpon>
     </Compile>
     <Compile Include="frmLogin.cs">
       <SubType>Form</SubType>
@@ -243,12 +237,6 @@
     <Compile Include="frmRelatorios.Designer.cs">
       <DependentUpon>frmRelatorios.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmGestaoDeVoluntarios.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmGestaoDeVoluntarios.Designer.cs">
-      <DependentUpon>frmGestaoDeVoluntarios.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmSplash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -261,11 +249,14 @@
     <Compile Include="frmUnidadeMedida.Designer.cs">
       <DependentUpon>frmUnidadeMedida.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmVoluntarios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmVoluntarios.Designer.cs">
+      <DependentUpon>frmVoluntarios.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmCadastrarVoluntarios.resx">
-      <DependentUpon>frmCadastrarVoluntarios.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmGerenciarProdutos.resx">
       <DependentUpon>frmGerenciarProdutos.cs</DependentUpon>
     </EmbeddedResource>
@@ -278,11 +269,11 @@
     <EmbeddedResource Include="frmEstoque.resx">
       <DependentUpon>frmEstoque.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmGerenciarDadosDoVoluntario.resx">
-      <DependentUpon>frmGerenciarDadosDoVoluntario.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmListaProdutos.resx">
       <DependentUpon>frmListaProdutos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmListaVoluntarios.resx">
+      <DependentUpon>frmListaVoluntarios.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
@@ -302,14 +293,14 @@
     <EmbeddedResource Include="frmRelatorios.resx">
       <DependentUpon>frmRelatorios.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmGestaoDeVoluntarios.resx">
-      <DependentUpon>frmGestaoDeVoluntarios.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmSplash.resx">
       <DependentUpon>frmSplash.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmUnidadeMedida.resx">
       <DependentUpon>frmUnidadeMedida.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmVoluntarios.resx">
+      <DependentUpon>frmVoluntarios.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

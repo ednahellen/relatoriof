@@ -81,7 +81,7 @@ namespace GPSFA_WinForms
             //ActiveButton(btnVoluntarios);
             //FormShow(new frmGestaoDeVoluntarios());
             
-            frmGestaoDeVoluntarios abrir = new frmGestaoDeVoluntarios();
+            frmVoluntarios abrir = new frmVoluntarios();
 
             abrir.Show();
             this.Hide();

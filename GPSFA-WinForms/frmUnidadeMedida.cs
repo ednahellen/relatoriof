@@ -40,7 +40,6 @@ namespace GPSFA_WinForms
             txtDescricao.Text = descricao;
             btnNovo.Enabled = false;
             btnCadastrar.Enabled = false;
-           
         }
 
         int codUni = 0; 
