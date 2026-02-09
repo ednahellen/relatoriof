@@ -96,7 +96,7 @@ namespace Projeto_Socorrista
             END AS status_validade
         FROM tbprodutos p
         INNER JOIN tblista l ON l.codList = p.codList
-        INNER JOIN tbunidade u ON u.codUni = l.codUni
+        INNER JOIN tbunidades u ON u.codUni = l.codUni
         WHERE
             (@busca = '' OR l.descricao LIKE @buscaPattern OR p.codProd LIKE @buscaPattern)
             AND (@unidade = '' OR u.descricao = @unidade)
@@ -164,7 +164,7 @@ namespace Projeto_Socorrista
                         END AS status_validade
                     FROM tbprodutos p
                     INNER JOIN tblista l ON l.codList = p.codList
-                    INNER JOIN tbunidade u ON u.codUni = l.codUni
+                    INNER JOIN tbunidades u ON u.codUni = l.codUni
                     WHERE
                         (@busca = '' OR l.descricao LIKE @buscaPattern OR p.codProd LIKE @buscaPattern)
                         AND (@unidade = '' OR u.descricao = @unidade)
@@ -216,7 +216,7 @@ namespace Projeto_Socorrista
             {
                 using (MySqlCommand comm = new MySqlCommand())
                 {
-                    comm.CommandText = @"SELECT descricao FROM tbunidade ORDER BY descricao ASC";
+                    comm.CommandText = @"SELECT descricao FROM tbunidades ORDER BY descricao ASC";
                     comm.CommandType = CommandType.Text;
                     comm.Connection = DataBaseConnection.OpenConnection();
 

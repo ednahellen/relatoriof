@@ -74,7 +74,6 @@
             this.btnNovo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnNovo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnNovo.UseVisualStyleBackColor = true;
-            this.btnNovo.Click += new System.EventHandler(this.btnCadastrar_Click);
             // 
             // lblCodBarras
             // 
@@ -164,7 +163,7 @@
             this.lblDataValidade.AutoSize = true;
             this.lblDataValidade.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDataValidade.ForeColor = System.Drawing.Color.Black;
-            this.lblDataValidade.Location = new System.Drawing.Point(272, 310);
+            this.lblDataValidade.Location = new System.Drawing.Point(271, 315);
             this.lblDataValidade.Name = "lblDataValidade";
             this.lblDataValidade.Size = new System.Drawing.Size(116, 29);
             this.lblDataValidade.TabIndex = 57;
@@ -175,7 +174,7 @@
             this.dtpDataValidade.CalendarFont = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpDataValidade.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpDataValidade.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDataValidade.Location = new System.Drawing.Point(278, 342);
+            this.dtpDataValidade.Location = new System.Drawing.Point(277, 347);
             this.dtpDataValidade.Name = "dtpDataValidade";
             this.dtpDataValidade.Size = new System.Drawing.Size(160, 34);
             this.dtpDataValidade.TabIndex = 7;
@@ -185,7 +184,7 @@
             this.lblDataEntrada.AutoSize = true;
             this.lblDataEntrada.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDataEntrada.ForeColor = System.Drawing.Color.Black;
-            this.lblDataEntrada.Location = new System.Drawing.Point(36, 310);
+            this.lblDataEntrada.Location = new System.Drawing.Point(35, 315);
             this.lblDataEntrada.Name = "lblDataEntrada";
             this.lblDataEntrada.Size = new System.Drawing.Size(103, 29);
             this.lblDataEntrada.TabIndex = 54;
@@ -196,7 +195,7 @@
             this.dtpDataEntrada.CalendarFont = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpDataEntrada.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpDataEntrada.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDataEntrada.Location = new System.Drawing.Point(36, 342);
+            this.dtpDataEntrada.Location = new System.Drawing.Point(35, 347);
             this.dtpDataEntrada.Name = "dtpDataEntrada";
             this.dtpDataEntrada.Size = new System.Drawing.Size(160, 34);
             this.dtpDataEntrada.TabIndex = 6;
@@ -237,9 +236,10 @@
             this.gpbCamposDoProduto.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gpbCamposDoProduto.Location = new System.Drawing.Point(12, 12);
             this.gpbCamposDoProduto.Name = "gpbCamposDoProduto";
-            this.gpbCamposDoProduto.Size = new System.Drawing.Size(1214, 478);
+            this.gpbCamposDoProduto.Size = new System.Drawing.Size(1214, 437);
             this.gpbCamposDoProduto.TabIndex = 0;
             this.gpbCamposDoProduto.TabStop = false;
+            this.gpbCamposDoProduto.Enter += new System.EventHandler(this.gpbCamposDoProduto_Enter);
             // 
             // btnDoacao
             // 
@@ -311,13 +311,14 @@
             // 
             // cbbDescricao
             // 
+            this.cbbDescricao.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbbDescricao.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbbDescricao.FormattingEnabled = true;
             this.cbbDescricao.Location = new System.Drawing.Point(35, 223);
             this.cbbDescricao.Name = "cbbDescricao";
             this.cbbDescricao.Size = new System.Drawing.Size(477, 39);
             this.cbbDescricao.TabIndex = 58;
-            this.cbbDescricao.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.cbbDescricao.SelectedIndexChanged += new System.EventHandler(this.cbbDescricao_SelectedIndexChanged);
             // 
             // pnlCrud
             // 
@@ -329,7 +330,7 @@
             this.pnlCrud.Controls.Add(this.btnExcluir);
             this.pnlCrud.Controls.Add(this.btnCadastrar);
             this.pnlCrud.Controls.Add(this.btnNovo);
-            this.pnlCrud.Location = new System.Drawing.Point(12, 496);
+            this.pnlCrud.Location = new System.Drawing.Point(12, 494);
             this.pnlCrud.Name = "pnlCrud";
             this.pnlCrud.Size = new System.Drawing.Size(1214, 94);
             this.pnlCrud.TabIndex = 11;
@@ -417,14 +418,19 @@
             this.btnCadastrar.Text = "&Cadastrar";
             this.btnCadastrar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnCadastrar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+<<<<<<< HEAD
             this.btnCadastrar.UseVisualStyleBackColor = true;   
+=======
+            this.btnCadastrar.UseVisualStyleBackColor = true;
+            this.btnCadastrar.Click += new System.EventHandler(this.btnCadastrar_Click);
+>>>>>>> dc32c7218e4572ed7061238d5db8060bc574e6f6
             // 
             // frmGerenciarProdutos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
-            this.ClientSize = new System.Drawing.Size(1235, 602);
+            this.ClientSize = new System.Drawing.Size(1235, 626);
             this.Controls.Add(this.gpbCamposDoProduto);
             this.Controls.Add(this.pnlCrud);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

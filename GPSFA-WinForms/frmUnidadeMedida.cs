@@ -40,7 +40,6 @@ namespace GPSFA_WinForms
             txtDescricao.Text = descricao;
             btnNovo.Enabled = false;
             btnCadastrar.Enabled = false;
-           
         }
 
         int codUni = 0; 
@@ -165,7 +164,7 @@ namespace GPSFA_WinForms
             try
             {
                 respAlterar = comm.ExecuteNonQuery();
-            DataBaseConnection.CloseConnection();
+                DataBaseConnection.CloseConnection();
             }
 
             catch (Exception)

@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -44,6 +46,7 @@ namespace GPSFA_WinForms
             //cbbUnidadeMedida.SelectedIndex = 0;
         }
 
+<<<<<<< HEAD
         //Novo Cadastro
 
         public int cadastrarProdutos(string descricao, int quantidade, int peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
@@ -86,9 +89,41 @@ namespace GPSFA_WinForms
         }
 
         private int enviarDoacoes(string nomeProduto, int quantidade, int peso, string unidadeMedida, string codBar, DateTime dataArrecadacao, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu)
+=======
+        private (int codOrigem, int codProduto) BuscaCodigoDeListEOrigem(string nomeOrigem, string nomeProduto){
+            nomeOrigem = cbbOrigemDoacao.Text;
+            nomeProduto = cbbDescricao.Text;
+
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = "SELECT codOri FROM tbOrigemDoacao WHERE nome = @nomeOrigem; SELECT codList FROM tbLista WHERE descricao = @nomeProduto;";
+
+            comm.Parameters.AddWithValue("@nomeOrigem", nomeOrigem);
+            comm.Parameters.AddWithValue("@nomeProduto", nomeProduto);
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+            MySqlDataReader DR = comm.ExecuteReader();
+
+            int codOri = 0;
+            int codList = 0;
+
+            if (DR.Read())
+            {
+                codOri = DR.GetInt32(0);
+            }
+
+          
+            if (DR.NextResult() && DR.Read())
+            {
+                codList = DR.GetInt32(0);
+            }
+            return (codOri, codList);
+        }
+
+        private int enviarDoacoes(string nomeProduto, int quantidade, int peso, string unidadeMedida, string codBar, DateTime dataArrecadacao, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
+>>>>>>> dc32c7218e4572ed7061238d5db8060bc574e6f6
         {
             MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = @"INSERT INTO tbProdutos( nome,
+            comm.CommandText = @"INSERT INTO tbProdutos( descricao,
                                 quantidade,
                                 peso,
                                 unidade,
@@ -96,9 +131,11 @@ namespace GPSFA_WinForms
                                 dataDeEntrada,
                                 dataDeValidade,
                                 dataLimiteDeSaida,
-                                codUsu) 
+                                codUsu, 
+                                codOri,
+                                codList) 
                                 VALUES(
-                                @nome, 
+                                @descricao, 
                                 @quantidade, 
                                 @peso, 
                                 @unidade,
@@ -106,12 +143,14 @@ namespace GPSFA_WinForms
                                 @dataArrecadacao, 
                                 @dataDeValidade, 
                                 @dataLimiteDeSaida, 
-                                @codUsu);";
+                                @codUsu,
+                                @codOri,
+                                @codList);";
             comm.CommandType = CommandType.Text;
 
             comm.Parameters.Clear();
 
-            comm.Parameters.Add("@nome", MySqlDbType.VarChar, 100).Value = nomeProduto;
+            comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = nomeProduto;
             comm.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidade;
             comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
             comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 5).Value = unidadeMedida;
@@ -120,6 +159,11 @@ namespace GPSFA_WinForms
             comm.Parameters.Add("@dataDeValidade", MySqlDbType.Date).Value = dataDeValidade;
             comm.Parameters.Add("@dataLimiteDeSaida", MySqlDbType.VarChar, 300).Value = dataLimiteDeSaida;
             comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
+
+           var(codOrigem, codLista) = BuscaCodigoDeListEOrigem(cbbOrigemDoacao.Text, cbbDescricao.Text);
+
+            comm.Parameters.Add("@codOri", MySqlDbType.Int32).Value = codOrigem;
+            comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codLista;
 
             comm.Connection = DataBaseConnection.OpenConnection();
 
@@ -171,6 +215,7 @@ namespace GPSFA_WinForms
 
         private void carregarProdutoCbb()
         {
+            cbbDescricao.Items.Clear();
             MySqlCommand comm = new MySqlCommand();
             comm.CommandText = "SELECT * FROM tbLista ORDER BY descricao ASC;";
             comm.CommandType = CommandType.Text;
@@ -247,6 +292,7 @@ namespace GPSFA_WinForms
             //    return;
             //}
 
+<<<<<<< HEAD
             //if (!VerificaFormatacaoDosCampos())
             //{
             //    return;
@@ -272,6 +318,40 @@ namespace GPSFA_WinForms
             //    MessageBox.Show("Erro ao cadastrar doação!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             //    limparCamposDeCadastro();
             //}
+=======
+            if (!VerificaFormatacaoDosCampos())
+            {
+                return;
+            }
+            string nomeItem = cbbDescricao.Text;
+            int quantidade = Convert.ToInt32(txtQuantidade.Text);
+            int peso = Convert.ToInt32(txtPeso.Text);
+            string tipoUnidade = SimplificarUnidade(cbbUnidadeMedida.Text);
+            string codBar = txtCodBarras.Text;
+            DateTime dataRecebimento = Convert.ToDateTime(dtpDataEntrada.Text);
+            DateTime dataValidade = Convert.ToDateTime(dtpDataValidade.Text);
+            DateTime dataLimiteDeSaida = dataValidade.AddDays(21);
+            int codUsu = 1;
+            var (codOrigem, codLista) = BuscaCodigoDeListEOrigem(cbbOrigemDoacao.Text, cbbDescricao.Text);
+
+            if (dtpDataValidade.Value < DateTime.Today){
+                MessageBox.Show("A data de validade não pode ser anterior a data atual!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                dtpDataValidade.Focus();
+                return;
+            }
+
+            if (enviarDoacoes(nomeItem, quantidade, peso, tipoUnidade, codBar, dataRecebimento, dataValidade, dataLimiteDeSaida, codUsu, codOrigem, codLista) == 1)
+            {
+                MessageBox.Show("Doação cadastrada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //dgvProdutos.Columns.Clear();
+                //CarregarListaProdutos();
+            }
+            else
+            {
+                MessageBox.Show("Erro ao cadastrar doação!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                limparCamposDeCadastro();
+            }
+>>>>>>> dc32c7218e4572ed7061238d5db8060bc574e6f6
 
             ////dgvProdutos.Columns.Clear();
             ////CarregarListaProdutos();
@@ -343,6 +423,33 @@ namespace GPSFA_WinForms
             abrir.Show();
             this.Hide();
         }
-        
+
+        private void gpbCamposDoProduto_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbbDescricao_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbbDescricao.SelectedItem == null) return;
+
+            string nomeSelecionado = cbbDescricao.SelectedItem.ToString();
+
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = "SELECT peso, unidade FROM tbLista WHERE descricao = @descricao;";
+            comm.CommandType = CommandType.Text;
+
+            comm.Parameters.AddWithValue("@descricao", nomeSelecionado);
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+
+            MySqlDataReader DR = comm.ExecuteReader();
+
+            if (DR.Read()) { 
+                    txtPeso.Text = DR.GetInt32(0).ToString();
+                    cbbUnidadeMedida.Text = DR.GetString(1);
+            }
+            DataBaseConnection.CloseConnection();
+        }
     }
 }

@@ -14,16 +14,16 @@
       </applicationRequestMinimum>
       <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
         <!--
-          UAC Manifest Options
-          If you want to change the Windows User Account Control level replace the
-          requestedExecutionLevel node with one of the following.
+          Opções de Manifesto do UAC
+          Para alterar o nível de Controle de Conta de Usuário do Windows, substitua o nó
+          requestedExecutionLevel por um dos seguintes.
 
         <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
         <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
         <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
 
-         If you want to utilize File and Registry Virtualization for backward
-         compatibility then delete the requestedExecutionLevel node.
+         Para utilizar a Virtualização de Arquivos e Registro para manter a compatibilidade com versões anteriores,
+         exclua o nó requestedExecutionLevel.
     -->
         <requestedExecutionLevel level="asInvoker" uiAccess="false" />
       </requestedPrivileges>
@@ -138,14 +138,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GPSFA-WinForms.exe" size="1038336">
+<<<<<<< HEAD
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GPSFA-WinForms.exe" size="1065472">
+=======
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GPSFA-WinForms.exe" size="1069056">
+>>>>>>> d7dcf0ece9bc64e42fe8584d5afdadb734c0a1de
       <assemblyIdentity name="GPSFA-WinForms" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+<<<<<<< HEAD
         <dsig:DigestValue>/TBOMLcM7T3pOBV1N+vqjVPpM+ao053qX2pj9vpzjs0=</dsig:DigestValue>
+=======
+<<<<<<< HEAD
+        <dsig:DigestValue>961idEl1xAo6gnLKzNgcC2J4bSOMxAm7XCbcqlvOKPM=</dsig:DigestValue>
+=======
+        <dsig:DigestValue>8yfRvSbb1tHVpf3pPz+0p/t/1xgx4MJ8DpFV0BBdxLY=</dsig:DigestValue>
+>>>>>>> d7dcf0ece9bc64e42fe8584d5afdadb734c0a1de
+>>>>>>> dc32c7218e4572ed7061238d5db8060bc574e6f6
       </hash>
     </dependentAssembly>
   </dependency>
