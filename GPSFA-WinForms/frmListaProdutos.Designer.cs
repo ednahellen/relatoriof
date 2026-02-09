@@ -273,7 +273,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmListaProdutos";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Lista de Produtos";
+            this.Text = "Grupo Socorrista São Francisco de Assis - Gerenciar Lista de Produtos";
             this.panel1.ResumeLayout(false);
             this.gpbCamposDoProduto.ResumeLayout(false);
             this.gpbCamposDoProduto.PerformLayout();

@@ -37,25 +37,13 @@ namespace GPSFA_WinForms
             IntPtr hMenu = GetSystemMenu(this.Handle, false);
             int MenuCount = GetMenuItemCount(hMenu) - 1;
             RemoveMenu(hMenu, MenuCount, MF_BYCOMMAND);
-        }
-
-        string cpfconsulta = "";
-        string cnpjconsulta = "";
-        string cepconsulta = "";
-        string ruaconsulta = "";
-        string numeroconsulta = "";
-        string complementoconsulta = "";
-        string bairroconsulta = "";
-        string cidadeconsulta = "";
-        string estadoconsulta = "";
-        string telCelconsulta = "";
-        string referenciaconsulta = ""; 
+        }        
 
         public void buscaOrigemDoacao(string nome)
         {
 
             MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = $"SELECT nome, cpf, cnpj, cep, rua, numero, complemento, bairro, cidade, estado, telCel, referencia FROM tborigemdoacao WHERE nome LIKE '%{nome}%';";
+            comm.CommandText = $"SELECT nome FROM tborigemdoacao WHERE nome LIKE '%{nome}%';";
 
             comm.CommandType = CommandType.Text;
 
@@ -81,35 +69,8 @@ namespace GPSFA_WinForms
               
                     while (DR.Read())
                     {
-                    ltbPesquisarOrigem.Items.Add(DR.GetString(0));
-
-                    try
-                    {
-                        cpfconsulta = DR.GetString(1);
-                    }
-                    catch (Exception) 
-                    {
-                        cpfconsulta = "";
-                    }
-                    try
-                    {
-                        cnpjconsulta = DR.GetString(2);
-                    }    
-                    catch (Exception)
-                    {
-                        cnpjconsulta = "";
-                    }                  
-
-                        cepconsulta = DR.GetString(3);
-                        ruaconsulta = DR.GetString(4);
-                        numeroconsulta = DR.GetString(5);
-                        complementoconsulta = DR.GetString(6);
-                        bairroconsulta = DR.GetString(7);
-                        cidadeconsulta = DR.GetString(8);
-                        estadoconsulta = DR.GetString(9);
-                        telCelconsulta = DR.GetString(10);
-                        referenciaconsulta = DR.GetString(11);
-                        
+                    ltbPesquisarOrigem.Items.Add(DR.GetString(0));                  
+           
                 }
                 
                 
@@ -171,20 +132,9 @@ namespace GPSFA_WinForms
         private void ltbPesquisarOrigem_SelectedIndexChanged(object sender, EventArgs e)
         {            
             
-                string nome = ltbPesquisarOrigem.SelectedItem.ToString();
-                string cpf = cpfconsulta;
-                string cnpj = cnpjconsulta;
-                string cep = cepconsulta;
-                string rua = ruaconsulta;
-                string numero = numeroconsulta;
-                string complemento = complementoconsulta;
-                string bairro = bairroconsulta;
-                string cidade = cidadeconsulta;
-                string estado = estadoconsulta;
-                string telCel = telCelconsulta;
-                string referencia = referenciaconsulta;
+                string nome = ltbPesquisarOrigem.SelectedItem.ToString();               
 
-                frmOrigemDoacao abrir = new frmOrigemDoacao(nome, cpf, cnpj, cep, rua, numero, complemento, bairro, cidade, estado, telCel, referencia);
+                frmOrigemDoacao abrir = new frmOrigemDoacao(nome);
                 abrir.Show();
                 this.Hide();          
            

@@ -51,6 +51,85 @@ namespace GPSFA_WinForms
             mskCpf.Enabled = false;
         }
 
+        public frmOrigemDoacao(string nome)
+        {
+            InitializeComponent();
+            buscaCodigoOrigem(nome); 
+            txtNomeFornecedor.Text = nome;
+            buscaOrigemDoacao(nome);
+            desativarBotoes();            
+            btnNovo.Enabled = false;
+            btnAlterar.Enabled = true;
+            btnLimpar.Enabled = true;
+            btnExcluir.Enabled = true;
+        }
+
+        // Criando método de pesquisa com o parametro NOME da vindo da janela anterior
+
+        public void buscaOrigemDoacao(string nome)
+        {
+
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = $"SELECT nome, cpf, cnpj, cep, rua, numero, complemento, bairro, cidade, estado, telCel, referencia FROM tborigemdoacao WHERE nome LIKE '%{nome}%';";
+
+            comm.CommandType = CommandType.Text;
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+
+            MySqlDataReader DR;
+            DR = comm.ExecuteReader();
+
+            limparCamposNovo();
+
+            if (DR.HasRows == false)
+            {
+                MessageBox.Show("Nenhuma origem encontrada com este valor.",
+                    "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);               
+            }
+            else
+            {
+
+                while (DR.Read())
+                {
+                    txtNomeFornecedor.Text = (DR.GetString(0));
+
+                    try
+                    {
+                        mskCpf.Text = DR.GetString(1);
+                        mskCpf.Enabled = false;
+                    }
+                    catch (Exception)
+                    {                       
+                        mskCpf.Enabled = false;                        
+                    }
+                    try
+                    {
+                        mskCnpj.Text = DR.GetString(2);
+                        mskCnpj.Enabled = false;
+                    }
+                    catch (Exception)
+                    {
+                        mskCnpj.Enabled = false;                        
+                    }
+
+                    mskCep.Text = DR.GetString(3);
+                    txtRua.Text = DR.GetString(4);
+                    txtNumero.Text = DR.GetString(5);
+                    txtComplemento.Text = DR.GetString(6);
+                    txtBairro.Text = DR.GetString(7);
+                    cbbCidade.Items.Add(DR.GetString(8));
+                    cbbEstado.Items.Add(DR.GetString(9));
+                    mskTelefone.Text = DR.GetString(10);
+                    txtReferencia.Text = DR.GetString(11);
+                }
+
+            }
+            DataBaseConnection.CloseConnection();
+        }
+
         private int excluirOrigem(int codOri)
         {
             MySqlCommand comm = new MySqlCommand();
@@ -261,10 +340,14 @@ namespace GPSFA_WinForms
                 mskCpf.Enabled = true;
                 mskCpf.Focus();
             }
-            else
+            else if (rdbCpf.Checked.Equals(true) && mskCpf.Text.Equals(""))
             {
                 mskCpf.Enabled = false;
                 mskCpf.Clear();
+            }
+            else
+            {
+                mskCpf.Enabled= false;
             }
         }
 
@@ -275,10 +358,14 @@ namespace GPSFA_WinForms
                 mskCnpj.Enabled = true;
                 mskCnpj.Focus();
             }
-            else
+            else if (rdbCnpj.Checked.Equals(true) && mskCnpj.Text.Equals(""))
             {
                 mskCnpj.Enabled = false;
                 mskCnpj.Clear();
+            }
+            else
+            {
+                mskCnpj.Enabled = false;
             }
         }
 
