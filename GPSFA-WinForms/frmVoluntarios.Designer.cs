@@ -113,7 +113,7 @@
             // 
             // btnMostrarSenha
             // 
-            this.btnMostrarSenha.Location = new System.Drawing.Point(879, 394);
+            this.btnMostrarSenha.Location = new System.Drawing.Point(894, 394);
             this.btnMostrarSenha.Name = "btnMostrarSenha";
             this.btnMostrarSenha.Size = new System.Drawing.Size(34, 34);
             this.btnMostrarSenha.TabIndex = 89;
