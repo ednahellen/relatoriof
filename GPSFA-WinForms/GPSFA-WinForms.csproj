@@ -168,7 +168,9 @@
     <Compile Include="classes\ViaCepResponse.cs" />
     <Compile Include="data.dbfransisco\DataBaseConnection.cs" />
     <Compile Include="classes\FiltroDeBuscaBD.cs" />
-    <Compile Include="frmGerenciarProdutos.cs" />
+    <Compile Include="frmGerenciarProdutos.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmGerenciarProdutos.Designer.cs">
       <DependentUpon>frmGerenciarProdutos.cs</DependentUpon>
     </Compile>
