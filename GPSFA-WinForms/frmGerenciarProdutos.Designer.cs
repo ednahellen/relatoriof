@@ -239,7 +239,6 @@
             this.gpbCamposDoProduto.Size = new System.Drawing.Size(1214, 437);
             this.gpbCamposDoProduto.TabIndex = 0;
             this.gpbCamposDoProduto.TabStop = false;
-            this.gpbCamposDoProduto.Enter += new System.EventHandler(this.gpbCamposDoProduto_Enter);
             // 
             // btnDoacao
             // 
@@ -255,7 +254,6 @@
             this.btnDoacao.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnDoacao.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnDoacao.UseVisualStyleBackColor = true;
-            this.btnDoacao.Click += new System.EventHandler(this.btnDoacao_Click);
             // 
             // lblOrigemDoacao
             // 
@@ -291,7 +289,6 @@
             this.btnMedida.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnMedida.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnMedida.UseVisualStyleBackColor = true;
-            this.btnMedida.Click += new System.EventHandler(this.btnMedida_Click);
             // 
             // btnLista
             // 
@@ -307,7 +304,6 @@
             this.btnLista.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnLista.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnLista.UseVisualStyleBackColor = true;
-            this.btnLista.Click += new System.EventHandler(this.btnLista_Click);
             // 
             // cbbDescricao
             // 
@@ -318,7 +314,6 @@
             this.cbbDescricao.Name = "cbbDescricao";
             this.cbbDescricao.Size = new System.Drawing.Size(477, 39);
             this.cbbDescricao.TabIndex = 58;
-            this.cbbDescricao.SelectedIndexChanged += new System.EventHandler(this.cbbDescricao_SelectedIndexChanged);
             // 
             // pnlCrud
             // 
@@ -347,8 +342,7 @@
             this.btnVoltar.Text = "&Voltar";
             this.btnVoltar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnVoltar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnVoltar.UseVisualStyleBackColor = true;
-            this.btnVoltar.Click += new System.EventHandler(this.button6_Click);
+            this.btnVoltar.UseVisualStyleBackColor = true;   
             // 
             // btnLimpar
             // 
