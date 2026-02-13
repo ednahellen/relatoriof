@@ -1,4 +1,5 @@
-﻿using Projeto_Socorrista;
+﻿using MySql.Data.MySqlClient;
+using Projeto_Socorrista;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,8 +29,49 @@ namespace GPSFA_WinForms
         bool sidebarExpand;
         public frmMenuPrincipal()
         {
+            InitializeComponent();            
+        }
+
+        public frmMenuPrincipal(int codUsu)
+        {
             InitializeComponent();
         }
+
+        string tipoAcesso;
+
+        //Criando método de autenticação de usuário
+        public int autenticaUsu(int codUsu)
+        {
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = "SELECT tipo FROM tbUsuarios WHERE codUsu = @codUsu;";
+            comm.CommandType = CommandType.Text;
+
+            comm.Parameters.Clear();
+            comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+
+            try
+            {
+                tipoAcesso = comm.CommandText;
+
+                int resp = comm.ExecuteNonQuery();
+
+                DataBaseConnection.CloseConnection();
+
+                return resp;
+            }
+            catch (Exception)
+            {
+                //MessageBox.Show("Este registro já existe!", "Mensagem do sistema",
+                //    MessageBoxButtons.OK,
+                //    MessageBoxIcon.Error,
+                //    MessageBoxDefaultButton.Button1);
+            }
+            return 0;
+        }
+
+
 
         private void FormShow(Form frm)
         {
@@ -116,6 +158,14 @@ namespace GPSFA_WinForms
             frmGerenciarProdutos abrir = new frmGerenciarProdutos();
             abrir.Show();
             this.Hide();
+        }
+
+        private void frmMenuPrincipal_Load(object sender, EventArgs e)
+        {
+            //if (tipoUsu.Equals("admin"))
+            //{
+            //    btnGerenciarProdutos.Enabled = false;
+            //}
         }
     }
 }

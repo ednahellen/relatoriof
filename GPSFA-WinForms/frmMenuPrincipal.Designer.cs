@@ -30,19 +30,19 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMenuPrincipal));
             this.pnlForm = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnGerenciarProdutos = new System.Windows.Forms.Button();
             this.btnVoluntarios = new System.Windows.Forms.Button();
             this.btnRelatorios = new System.Windows.Forms.Button();
             this.btnAlimentos = new System.Windows.Forms.Button();
-            this.btnDashboard = new System.Windows.Forms.Button();
             this.pnlDadosProdutos = new System.Windows.Forms.Panel();
+            this.btnDashboard = new System.Windows.Forms.Button();
             this.pnlForm.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlForm
             // 
             this.pnlForm.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
-            this.pnlForm.Controls.Add(this.button1);
+            this.pnlForm.Controls.Add(this.btnGerenciarProdutos);
             this.pnlForm.Controls.Add(this.btnVoluntarios);
             this.pnlForm.Controls.Add(this.btnRelatorios);
             this.pnlForm.Controls.Add(this.btnAlimentos);
@@ -54,24 +54,24 @@
             this.pnlForm.Size = new System.Drawing.Size(943, 507);
             this.pnlForm.TabIndex = 1;
             // 
-            // button1
+            // btnGerenciarProdutos
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Microsoft YaHei", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
-            this.button1.Location = new System.Drawing.Point(252, 69);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(220, 200);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "Gerenciar  Produtos";
-            this.button1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.button1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnGerenciarProdutos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
+            this.btnGerenciarProdutos.FlatAppearance.BorderSize = 0;
+            this.btnGerenciarProdutos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGerenciarProdutos.Font = new System.Drawing.Font("Microsoft YaHei", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGerenciarProdutos.ForeColor = System.Drawing.Color.White;
+            this.btnGerenciarProdutos.Image = ((System.Drawing.Image)(resources.GetObject("btnGerenciarProdutos.Image")));
+            this.btnGerenciarProdutos.Location = new System.Drawing.Point(252, 69);
+            this.btnGerenciarProdutos.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnGerenciarProdutos.Name = "btnGerenciarProdutos";
+            this.btnGerenciarProdutos.Size = new System.Drawing.Size(220, 200);
+            this.btnGerenciarProdutos.TabIndex = 9;
+            this.btnGerenciarProdutos.Text = "Gerenciar  Produtos";
+            this.btnGerenciarProdutos.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnGerenciarProdutos.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btnGerenciarProdutos.UseVisualStyleBackColor = false;
+            this.btnGerenciarProdutos.Click += new System.EventHandler(this.button1_Click);
             // 
             // btnVoluntarios
             // 
@@ -130,6 +130,16 @@
             this.btnAlimentos.UseVisualStyleBackColor = false;
             this.btnAlimentos.Click += new System.EventHandler(this.btnEstoque_Click);
             // 
+            // pnlDadosProdutos
+            // 
+            this.pnlDadosProdutos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
+            this.pnlDadosProdutos.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlDadosProdutos.Location = new System.Drawing.Point(0, 0);
+            this.pnlDadosProdutos.Name = "pnlDadosProdutos";
+            this.pnlDadosProdutos.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
+            this.pnlDadosProdutos.Size = new System.Drawing.Size(943, 48);
+            this.pnlDadosProdutos.TabIndex = 2;
+            // 
             // btnDashboard
             // 
             this.btnDashboard.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
@@ -149,16 +159,6 @@
             this.btnDashboard.UseVisualStyleBackColor = false;
             this.btnDashboard.Click += new System.EventHandler(this.btnDashboard_Click);
             // 
-            // pnlDadosProdutos
-            // 
-            this.pnlDadosProdutos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
-            this.pnlDadosProdutos.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlDadosProdutos.Location = new System.Drawing.Point(0, 0);
-            this.pnlDadosProdutos.Name = "pnlDadosProdutos";
-            this.pnlDadosProdutos.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
-            this.pnlDadosProdutos.Size = new System.Drawing.Size(943, 48);
-            this.pnlDadosProdutos.TabIndex = 2;
-            // 
             // frmMenuPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -173,6 +173,7 @@
             this.Name = "frmMenuPrincipal";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Grupo Socorrista Francisco de Assis";
+            this.Load += new System.EventHandler(this.frmMenuPrincipal_Load);
             this.pnlForm.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -180,7 +181,7 @@
 
         #endregion
         private System.Windows.Forms.Panel pnlForm;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnGerenciarProdutos;
         private System.Windows.Forms.Button btnVoluntarios;
         private System.Windows.Forms.Button btnRelatorios;
         private System.Windows.Forms.Button btnAlimentos;
