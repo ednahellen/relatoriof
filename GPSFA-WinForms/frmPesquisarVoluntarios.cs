@@ -82,7 +82,7 @@ namespace GPSFA_WinForms
             {
                 StringBuilder query = new StringBuilder();
 
-                query.Append("SELECT codVol, nome, cpf, telCel FROM tbVoluntarios WHERE LOWER(nome) LIKE LOWER(@descricao) OR cpf LIKE @descricao OR telCel LIKE @descricao;");
+                query.Append("SELECT codVol, nome, cpf, telCel, CASE WHEN ativo = 1 THEN 'Sim' ELSE 'Não' END AS ativo FROM tbVoluntarios WHERE LOWER(nome) LIKE LOWER(@descricao) OR cpf LIKE @descricao OR telCel LIKE @descricao;");
 
                 MySqlCommand comm = new MySqlCommand();
                 comm.Connection = conexao;
@@ -125,7 +125,7 @@ namespace GPSFA_WinForms
             {
                 StringBuilder query = new StringBuilder();
 
-                query.Append("SELECT codVol, nome, cpf, telCel FROM tbVoluntarios;");
+                query.Append("SELECT codVol, nome, cpf, telCel, CASE WHEN ativo = 1 THEN 'Sim' ELSE 'Não' END AS ativo FROM tbVoluntarios;");
 
                 MySqlCommand comm = new MySqlCommand();
                 comm.Connection = conexao;
@@ -133,7 +133,7 @@ namespace GPSFA_WinForms
                 comm.CommandText = query.ToString();
 
                 MySqlDataAdapter DA = new MySqlDataAdapter(comm);
-                DA.Fill(tabela);
+                    DA.Fill(tabela);
 
                 dgvVoluntarios.DataSource = tabela;
 

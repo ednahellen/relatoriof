@@ -49,6 +49,7 @@ namespace GPSFA_WinForms
 
         // Instância global do código do voluntário
         int codVol = 0;
+        bool isVoluntarioActive = true;
 
         private void buscarDadosDoVoluntario(int codVoluntario)
         {
@@ -76,22 +77,24 @@ namespace GPSFA_WinForms
                 txtNumero.Text = DR.GetString(6);
                 txtComplemento.Text = DR.GetString(7);
                 txtBairro.Text = DR.GetString(8);
-                txtUsuario.Text = DR.GetString(11);
-                txtSenha.Text = DR.GetString(12);
+                txtCidade.Text = DR.GetString(9);
+                cbbEstado.Text = DR.GetString(10);
+                isVoluntarioActive = DR.GetBoolean(11);
             }
 
             DataBaseConnection.CloseConnection();
         }
 
-        private int buscarVoluntario(string descricao)
+        private int buscarVoluntario(string nome, string cpf)
         {
             MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = $"SELECT * FROM tbVoluntarios WHERE nome = @descricao;";
+            comm.CommandText = $"SELECT * FROM tbVoluntarios WHERE nome = @nome OR cpf = @cpf;";
 
             comm.CommandType = CommandType.Text;
 
             comm.Parameters.Clear();
-            comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 20).Value = descricao;
+            comm.Parameters.Add("@nome", MySqlDbType.VarChar, 20).Value = nome;
+            comm.Parameters.Add("@cpf", MySqlDbType.VarChar, 20).Value = cpf;
 
             comm.Connection = DataBaseConnection.OpenConnection();
 
@@ -102,10 +105,10 @@ namespace GPSFA_WinForms
             return resp;
         }
 
-        public int cadastrarVoluntario(string nome, string telCel, string cpf, string cep, string rua, string numero, string complemento, string bairro, string cidade, string estado, string usuario, string senha)
+        public int cadastrarVoluntario(string nome, string telCel, string cpf, string cep, string rua, string numero, string complemento, string bairro, string cidade, string estado)
         {
             MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "INSERT INTO tbVoluntarios(nome,telCel,cpf,cep,rua,numero,complemento,bairro,cidade,estado,usuario,senha)VALUES(@nome,@telCel,@cpf,@cep,@rua,@numero,@complemento,@bairro,@cidade,@estado,@usuario,@senha);";
+            comm.CommandText = "INSERT INTO tbVoluntarios(nome,telCel,cpf,cep,rua,numero,complemento,bairro,cidade,estado)VALUES(@nome,@telCel,@cpf,@cep,@rua,@numero,@complemento,@bairro,@cidade,@estado);";
             comm.CommandType = CommandType.Text;
 
             comm.Parameters.Clear();
@@ -119,8 +122,10 @@ namespace GPSFA_WinForms
             comm.Parameters.Add("@bairro", MySqlDbType.VarChar, 20).Value = bairro;
             comm.Parameters.Add("@cidade", MySqlDbType.VarChar, 20).Value = cidade;
             comm.Parameters.Add("@estado", MySqlDbType.VarChar, 20).Value = estado;
-            comm.Parameters.Add("@usuario", MySqlDbType.VarChar, 20).Value = usuario;
-            comm.Parameters.Add("@senha", MySqlDbType.VarChar, 20).Value = senha;
+
+            // Será adicionado métodos para inserção + edição dos dados de usuário 
+            //comm.Parameters.Add("@usuario", MySqlDbType.VarChar, 20).Value = usuario;
+            //comm.Parameters.Add("@senha", MySqlDbType.VarChar, 20).Value = senha;
 
             comm.Connection = DataBaseConnection.OpenConnection();
 
@@ -135,6 +140,37 @@ namespace GPSFA_WinForms
             catch (Exception)
             {
                 MessageBox.Show("Este voluntario já existe!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+            }
+            return 0;
+        }
+
+        public int cadastrarUsuario(int codVol, string usuario, string senha)
+        {
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = "INSERT INTO tbVoluntarios(usuario,senha.codVol)VALUES(@usuario,@senha,@codVol)";
+            comm.CommandType = CommandType.Text;
+
+            comm.Parameters.Clear();
+            comm.Parameters.Add("@usuario", MySqlDbType.VarChar, 20).Value = usuario;
+            comm.Parameters.Add("@senha", MySqlDbType.VarChar, 20).Value = senha;
+            comm.Parameters.Add("@codVol", MySqlDbType.VarChar, 20).Value = codVol;
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+
+            try
+            {
+                int resp = comm.ExecuteNonQuery();
+
+                DataBaseConnection.CloseConnection();
+
+                return resp;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Erro ao editar dados do Voluntário!", "Mensagem do sistema",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error,
                     MessageBoxDefaultButton.Button1);
@@ -160,7 +196,40 @@ namespace GPSFA_WinForms
             comm.Parameters.Add("@cidade", MySqlDbType.VarChar, 20).Value = cidade;
             comm.Parameters.Add("@estado", MySqlDbType.VarChar, 20).Value = estado;
             comm.Parameters.Add("@usuario", MySqlDbType.VarChar, 20).Value = usuario;
-            comm.Parameters.Add("@senha", MySqlDbType.VarChar, 20).Value = senha;
+
+            //comm.Parameters.Add("@senha", MySqlDbType.VarChar, 20).Value = senha;
+            //comm.Parameters.Add("@codVol", MySqlDbType.VarChar, 20).Value = codVol;
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+
+            try
+            {
+                int resp = comm.ExecuteNonQuery();
+
+                DataBaseConnection.CloseConnection();
+
+                return resp;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Erro ao editar dados do Voluntário!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+            }
+            return 0;
+        }
+
+        public int excluirDadosVoluntario(int codVol)
+        {
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = "UPDATE tbVoluntarios SET  telCel = '', cpf = '', cep = '', rua = '', numero = '', complemento  = '', bairro = '', cidade = '', estado = '', ativo = 0 WHERE codVol = @codVol;";
+            
+            comm.CommandText = "UPDATE tbVoluntarios SET  telCel = '', cpf = '', cep = '', rua = '', numero = '', complemento  = '', bairro = '', cidade = '', estado = '' WHERE codVol = @codVol;";
+
+            comm.CommandType = CommandType.Text;
+
+            comm.Parameters.Clear();
             comm.Parameters.Add("@codVol", MySqlDbType.VarChar, 20).Value = codVol;
 
             comm.Connection = DataBaseConnection.OpenConnection();
@@ -281,7 +350,7 @@ namespace GPSFA_WinForms
                     MessageBoxDefaultButton.Button1);
                 txtNomeVoluntario.Focus();
             }
-            else if (buscarVoluntario(txtNomeVoluntario.Text).Equals(1))
+            else if (buscarVoluntario(txtNomeVoluntario.Text, mskCpf.Text).Equals(1))
             {
                 MessageBox.Show("Este registro já existe!", "Mensagem do sistema",
                     MessageBoxButtons.OK,
@@ -291,7 +360,7 @@ namespace GPSFA_WinForms
             }
             else
             {
-                int resp = cadastrarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString(), txtUsuario.Text, txtSenha.Text);
+                int resp = cadastrarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString());
 
                 if (resp.Equals(1))
                 {
@@ -351,9 +420,9 @@ namespace GPSFA_WinForms
                 else
                 {
                     MessageBox.Show("Erro ao alterar dados!", "Mensagem do sistema",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1);
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error,
+                        MessageBoxDefaultButton.Button1);
 
                     limparCampos();
                     desabilitarCampos();
@@ -377,6 +446,17 @@ namespace GPSFA_WinForms
 
         private void btnExcluir_Click(object sender, EventArgs e)
         {
+            if (txtNomeVoluntario.Text.Equals("") || mskTelefone.Text.Equals("") || mskCpf.Text.Equals("") || mskCep.Text.Equals("") || txtRua.Text.Equals("") || txtNumero.Text.Equals("") || txtComplemento.Text.Equals("") || txtBairro.Text.Equals("") || txtCidade.Text.Equals(""))
+            {
+                MessageBox.Show("Não há usuário selecionado para exclusão!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+            }
+            else
+            {
+
+            }
 
         }
 

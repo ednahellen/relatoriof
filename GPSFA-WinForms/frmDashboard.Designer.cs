@@ -177,7 +177,7 @@
             this.tbpgDashboadMensal.Location = new System.Drawing.Point(4, 29);
             this.tbpgDashboadMensal.Name = "tbpgDashboadMensal";
             this.tbpgDashboadMensal.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpgDashboadMensal.Size = new System.Drawing.Size(1853, 821);
+            this.tbpgDashboadMensal.Size = new System.Drawing.Size(1852, 821);
             this.tbpgDashboadMensal.TabIndex = 1;
             this.tbpgDashboadMensal.Text = "Alimentos mensais";
             this.tbpgDashboadMensal.UseVisualStyleBackColor = true;

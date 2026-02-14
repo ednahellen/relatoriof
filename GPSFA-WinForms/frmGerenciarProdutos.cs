@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Common;
 using System;
 using System.Collections.Generic;
@@ -204,134 +204,134 @@ namespace GPSFA_WinForms
         //private (int codOrigem, int codProduto) BuscaCodigoDeListEOrigem(string nomeOrigem, string nomeProduto)
         //{
 
-            //    MySqlCommand comm = new MySqlCommand();
-            //    comm.CommandText = "INSERT INTO tbprodutos(descricao, quantidade, peso, unidade, codBar, dataDeEntrada, dataDeValidade, dataLimiteDeSaida, codUsu, codOri, codList)VALUES(@descricao, @quantidade, @peso, @unidade, @codBar, @dataDeEntrada, @dataDeValidade, @dataLimiteDeSaida, @codUsu, @codOri, @codList);";
-            //    comm.CommandType = CommandType.Text;
+        //    MySqlCommand comm = new MySqlCommand();
+        //    comm.CommandText = "INSERT INTO tbprodutos(descricao, quantidade, peso, unidade, codBar, dataDeEntrada, dataDeValidade, dataLimiteDeSaida, codUsu, codOri, codList)VALUES(@descricao, @quantidade, @peso, @unidade, @codBar, @dataDeEntrada, @dataDeValidade, @dataLimiteDeSaida, @codUsu, @codOri, @codList);";
+        //    comm.CommandType = CommandType.Text;
 
-            //    comm.Parameters.Clear();
-            //    comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = descricao;
-            //    comm.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidade;
-            //    comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
-            //    comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 20).Value = unidade;
-            //    comm.Parameters.Add("@codBar", MySqlDbType.VarChar, 13).Value = codBar;
-            //    comm.Parameters.Add("@dataDeEntrada", MySqlDbType.Date).Value = dataDeEntrada;
-            //    comm.Parameters.Add("@dataDeValidade", MySqlDbType.Date).Value = dataDeValidade;
-            //    comm.Parameters.Add("@dataLimiteDeSaida", MySqlDbType.Date).Value = dataLimiteDeSaida;
-            //    comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
-            //    comm.Parameters.Add("@codOri", MySqlDbType.Int32).Value = codOri;
-            //    comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codList;
+        //    comm.Parameters.Clear();
+        //    comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = descricao;
+        //    comm.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidade;
+        //    comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
+        //    comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 20).Value = unidade;
+        //    comm.Parameters.Add("@codBar", MySqlDbType.VarChar, 13).Value = codBar;
+        //    comm.Parameters.Add("@dataDeEntrada", MySqlDbType.Date).Value = dataDeEntrada;
+        //    comm.Parameters.Add("@dataDeValidade", MySqlDbType.Date).Value = dataDeValidade;
+        //    comm.Parameters.Add("@dataLimiteDeSaida", MySqlDbType.Date).Value = dataLimiteDeSaida;
+        //    comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
+        //    comm.Parameters.Add("@codOri", MySqlDbType.Int32).Value = codOri;
+        //    comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codList;
 
-            //    comm.Connection = DataBaseConnection.OpenConnection();
+        //    comm.Connection = DataBaseConnection.OpenConnection();
 
-            //    try
-            //    {
-            //        int resp = comm.ExecuteNonQuery();
+        //    try
+        //    {
+        //        int resp = comm.ExecuteNonQuery();
 
-            //        DataBaseConnection.CloseConnection();
+        //        DataBaseConnection.CloseConnection();
 
-            //        return resp;
-            //    }
-            //    catch (Exception)
-            //    {
-            //        MessageBox.Show("Este registro já existe!", "Mensagem do sistema",
-            //            MessageBoxButtons.OK,
-            //            MessageBoxIcon.Error,
-            //            MessageBoxDefaultButton.Button1);
-            //    }
-            //    return 0;
-            //}
+        //        return resp;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        MessageBox.Show("Este registro já existe!", "Mensagem do sistema",
+        //            MessageBoxButtons.OK,
+        //            MessageBoxIcon.Error,
+        //            MessageBoxDefaultButton.Button1);
+        //    }
+        //    return 0;
+        //}
 
-            //private int enviarDoacoes(string nomeProduto, int quantidade, int peso, string unidadeMedida, string codBar, DateTime dataArrecadacao, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu);
+        //private int enviarDoacoes(string nomeProduto, int quantidade, int peso, string unidadeMedida, string codBar, DateTime dataArrecadacao, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu);
 
-            //        private (int codOrigem, int codProduto) BuscaCodigoDeListEOrigem(string nomeOrigem, string nomeProduto){
-            //=======
-            //>>>>>>> 97b6174c0d16f5f3fcfb276780a51818df577b0c
-            //            nomeOrigem = cbbOrigemDoacao.Text;
-            //            nomeProduto = cbbDescricao.Text;
+        //        private (int codOrigem, int codProduto) BuscaCodigoDeListEOrigem(string nomeOrigem, string nomeProduto){
+        //=======
+        //>>>>>>> 97b6174c0d16f5f3fcfb276780a51818df577b0c
+        //            nomeOrigem = cbbOrigemDoacao.Text;
+        //            nomeProduto = cbbDescricao.Text;
 
-            //            MySqlCommand comm = new MySqlCommand();
-            //            comm.CommandText = "SELECT codOri FROM tbOrigemDoacao WHERE nome = @nomeOrigem; SELECT codList FROM tbLista WHERE descricao = @nomeProduto;";
+        //            MySqlCommand comm = new MySqlCommand();
+        //            comm.CommandText = "SELECT codOri FROM tbOrigemDoacao WHERE nome = @nomeOrigem; SELECT codList FROM tbLista WHERE descricao = @nomeProduto;";
 
-            //            comm.Parameters.AddWithValue("@nomeOrigem", nomeOrigem);
-            //            comm.Parameters.AddWithValue("@nomeProduto", nomeProduto);
+        //            comm.Parameters.AddWithValue("@nomeOrigem", nomeOrigem);
+        //            comm.Parameters.AddWithValue("@nomeProduto", nomeProduto);
 
-            //            comm.Connection = DataBaseConnection.OpenConnection();
-            //            MySqlDataReader DR = comm.ExecuteReader();
+        //            comm.Connection = DataBaseConnection.OpenConnection();
+        //            MySqlDataReader DR = comm.ExecuteReader();
 
-            //            int codOri = 0;
-            //            int codList = 0;
+        //            int codOri = 0;
+        //            int codList = 0;
 
-            //            if (DR.Read())
-            //            {
-            //                codOri = DR.GetInt32(0);
-            //            }
-
-
-            //            if (DR.NextResult() && DR.Read())
-            //            {
-            //                codList = DR.GetInt32(0);
-            //            }
-            //            return (codOri, codList);
-            //        }        
-
-            //private int enviarDoacoes(string nomeProduto, int quantidade, int peso, string unidadeMedida, string codBar, DateTime dataArrecadacao, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
-            //{
-            //    MySqlCommand comm = new MySqlCommand();
-            //    comm.CommandText = @"INSERT INTO tbProdutos( descricao,
-            //                        quantidade,
-            //                        peso,
-            //                        unidade,
-            //                        codBar,
-            //                        dataDeEntrada,
-            //                        dataDeValidade,
-            //                        dataLimiteDeSaida,
-            //                        codUsu, 
-            //                        codOri,
-            //                        codList) 
-            //                        VALUES(
-            //                        @descricao, 
-            //                        @quantidade, 
-            //                        @peso, 
-            //                        @unidade,
-            //                        @codBar,
-            //                        @dataArrecadacao, 
-            //                        @dataDeValidade, 
-            //                        @dataLimiteDeSaida, 
-            //                        @codUsu,
-            //                        @codOri,
-            //                        @codList);";
-            //    comm.CommandType = CommandType.Text;
-
-            //    comm.Parameters.Clear();
-
-            //    comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = nomeProduto;
-            //    comm.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidade;
-            //    comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
-            //    comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 5).Value = unidadeMedida;
-            //    comm.Parameters.Add("@codBar", MySqlDbType.VarChar, 13).Value = codBar;
-            //    comm.Parameters.Add("@dataArrecadacao", MySqlDbType.Date).Value = dataArrecadacao;
-            //    comm.Parameters.Add("@dataDeValidade", MySqlDbType.Date).Value = dataDeValidade;
-            //    comm.Parameters.Add("@dataLimiteDeSaida", MySqlDbType.VarChar, 300).Value = dataLimiteDeSaida;
-            //    comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
-
-            //    var (codOrigem, codLista) = BuscaCodigoDeListEOrigem(cbbOrigemDoacao.Text, cbbDescricao.Text);
-
-            //    comm.Parameters.Add("@codOri", MySqlDbType.Int32).Value = codOrigem;
-            //    comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codLista;
-
-            //    comm.Connection = DataBaseConnection.OpenConnection();
-
-            //    int resp = comm.ExecuteNonQuery();
+        //            if (DR.Read())
+        //            {
+        //                codOri = DR.GetInt32(0);
+        //            }
 
 
-            //    DataBaseConnection.CloseConnection();
+        //            if (DR.NextResult() && DR.Read())
+        //            {
+        //                codList = DR.GetInt32(0);
+        //            }
+        //            return (codOri, codList);
+        //        }        
 
-            //    limparCamposDeCadastro();
+        //private int enviarDoacoes(string nomeProduto, int quantidade, int peso, string unidadeMedida, string codBar, DateTime dataArrecadacao, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
+        //{
+        //    MySqlCommand comm = new MySqlCommand();
+        //    comm.CommandText = @"INSERT INTO tbProdutos( descricao,
+        //                        quantidade,
+        //                        peso,
+        //                        unidade,
+        //                        codBar,
+        //                        dataDeEntrada,
+        //                        dataDeValidade,
+        //                        dataLimiteDeSaida,
+        //                        codUsu, 
+        //                        codOri,
+        //                        codList) 
+        //                        VALUES(
+        //                        @descricao, 
+        //                        @quantidade, 
+        //                        @peso, 
+        //                        @unidade,
+        //                        @codBar,
+        //                        @dataArrecadacao, 
+        //                        @dataDeValidade, 
+        //                        @dataLimiteDeSaida, 
+        //                        @codUsu,
+        //                        @codOri,
+        //                        @codList);";
+        //    comm.CommandType = CommandType.Text;
 
-            //    return resp;
-            //}        
+        //    comm.Parameters.Clear();
 
-     
+        //    comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = nomeProduto;
+        //    comm.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidade;
+        //    comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
+        //    comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 5).Value = unidadeMedida;
+        //    comm.Parameters.Add("@codBar", MySqlDbType.VarChar, 13).Value = codBar;
+        //    comm.Parameters.Add("@dataArrecadacao", MySqlDbType.Date).Value = dataArrecadacao;
+        //    comm.Parameters.Add("@dataDeValidade", MySqlDbType.Date).Value = dataDeValidade;
+        //    comm.Parameters.Add("@dataLimiteDeSaida", MySqlDbType.VarChar, 300).Value = dataLimiteDeSaida;
+        //    comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
+
+        //    var (codOrigem, codLista) = BuscaCodigoDeListEOrigem(cbbOrigemDoacao.Text, cbbDescricao.Text);
+
+        //    comm.Parameters.Add("@codOri", MySqlDbType.Int32).Value = codOrigem;
+        //    comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codLista;
+
+        //    comm.Connection = DataBaseConnection.OpenConnection();
+
+        //    int resp = comm.ExecuteNonQuery();
+
+
+        //    DataBaseConnection.CloseConnection();
+
+        //    limparCamposDeCadastro();
+
+        //    return resp;
+        //}        
+
+
 
 
         //    if (Regex.IsMatch(txtQuantidade.Text, @"[a-zA-Z]") || Convert.ToInt32(txtQuantidade.Text) == 0)
@@ -556,6 +556,5 @@ namespace GPSFA_WinForms
         //
 
     }
-       
-    }
 
+}

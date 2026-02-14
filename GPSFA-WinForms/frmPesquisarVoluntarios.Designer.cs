@@ -43,6 +43,7 @@
             // 
             // gpbListaVoluntarios
             // 
+            this.gpbListaVoluntarios.Controls.Add(this.btnVoltar);
             this.gpbListaVoluntarios.Controls.Add(this.btnLimpar);
             this.gpbListaVoluntarios.Controls.Add(this.btnPesquisar);
             this.gpbListaVoluntarios.Controls.Add(this.label1);
@@ -53,7 +54,7 @@
             this.gpbListaVoluntarios.Margin = new System.Windows.Forms.Padding(2);
             this.gpbListaVoluntarios.Name = "gpbListaVoluntarios";
             this.gpbListaVoluntarios.Padding = new System.Windows.Forms.Padding(2);
-            this.gpbListaVoluntarios.Size = new System.Drawing.Size(976, 566);
+            this.gpbListaVoluntarios.Size = new System.Drawing.Size(1197, 566);
             this.gpbListaVoluntarios.TabIndex = 0;
             this.gpbListaVoluntarios.TabStop = false;
             // 
@@ -128,7 +129,7 @@
             this.dgvVoluntarios.Name = "dgvVoluntarios";
             this.dgvVoluntarios.RowHeadersWidth = 51;
             this.dgvVoluntarios.RowTemplate.Height = 24;
-            this.dgvVoluntarios.Size = new System.Drawing.Size(968, 392);
+            this.dgvVoluntarios.Size = new System.Drawing.Size(1189, 392);
             this.dgvVoluntarios.TabIndex = 6;
             this.dgvVoluntarios.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVoluntarios_CellContentClick);
             // 
@@ -137,7 +138,7 @@
             this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnVoltar.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
-            this.btnVoltar.Location = new System.Drawing.Point(853, 582);
+            this.btnVoltar.Location = new System.Drawing.Point(1059, 14);
             this.btnVoltar.Name = "btnVoltar";
             this.btnVoltar.Size = new System.Drawing.Size(133, 55);
             this.btnVoltar.TabIndex = 23;
@@ -152,8 +153,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
-            this.ClientSize = new System.Drawing.Size(994, 648);
-            this.Controls.Add(this.btnVoltar);
+            this.ClientSize = new System.Drawing.Size(1217, 584);
             this.Controls.Add(this.gpbListaVoluntarios);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);

@@ -17,7 +17,6 @@ CREATE TABLE tbVoluntarios(
 codVol INT NOT NULL AUTO_INCREMENT, -- 0
 nome VARCHAR(100) NOT NULL, -- 1
 telCel VARCHAR(15) NOT NULL, -- 2
-email VARCHAR(100) NOT NULL UNIQUE,
 cpf VARCHAR(14) NOT NULL UNIQUE,
 cep VARCHAR(9),
 rua VARCHAR(100),
@@ -27,9 +26,23 @@ bairro VARCHAR(100),
 cidade VARCHAR(100),
 estado VARCHAR(2),
 ativo BOOLEAN DEFAULT TRUE,
-observacao VARCHAR(500),
 foto LONGBLOB,
 PRIMARY KEY(codVol)
+);
+
+-- CRIANDO A TABELA DE USUÁRIOS
+
+CREATE TABLE tbUsuarios(
+
+codUsu INT NOT NULL AUTO_INCREMENT,
+usuario VARCHAR(100) NOT NULL,
+senha VARCHAR(100) NOT NULL,
+tipo ENUM('ADMIN','USER') DEFAULT 'USER',
+salt VARCHAR(64) NOT NULL,
+ativo BOOLEAN DEFAULT TRUE,
+codVol INT NOT NULL,
+PRIMARY KEY(codUsu),
+FOREIGN KEY(codVol) REFERENCES tbVoluntarios(codVol)
 );
 
 -- CRIANDO A TABELA DE CLIENTES
@@ -92,21 +105,6 @@ unidade VARCHAR(20) NOT NULL,
 codUni INT NOT NULL,
 PRIMARY KEY(codList),
 FOREIGN KEY(codUni) REFERENCES tbUnidades(codUni)
-);
-
--- CRIANDO A TABELA DE USUÁRIOS
-
-CREATE TABLE tbUsuarios(
-
-codUsu INT NOT NULL AUTO_INCREMENT,
-usuario VARCHAR(100) NOT NULL,
-senha VARCHAR(100) NOT NULL,
-tipo ENUM('ADMIN','USER') DEFAULT 'ADMIN',
-salt VARCHAR(64) NOT NULL,
-ativo BOOLEAN DEFAULT TRUE,
-codVol INT NOT NULL,
-PRIMARY KEY(codUsu),
-FOREIGN KEY(codVol) REFERENCES tbVoluntarios(codVol)
 );
 
 -- CRIANDO A TABELA DE JORNAL
@@ -179,59 +177,57 @@ FOREIGN KEY(codUsu) REFERENCES tbUsuarios(codUsu),
 FOREIGN KEY(codCli) REFERENCES tbClientes(codCli)
 );
 
-
-INSERT INTO tbVoluntarios(nome,telCel,cpf,cep,rua,numero,complemento,bairro,cidade,estado)VALUES('Adminin','0000000-0000','000.000.000-00','00000-000','Grupo Francisco','000','','Jd.Francisco','São Paulo','SP');
-
 INSERT INTO tbVoluntarios
-(nome,telCel,cpf,cep,rua,numero,complemento,bairro,cidade,estado)
+(nome, telCel, cpf, cep, rua, numero, complemento, bairro, cidade, estado)
 VALUES
-('João Silva','1191111-1111','111.111.111-01','01001-000','Rua A','10','','Centro','São Paulo','SP'),
-('Maria Souza','1192222-2222','111.111.111-02','02002-000','Rua B','20','Apto 1','Bela Vista','São Paulo','SP'),
-('Carlos Pereira','1193333-3333','111.111.111-03','03003-000','Rua C','30','','Mooca','São Paulo','SP'),
-('Ana Costa','1194444-4444','111.111.111-04','04004-000','Rua D','40','Casa','Ipiranga','São Paulo','SP'),
-('Lucas Lima','1195555-5555','111.111.111-05','05005-000','Rua E','50','','Santana','São Paulo','SP'),
-('Fernanda Rocha','1196666-6666','111.111.111-06','06006-000','Rua F','60','Fundos','Penha','São Paulo','SP'),
-('Bruno Martins','1197777-7777','111.111.111-07','07007-000','Rua G','70','','Tatuapé','São Paulo','SP'),
-('Patricia Alves','1198888-8888','111.111.111-08','08008-000','Rua H','80','Bloco B','Lapa','São Paulo','SP'),
-('Rafael Gomes','1199999-9999','111.111.111-09','09009-000','Rua I','90','','Pinheiros','São Paulo','SP'),
-('Juliana Ribeiro','1181111-1111','111.111.111-10','10010-000','Rua J','100','Apto 12','Perdizes','São Paulo','SP'),
-('Daniel Santos','1182222-2222','111.111.111-11','11011-000','Rua K','110','','Vila Mariana','São Paulo','SP'),
-('Camila Torres','1183333-3333','111.111.111-12','12012-000','Rua L','120','Casa','Jabaquara','São Paulo','SP'),
-('Eduardo Nunes','1184444-4444','111.111.111-13','13013-000','Rua M','130','','Butantã','São Paulo','SP'),
-('Renata Freitas','1185555-5555','111.111.111-14','14014-000','Rua N','140','Apto 3','Morumbi','São Paulo','SP'),
-('Thiago Barros','1186666-6666','111.111.111-15','15015-000','Rua O','150','','Campo Limpo','São Paulo','SP'),
-('Aline Pacheco','1187777-7777','111.111.111-16','16016-000','Rua P','160','Bloco C','Itaquera','São Paulo','SP'),
-('Marcos Teixeira','1188888-8888','111.111.111-17','17017-000','Rua Q','170','','Osasco','Osasco','SP'),
-('Bianca Lopes','1189999-9999','111.111.111-18','18018-000','Rua R','180','Casa','Guarulhos','Guarulhos','SP'),
-('Felipe Araujo','1171111-1111','111.111.111-19','19019-000','Rua S','190','','Santo Amaro','São Paulo','SP'),
-('Larissa Mendes','1172222-2222','111.111.111-20','20020-000','Rua T','200','Apto 5','Interlagos','São Paulo','SP');
+('Admin','0000000-0000','000.000.000-00','00000-000','Grupo Francisco','000','','Jd.Francisco','São Paulo','SP');
+-- ('João Silva','1191111-1111','111.111.111-01','01001-000','Rua A','10','','Centro','São Paulo','SP'),
+-- ('Maria Souza','1192222-2222','111.111.111-02','02002-000','Rua B','20','Apto 1','Bela Vista','São Paulo','SP'),
+-- ('Carlos Pereira','1193333-3333','111.111.111-03','03003-000','Rua C','30','','Mooca','São Paulo','SP'),
+-- ('Ana Costa','1194444-4444','111.111.111-04','04004-000','Rua D','40','Casa','Ipiranga','São Paulo','SP'),
+-- ('Lucas Lima','1195555-5555','111.111.111-05','05005-000','Rua E','50','','Santana','São Paulo','SP'),
+-- ('Fernanda Rocha','1196666-6666','111.111.111-06','06006-000','Rua F','60','Fundos','Penha','São Paulo','SP'),
+-- ('Bruno Martins','1197777-7777','111.111.111-07','07007-000','Rua G','70','','Tatuapé','São Paulo','SP'),
+-- ('Patricia Alves','1198888-8888','111.111.111-08','08008-000','Rua H','80','Bloco B','Lapa','São Paulo','SP'),
+-- ('Rafael Gomes','1199999-9999','111.111.111-09','09009-000','Rua I','90','','Pinheiros','São Paulo','SP'),
+-- ('Juliana Ribeiro','1181111-1111','111.111.111-10','10010-000','Rua J','100','Apto 12','Perdizes','São Paulo','SP'),
+-- ('Daniel Santos','1182222-2222','111.111.111-11','11011-000','Rua K','110','','Vila Mariana','São Paulo','SP'),
+-- ('Camila Torres','1183333-3333','111.111.111-12','12012-000','Rua L','120','Casa','Jabaquara','São Paulo','SP'),
+-- ('Eduardo Nunes','1184444-4444','111.111.111-13','13013-000','Rua M','130','','Butantã','São Paulo','SP'),
+-- ('Renata Freitas','1185555-5555','111.111.111-14','14014-000','Rua N','140','Apto 3','Morumbi','São Paulo','SP'),
+-- ('Thiago Barros','1186666-6666','111.111.111-15','15015-000','Rua O','150','','Campo Limpo','São Paulo','SP'),
+-- ('Aline Pacheco','1187777-7777','111.111.111-16','16016-000','Rua P','160','Bloco C','Itaquera','São Paulo','SP'),
+-- ('Marcos Teixeira','1188888-8888','111.111.111-17','17017-000','Rua Q','170','','Osasco','Osasco','SP'),
+-- ('Bianca Lopes','1189999-9999','111.111.111-18','18018-000','Rua R','180','Casa','Guarulhos','Guarulhos','SP'),
+-- ('Felipe Araujo','1171111-1111','111.111.111-19','19019-000','Rua S','190','','Santo Amaro','São Paulo','SP'),
+-- ('Larissa Mendes','1172222-2222','111.111.111-20','20020-000','Rua T','200','Apto 5','Interlagos','São Paulo','SP');
 
 
 
-INSERT INTO tbUsuarios(codUsu,usuario,senha,tipo,salt,codVol)VALUES(1,'admin','123','Admin','134848646','1');
 INSERT INTO tbUsuarios
-(usuario,senha,tipo,salt,codVol)
+(usuario, senha, tipo, salt, codVol)
 VALUES
-('joao.silva','123','Usuario','salt02',2),
-('maria.souza','123','Usuario','salt03',3),
-('carlos.pereira','123','Usuario','salt04',4),
-('ana.costa','123','Usuario','salt05',5),
-('lucas.lima','123','Usuario','salt06',6),
-('fernanda.rocha','123','Usuario','salt07',7),
-('bruno.martins','123','Usuario','salt08',8),
-('patricia.alves','123','Usuario','salt09',9),
-('rafael.gomes','123','Usuario','salt10',10),
-('juliana.ribeiro','123','Usuario','salt11',11),
-('daniel.santos','123','Usuario','salt12',12),
-('camila.torres','123','Usuario','salt13',13),
-('eduardo.nunes','123','Usuario','salt14',14),
-('renata.freitas','123','Usuario','salt15',15),
-('thiago.barros','123','Usuario','salt16',16),
-('aline.pacheco','123','Usuario','salt17',17),
-('marcos.teixeira','123','Usuario','salt18',18),
-('bianca.lopes','123','Usuario','salt19',19),
-('felipe.araujo','123','Usuario','salt20',20),
-('larissa.mendes','123','Usuario','salt21',21);
+('admin','123','ADMIN','salt01',1);
+-- ('joao.silva','123','USER','salt02',2),
+-- ('maria.souza','123','USER','salt03',3),
+-- ('carlos.pereira','123','USER','salt04',4),
+-- ('ana.costa','123','USER','salt05',5),
+-- ('lucas.lima','123','USER','salt06',6),
+-- ('fernanda.rocha','123','USER','salt07',7),
+-- ('bruno.martins','123','USER','salt08',8),
+-- ('patricia.alves','123','USER','salt09',9),
+-- ('rafael.gomes','123','USER','salt10',10),
+-- ('juliana.ribeiro','123','USER','salt11',11),
+-- ('daniel.santos','123','USER','salt12',12),
+-- ('camila.torres','123','USER','salt13',13),
+-- ('eduardo.nunes','123','USER','salt14',14),
+-- ('renata.freitas','123','USER','salt15',15),
+-- ('thiago.barros','123','USER','salt16',16),
+-- ('aline.pacheco','123','USER','salt17',17),
+-- ('marcos.teixeira','123','USER','salt18',18),
+-- ('bianca.lopes','123','USER','salt19',19),
+-- ('felipe.araujo','123','USER','salt20',20),
+-- ('larissa.mendes','123','USER','salt21',21);
 
 
 -- INSERT INTO tbProdutos(codProd,nome,quantidade,peso,unidade,codBar,dataDeEntrada,dataDeValidade,dataLimiteDeSaida,codUsu)VALUES(1,'Arroz Branco',10,5,'KG','1234561234561','2025-09-16','2026-09-10','2026-07-30',1);

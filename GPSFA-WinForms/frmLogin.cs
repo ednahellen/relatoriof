@@ -54,6 +54,7 @@ namespace GPSFA_WinForms
             comm.CommandType = CommandType.Text;
 
             comm.Parameters.Clear();
+            comm.Parameters.Clear();
             comm.Parameters.Add("@usuario", MySqlDbType.VarChar, 100).Value = usuario;
             comm.Parameters.Add("@senha", MySqlDbType.VarChar, 100).Value = senha;
 
