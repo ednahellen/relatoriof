@@ -254,6 +254,7 @@
             this.btnDoacao.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnDoacao.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnDoacao.UseVisualStyleBackColor = true;
+            this.btnDoacao.Click += new System.EventHandler(this.btnDoacao_Click);
             // 
             // lblOrigemDoacao
             // 
@@ -289,6 +290,7 @@
             this.btnMedida.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnMedida.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnMedida.UseVisualStyleBackColor = true;
+            this.btnMedida.Click += new System.EventHandler(this.btnMedida_Click);
             // 
             // btnLista
             // 
@@ -304,6 +306,7 @@
             this.btnLista.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnLista.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnLista.UseVisualStyleBackColor = true;
+            this.btnLista.Click += new System.EventHandler(this.btnLista_Click);
             // 
             // cbbDescricao
             // 
@@ -342,7 +345,7 @@
             this.btnVoltar.Text = "&Voltar";
             this.btnVoltar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnVoltar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnVoltar.UseVisualStyleBackColor = true;   
+            this.btnVoltar.UseVisualStyleBackColor = true;
             // 
             // btnLimpar
             // 

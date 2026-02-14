@@ -112,7 +112,7 @@ namespace GPSFA_WinForms
                 txtSenha.Text = DR.GetString(2);
                 txtConfirmaSenha.Text = DR.GetString(2);
                 string acesso = DR.GetString(3);
-                SelecionarAcessoDoUsuario(acesso);
+                BuscarAcessoDoUsuario(acesso);
             }
 
             if (isUsuarioActive)
@@ -124,20 +124,20 @@ namespace GPSFA_WinForms
                 ckbUsuarioAtivo.Checked = false;
             }
         }
-        private void SelecionarAcessoDoUsuario(string acesso)
+        private void BuscarAcessoDoUsuario(string acesso)
         {
             if (string.IsNullOrWhiteSpace(acesso))
                 return;
 
             acesso = acesso.Trim().ToUpper();
 
-            for (int i = 0; i < cbbEstado.Items.Count; i++)
+            for (int i = 0; i < cbbTipoDeAcesso.Items.Count; i++)
             {
-                string item = cbbEstado.Items[i].ToString();
+                string item = cbbTipoDeAcesso.Items[i].ToString();
 
-                if (item.EndsWith($"({acesso})"))
+                if (item.Equals($"{acesso}"))
                 {
-                    cbbEstado.SelectedIndex = i;
+                    cbbTipoDeAcesso.SelectedIndex = i;
                     return;
                 }
             }
@@ -332,21 +332,25 @@ namespace GPSFA_WinForms
 
         private void desabilitarCampos()
         {
+            // Recursos relacionados a dados do voluntário
             txtNomeVoluntario.Enabled = false;
             txtNomeVoluntario.Enabled = false;
             txtRua.Enabled = false;
             txtNumero.Enabled = false;
             txtComplemento.Enabled = false;
             txtBairro.Enabled = false;
-            ckbUsuarioAtivo.Enabled = false;
-            txtUsuario.Enabled = false;
-            txtSenha.Enabled = false;
-            txtConfirmaSenha.Enabled = false;
             mskCpf.Enabled = false;
             mskTelefone.Enabled = false;
             mskCep.Enabled = false;
             cbbEstado.Enabled = false;
             txtCidade.Enabled = false;
+
+            // Recursos relacionados a dados de usuário
+            ckbUsuarioAtivo.Enabled = false;
+            txtUsuario.Enabled = false;
+            txtSenha.Enabled = false;
+            txtConfirmaSenha.Enabled = false;
+            cbbTipoDeAcesso.Enabled = false;
         }
 
         private void habilitarCampos()
@@ -627,12 +631,14 @@ namespace GPSFA_WinForms
                 txtUsuario.Enabled = true;
                 txtSenha.Enabled = true;
                 txtConfirmaSenha.Enabled = true;
+                cbbTipoDeAcesso.Enabled = true;
             }
             else
             {
                 txtUsuario.Enabled = false;
                 txtSenha.Enabled = false;
                 txtConfirmaSenha.Enabled = false;
+                cbbTipoDeAcesso.Enabled = false;
             }
         }
     }

@@ -507,28 +507,27 @@ namespace GPSFA_WinForms
 
         //    }
 
-        //    private void btnDoacao_Click(object sender, EventArgs e)
-        //    {
-        //        frmOrigemDoacao abrir = new frmOrigemDoacao();
-        //        abrir.Show();
-        //        this.Hide();
 
-        //    }
+        private void btnDoacao_Click(object sender, EventArgs e)
+        {
+            frmOrigemDoacao abrir = new frmOrigemDoacao();
+            abrir.Show();
+            this.Hide();
+        }
 
-        //    private void btnLista_Click(object sender, EventArgs e)
-        //    {
-        //        frmListaProdutos abrir = new frmListaProdutos();
-        //        abrir.Show();
-        //        this.Hide();
+        private void btnLista_Click(object sender, EventArgs e)
+        {
+            frmListaProdutos abrir = new frmListaProdutos();
+            abrir.Show();
+            this.Hide();
+        }
 
-        //    }
-
-        //    private void btnMedida_Click(object sender, EventArgs e)
-        //    {
-        //        frmUnidadeMedida abrir = new frmUnidadeMedida();
-        //        abrir.Show();
-        //        this.Hide();
-        //    }       
+        private void btnMedida_Click(object sender, EventArgs e)
+        {
+            frmUnidadeMedida abrir = new frmUnidadeMedida();
+            abrir.Show();
+            this.Hide();
+        }
 
         //    private void cbbDescricao_SelectedIndexChanged(object sender, EventArgs e)
         //    {

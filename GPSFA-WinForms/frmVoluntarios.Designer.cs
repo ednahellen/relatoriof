@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmVoluntarios));
             this.gpbCamposDoProduto = new System.Windows.Forms.GroupBox();
+            this.cbbTipoDeAcesso = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.txtConfirmaSenha = new System.Windows.Forms.TextBox();
             this.lblSenha = new System.Windows.Forms.Label();
@@ -67,8 +69,6 @@
             this.btnNovo = new System.Windows.Forms.Button();
             this.pnlDadosProdutos = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cbbTipoDeAcesso = new System.Windows.Forms.ComboBox();
             this.gpbCamposDoProduto.SuspendLayout();
             this.pnlCrud.SuspendLayout();
             this.pnlDadosProdutos.SuspendLayout();
@@ -112,6 +112,28 @@
             this.gpbCamposDoProduto.Size = new System.Drawing.Size(1214, 453);
             this.gpbCamposDoProduto.TabIndex = 0;
             this.gpbCamposDoProduto.TabStop = false;
+            // 
+            // cbbTipoDeAcesso
+            // 
+            this.cbbTipoDeAcesso.FormattingEnabled = true;
+            this.cbbTipoDeAcesso.Items.AddRange(new object[] {
+            "USER",
+            "ADMIN"});
+            this.cbbTipoDeAcesso.Location = new System.Drawing.Point(876, 393);
+            this.cbbTipoDeAcesso.Name = "cbbTipoDeAcesso";
+            this.cbbTipoDeAcesso.Size = new System.Drawing.Size(218, 35);
+            this.cbbTipoDeAcesso.TabIndex = 95;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.Black;
+            this.label3.Location = new System.Drawing.Point(871, 361);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(194, 29);
+            this.label3.TabIndex = 94;
+            this.label3.Text = "Tipo de acesso";
             // 
             // label4
             // 
@@ -564,28 +586,6 @@
             this.label2.TabIndex = 90;
             this.label2.Text = "Gerenciar Voluntário";
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(871, 361);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(194, 29);
-            this.label3.TabIndex = 94;
-            this.label3.Text = "Tipo de acesso";
-            // 
-            // cbbTipoDeAcesso
-            // 
-            this.cbbTipoDeAcesso.FormattingEnabled = true;
-            this.cbbTipoDeAcesso.Items.AddRange(new object[] {
-            "USER",
-            "ADMIN"});
-            this.cbbTipoDeAcesso.Location = new System.Drawing.Point(876, 393);
-            this.cbbTipoDeAcesso.Name = "cbbTipoDeAcesso";
-            this.cbbTipoDeAcesso.Size = new System.Drawing.Size(218, 35);
-            this.cbbTipoDeAcesso.TabIndex = 95;
-            // 
             // frmVoluntarios
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -597,6 +597,7 @@
             this.Controls.Add(this.gpbCamposDoProduto);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmVoluntarios";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Grupo Socorrista São Francisco de Assis - Gerenciar Voluntario";
             this.gpbCamposDoProduto.ResumeLayout(false);
             this.gpbCamposDoProduto.PerformLayout();
