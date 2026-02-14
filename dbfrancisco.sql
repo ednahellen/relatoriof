@@ -35,7 +35,7 @@ PRIMARY KEY(codVol)
 CREATE TABLE tbUsuarios(
 
 codUsu INT NOT NULL AUTO_INCREMENT,
-usuario VARCHAR(100) NOT NULL,
+usuario VARCHAR(100) NOT NULL UNIQUE,
 senha VARCHAR(100) NOT NULL,
 tipo ENUM('ADMIN','USER') DEFAULT 'USER',
 salt VARCHAR(64) NOT NULL,
@@ -180,11 +180,14 @@ FOREIGN KEY(codCli) REFERENCES tbClientes(codCli)
 INSERT INTO tbVoluntarios
 (nome, telCel, cpf, cep, rua, numero, complemento, bairro, cidade, estado)
 VALUES
-('Admin','0000000-0000','000.000.000-00','00000-000','Grupo Francisco','000','','Jd.Francisco','São Paulo','SP');
--- ('João Silva','1191111-1111','111.111.111-01','01001-000','Rua A','10','','Centro','São Paulo','SP'),
--- ('Maria Souza','1192222-2222','111.111.111-02','02002-000','Rua B','20','Apto 1','Bela Vista','São Paulo','SP'),
--- ('Carlos Pereira','1193333-3333','111.111.111-03','03003-000','Rua C','30','','Mooca','São Paulo','SP'),
--- ('Ana Costa','1194444-4444','111.111.111-04','04004-000','Rua D','40','Casa','Ipiranga','São Paulo','SP'),
+('Admin','0000000-0000','000.000.000-00','00000-000','Grupo Francisco','000','','Jd.Francisco','São Paulo','SP'),
+('João Silva','1191111-1111','111.111.111-01','01001-000','Rua A','10','','Centro','São Paulo','SP'),
+('Maria Souza','1192222-2222','111.111.111-02','02002-000','Rua B','20','Apto 1','Bela Vista','São Paulo','SP');
+INSERT INTO tbVoluntarios
+(nome, telCel, cpf, cep, rua, numero, complemento, bairro, cidade, estado, ativo)
+VALUES
+('Carlos Pereira','1193333-3333','111.111.111-03','03003-000','Rua C','30','','Mooca','São Paulo','SP', 0),
+('Ana Costa','1194444-4444','111.111.111-04','04004-000','Rua D','40','Casa','Ipiranga','São Paulo','SP', 0);
 -- ('Lucas Lima','1195555-5555','111.111.111-05','05005-000','Rua E','50','','Santana','São Paulo','SP'),
 -- ('Fernanda Rocha','1196666-6666','111.111.111-06','06006-000','Rua F','60','Fundos','Penha','São Paulo','SP'),
 -- ('Bruno Martins','1197777-7777','111.111.111-07','07007-000','Rua G','70','','Tatuapé','São Paulo','SP'),
@@ -207,11 +210,14 @@ VALUES
 INSERT INTO tbUsuarios
 (usuario, senha, tipo, salt, codVol)
 VALUES
-('admin','123','ADMIN','salt01',1);
--- ('joao.silva','123','USER','salt02',2),
--- ('maria.souza','123','USER','salt03',3),
--- ('carlos.pereira','123','USER','salt04',4),
--- ('ana.costa','123','USER','salt05',5),
+('admin','123','ADMIN','salt01',1),
+('joao.silva','123','USER','salt02',2),
+('maria.souza','123','USER','salt03',3);
+INSERT INTO tbUsuarios
+(usuario, senha, tipo, salt, codVol, ativo)
+VALUES
+('carlos.pereira','123','USER','salt04',4,0),
+('ana.costa','123','USER','salt05',5,0);
 -- ('lucas.lima','123','USER','salt06',6),
 -- ('fernanda.rocha','123','USER','salt07',7),
 -- ('bruno.martins','123','USER','salt08',8),
