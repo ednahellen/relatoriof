@@ -560,11 +560,12 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
         }
 
 
-        //    -----    Chamada de métodos nos botões da janela / tratamento de erros 
+        //    -----    Eventos diversos de botões e outros recursos da janela 
 
-        // Habilita o botão cadastrar e campos da janela para criação de um novo voluntário
+        // Evento de clique do botão "Novo"
         private void btnNovo_Click(object sender, EventArgs e)
         {
+            // Habilita os campos de voluntário e check box de campos de usuário
             habilitarCamposVoluntario();
             btnCadastrar.Enabled = true;
             btnNovo.Enabled = false;
@@ -572,11 +573,11 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
             txtNomeVoluntario.Focus();
         }
 
-        // Com base no preenchimento dos campos da janela, faz o cadastro de voluntário com ou sem usuário
+        // Evento de clique do botão de cadastrar
         private void btnCadastrar_Click(object sender, EventArgs e)
         {
             //    -----    Primeira etapa de validações -> dados de voluntário
-            // valida se algum dos campos de voluntário, estão preenchidos
+            // Valida se algum dos campos de voluntário, estão preenchidos
             if (txtNomeVoluntario.Text.Equals("") || mskTelefone.Text.Equals("") || mskCpf.Text.Equals("") || mskCep.Text.Equals("") || txtRua.Text.Equals("") || txtNumero.Text.Equals("") || txtBairro.Text.Equals("") || txtCidade.Text.Equals("")) // Falta adicionar mais validações
             {
                 MessageBox.Show("Preencha os campos vazios para continuar!", "Mensagem do sistema",
@@ -587,18 +588,20 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
             }
             
             
-            //    -----    Segunda etapa de validações -> existência de voluntário / dados de usuário
+            //    -----    Segunda etapa de validações -> Os campos do voluntário estão preenchidos
             else
             {
-                // Valida se a edição de usuário está desabilitada (e campos de usuário vazios) para CADASTRAR APENAS O VOLUNTÁRIO
+                // Valida se a edição de usuário está desabilitada e limpa seus campos> CADASTRAR APENAS O VOLUNTÁRIO
                 if (ckbEditarUsuario.Checked == false)
                 {
                     limparCamposUsuario();
 
+                    // Mensagem de confirmação para cadastrar voluntário sem usuário
                     DialogResult resultado = MessageBox.Show("O voluntário será cadastrado SEM UM USUÁRIO.\nDeseja continuar?\n\nObs: A opção 'Editar usuário' deve estar habilitada", "Mensagem do sistema",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);
 
+                    // Se o usuário clicar em SIM > Segue com a criação de voluntário sem usuário
                     if (resultado == DialogResult.Yes)
                     {
                         //  Valida se o voluntário já existe, com base no nome e cpf
@@ -616,10 +619,13 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                             btnNovo.Enabled = true;
                         }
                         
+                        // Segue por aqui caso não exista registro do voluntário
                         else
                         {
+                            // Faz a criação de registro na tabela de voluntários com os dados da janela
                             int resp = cadastrarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString());
 
+                            // Se houver sucesso na criação do registro retorna mensagem de sucesso
                             if (resp.Equals(1))
                             {
                                 MessageBox.Show("Voluntário cadastrado com sucesso!", "Mensagem do sistema",
@@ -635,9 +641,10 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                                 btnNovo.Enabled = true;
                                 btnNovo.Focus();
                             }
-                            else
+                            else 
                             {
-                                MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
+                                // Se houver alguma falha na criação do registro é retornada mensagem de erro
+                                MessageBox.Show("Erro ao Cadastrar Voluntário!", "Mensagem do sistema",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Error,
                                     MessageBoxDefaultButton.Button1);
@@ -652,16 +659,21 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                             }
                         }
                     }
+
+                    // Caso o usuário selecione NÃO na mensagem de confirmação para criação de voluntário sem usuário,
+                    // o sistema não segue com a criação do voluntário
                     else if (resultado == DialogResult.No)
                     {
+                        // Após isso, é colocado em foco o check box para habilitar a edição de dados de usuário
                         ckbEditarUsuario.Focus();
                         return;
                     }
                 }
 
-                //    -----    Terceira etapa de validações - Para cadastro de voluntário + Usuário
+                //    -----    Terceira etapa de validações - Para cadastro de Voluntário + Usuário
                 else
                 {
+                    // Atribui o valor TRUE ou FALSE para a variável global que guarda o estado do usuário (se ativo ou não) com base no radio button selecionado
                     if (rdbtnUsuarioAtivo.Checked)
                     {
                         isUsuarioActive = true;
@@ -672,7 +684,7 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                     }
 
                     // Valida se os campos de usuário estão preenchidos
-                    if (txtUsuario.Text.Equals("") || txtSenha.Text.Equals("") || txtConfirmaSenha.Text.Equals("") || cbbTipoDeAcesso.SelectedItem == null)
+                    if (txtUsuario.Text.Equals("") || txtSenha.Text.Equals("") || txtConfirmaSenha.Text.Equals("") || cbbTipoDeAcesso.SelectedItem == null || (!rdbtnUsuarioAtivo.Checked && !rdbtnUsuarioDesativado.Checked))
                     {
                         MessageBox.Show("Preencha os campos vazios para continuar!", "Mensagem do sistema",
                             MessageBoxButtons.OK,
@@ -680,7 +692,7 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                             MessageBoxDefaultButton.Button1);
                     }
 
-                    //
+                    // Se todos os campos de usuário estiverem preenchidos ou selecionados segue para a próxima validação
                     else
                     {
                         // Confirmação para cadastrar voluntário com usuário desativado
@@ -690,6 +702,7 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                                 MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Question);
 
+                            // Segue com o cadastro de voluntário + usuário desativado
                             if (resultado == DialogResult.Yes)
                             {
                                 //  Valida se o voluntário já existe, com base no nome e cpf
@@ -707,7 +720,8 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                                     btnNovo.Enabled = true;
                                 }
                                 else
-                                {
+                                {   
+                                    // Se o voluntário não tiver registro no banco, o sistema segue validando se as senhas são iguais
                                     if (!txtConfirmaSenha.Text.Equals(txtSenha.Text))
                                     {
                                         MessageBox.Show("As senhas devem ser iguais!", "Mensagem do sistema",
@@ -720,13 +734,19 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                                         // realiza o cadastro do voluntário e usuário - mas com o usuário desativado
                                         int volResp = cadastrarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString());
 
-                                        if (volResp == 1)
+                                        // Retorno se o cadastro de voluntário foi bem sucedido
+                                        if (volResp == 1) 
                                         {
+                                            // Busca o código do voluntário cadastrado para criação do usuário
                                             buscarCodVolPorCPF(mskCpf.Text);
+
+                                            // Faz a criação do usuário com os dados dos campos e código do voluntário registrado salvo globalmente
                                             int userResp = cadastrarUsuario(isUsuarioActive, txtUsuario.Text, txtSenha.Text, cbbTipoDeAcesso.SelectedItem.ToString(), codVolSelected);
 
+                                            // Retorno se a criação de usuário for bem sucedida
                                             if (userResp == 1)
                                             {
+                                                // Mensagem de sucesso na criação de voluntário e usuário
                                                 MessageBox.Show("Voluntário cadastrado e Usuário criado!", "Mensagem do sistema",
                                                     MessageBoxButtons.OK,
                                                     MessageBoxIcon.Information,
@@ -744,6 +764,7 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
 
                                             else
                                             {
+                                                // Mensagem de erro na criação do usuário
                                                 MessageBox.Show("Erro ao cadastrar Usuário!", "Mensagem do sistema",
                                                 MessageBoxButtons.OK,
                                                 MessageBoxIcon.Error,
@@ -760,6 +781,7 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                                         }
                                         else
                                         {
+                                            // Mensagem de erro na criação do Voluntário
                                             MessageBox.Show("Erro ao cadastrar Voluntário!", "Mensagem do sistema",
                                             MessageBoxButtons.OK,
                                             MessageBoxIcon.Error,
@@ -776,6 +798,9 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                                     }
                                 }
                             }
+
+                            // Caso o usuário selecione a opção NÃO para criação de voluntário + usuário desativado,
+                            // o sistema retorna para a janela para que sejam aplicadas alterações
                             else if (resultado == DialogResult.No)
                             {
                                 rdbtnUsuarioAtivo.Focus();
@@ -786,6 +811,7 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                         // realiza o cadastro do voluntário e usuário - mas com o usuário ativo > isUsuarioActive == true
                         else
                         {
+                            // Busca se já há registro de voluntário no banco com base em nome e cpf
                             if (buscarVoluntarioPorDescricao(txtNomeVoluntario.Text, mskCpf.Text).Equals(1))
                             {
                                 MessageBox.Show("Este Voluntário já existe!", "Mensagem do sistema",
@@ -801,6 +827,7 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                             }
                             else
                             {
+                                // Valida se as senhas são iguais
                                 if (!txtConfirmaSenha.Text.Equals(txtSenha.Text))
                                 {
                                     MessageBox.Show("As senhas devem ser iguais!", "Mensagem do sistema",
@@ -810,13 +837,19 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                                 }
                                 else
                                 {
+                                    // Realiza a criação de Voluntário no banco
                                     int volResp = cadastrarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString());
 
+                                    // Se a criação do voluntário for bem sucedida
                                     if (volResp == 1)
                                     {
+                                        // Faz a busca do código do voluntário criado utilizando o cpf
                                         buscarCodVolPorCPF(mskCpf.Text);
+
+                                        // Realiza a criação do usuário a partir do código do voluntário capturado
                                         int userResp = cadastrarUsuario(isUsuarioActive, txtUsuario.Text, txtSenha.Text, cbbTipoDeAcesso.SelectedItem.ToString(), codVolSelected);
 
+                                        // Se a criação do usuário for bem sucedida - é criado voluntário + usuário ativo
                                         if (userResp == 1)
                                         {
                                             MessageBox.Show("Voluntário cadastrado e Usuário criado!", "Mensagem do sistema",
@@ -836,6 +869,7 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
 
                                         else
                                         {
+                                            // Mensagem de erro na criação de usuário
                                             MessageBox.Show("Erro ao cadastrar Usuário!", "Mensagem do sistema",
                                             MessageBoxButtons.OK,
                                             MessageBoxIcon.Error,
@@ -852,6 +886,7 @@ private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                                     }
                                     else
                                     {
+                                        // Mensagem de erro na criação de voluntário
                                         MessageBox.Show("Erro ao Cadastrar Voluntário!", "Mensagem do sistema",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error,
