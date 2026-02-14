@@ -56,10 +56,10 @@ namespace GPSFA_WinForms
         int codVolSelected = 0; // Código do voluntário
         bool isVoluntarioActive; // Estado do voluntário
         bool isUsuarioActive; // Estado do usuário do voluntário
+        bool usuarioEncontrado; // Guarda globalmente se há usuário associado ao voluntário 
 
 
         //    -----    Métodos para ações CRUD e queries do banco de dados
-
         // Busca os dados de um voluntário através do código - para busca de dados exata
         private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                 {
@@ -99,8 +99,6 @@ namespace GPSFA_WinForms
         // Busca dados de um usuario com base no código do voluntário
         private void buscarUsuarioPorCodVol(int codVoluntario)
         {
-            bool usuarioEncontrado = false; // variavel local para registrar se o usuário foi encontrado
-
             using (MySqlCommand comm = new MySqlCommand())
             {
                 comm.CommandText = $"SELECT * FROM tbUsuarios WHERE codVol = @codVol;";
@@ -249,82 +247,6 @@ namespace GPSFA_WinForms
             }
             return 0;
         }
-
-        // Edita os dados de um voluntário na tabela de voluntários e os atualiza no seu registro
-        public int editarVoluntario(string nome, string telCel, string cpf, string cep, string rua, string numero, string complemento, string bairro, string cidade, string estado, string usuario, string senha, int codVol)
-        {
-            MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "UPDATE tbVoluntarios SET nome = @nome, telCel = @telCel, cpf = @cpf, cep = @cep, rua = @rua, numero = @numero, complemento  = @complemento, bairro = @bairro, cidade = @cidade, estado = @estado, usuario = @usuario, senha = @senha WHERE codVol = @codVol;";
-            comm.CommandType = CommandType.Text;
-
-            comm.Parameters.Clear();
-            comm.Parameters.Add("@nome", MySqlDbType.VarChar, 20).Value = nome;
-            comm.Parameters.Add("@telCel", MySqlDbType.VarChar, 20).Value = telCel;
-            comm.Parameters.Add("@cpf", MySqlDbType.VarChar, 20).Value = cpf;
-            comm.Parameters.Add("@cep", MySqlDbType.VarChar, 20).Value = cep;
-            comm.Parameters.Add("@rua", MySqlDbType.VarChar, 20).Value = rua;
-            comm.Parameters.Add("@numero", MySqlDbType.VarChar, 20).Value = numero;
-            comm.Parameters.Add("@complemento", MySqlDbType.VarChar, 20).Value = complemento;
-            comm.Parameters.Add("@bairro", MySqlDbType.VarChar, 20).Value = bairro;
-            comm.Parameters.Add("@cidade", MySqlDbType.VarChar, 20).Value = cidade;
-            comm.Parameters.Add("@estado", MySqlDbType.VarChar, 20).Value = estado;
-            comm.Parameters.Add("@usuario", MySqlDbType.VarChar, 20).Value = usuario;
-
-            //comm.Parameters.Add("@senha", MySqlDbType.VarChar, 20).Value = senha;
-            //comm.Parameters.Add("@codVol", MySqlDbType.VarChar, 20).Value = codVol;
-
-            comm.Connection = DataBaseConnection.OpenConnection();
-
-            try
-            {
-                int resp = comm.ExecuteNonQuery();
-
-                DataBaseConnection.CloseConnection();
-
-                return resp;
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Erro ao editar dados do Voluntário!", "Mensagem do sistema",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1);
-            }
-            return 0;
-        }
-        
-        // Apaga os dados do registro do voluntário, mas não apaga o registro na tabela de voluntários
-        public int excluirDadosVoluntario(int codVol)
-        {
-            MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "UPDATE tbVoluntarios SET  telCel = '', cpf = '', cep = '', rua = '', numero = '', complemento  = '', bairro = '', cidade = '', estado = '', ativo = 0 WHERE codVol = @codVol;";
-            
-            //comm.CommandText = "UPDATE tbVoluntarios SET  telCel = '', cpf = '', cep = '', rua = '', numero = '', complemento  = '', bairro = '', cidade = '', estado = '' WHERE codVol = @codVol;";
-
-            comm.CommandType = CommandType.Text;
-
-            comm.Parameters.Clear();
-            comm.Parameters.Add("@codVol", MySqlDbType.VarChar, 20).Value = codVol;
-
-            comm.Connection = DataBaseConnection.OpenConnection();
-
-            try
-            {
-                int resp = comm.ExecuteNonQuery();
-
-                DataBaseConnection.CloseConnection();
-
-                return resp;
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Erro ao editar dados do Voluntário!", "Mensagem do sistema",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1);
-            }
-            return 0;
-        }
         
         // Cria um novo usuário associado e o associa a um voluntário por meio do código dele
         public int cadastrarUsuario(bool isActive, string usuario, string senha, string tipoAcesso, int codVol)
@@ -360,16 +282,23 @@ namespace GPSFA_WinForms
             return 0;
         }
 
-        // Edita os dados de um usuário com base no código do voluntário
-        public int editarUsuario(int codVol, string usuario, string senha)
+        // Edita os dados de um voluntário e os atualiza no seu registro
+        public int editarVoluntario(string nome, string telCel, string cpf, string cep, string rua, string numero, string complemento, string bairro, string cidade, string estado, int codVol)
         {
             MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "UPDATE tbUsuarios SET usuario = @usuario, senha = @senha WHERE codVol = @codVol";
+            comm.CommandText = "UPDATE tbVoluntarios SET nome = @nome, telCel = @telCel, cpf = @cpf, cep = @cep, rua = @rua, numero = @numero, complemento  = @complemento, bairro = @bairro, cidade = @cidade, estado = @estado WHERE codVol = @codVol;";
             comm.CommandType = CommandType.Text;
-
             comm.Parameters.Clear();
-            comm.Parameters.Add("@usuario", MySqlDbType.VarChar, 20).Value = usuario;
-            comm.Parameters.Add("@senha", MySqlDbType.VarChar, 20).Value = senha;
+            comm.Parameters.Add("@nome", MySqlDbType.VarChar, 20).Value = nome;
+            comm.Parameters.Add("@telCel", MySqlDbType.VarChar, 20).Value = telCel;
+            comm.Parameters.Add("@cpf", MySqlDbType.VarChar, 20).Value = cpf;
+            comm.Parameters.Add("@cep", MySqlDbType.VarChar, 20).Value = cep;
+            comm.Parameters.Add("@rua", MySqlDbType.VarChar, 20).Value = rua;
+            comm.Parameters.Add("@numero", MySqlDbType.VarChar, 20).Value = numero;
+            comm.Parameters.Add("@complemento", MySqlDbType.VarChar, 20).Value = complemento;
+            comm.Parameters.Add("@bairro", MySqlDbType.VarChar, 20).Value = bairro;
+            comm.Parameters.Add("@cidade", MySqlDbType.VarChar, 20).Value = cidade;
+            comm.Parameters.Add("@estado", MySqlDbType.VarChar, 20).Value = estado;
             comm.Parameters.Add("@codVol", MySqlDbType.VarChar, 20).Value = codVol;
 
             comm.Connection = DataBaseConnection.OpenConnection();
@@ -391,11 +320,77 @@ namespace GPSFA_WinForms
             }
             return 0;
         }
-    
+
+        // Edita os dados de um usuário com base no código do voluntário
+        public int editarUsuario(bool isActive, string usuario, string senha, string tipoAcesso, int codVol)
+        {
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = "UPDATE tbUsuarios SET usuario = @usuario, senha = @senha, tipo = @tipo, ativo = @ativo WHERE codVol = @codVol";
+            comm.CommandType = CommandType.Text;
+
+            comm.Parameters.Clear(); 
+            comm.Parameters.Add("@usuario", MySqlDbType.VarChar, 20).Value = usuario;
+            comm.Parameters.Add("@senha", MySqlDbType.VarChar, 20).Value = senha;
+            comm.Parameters.Add("@tipo", MySqlDbType.VarChar, 20).Value = tipoAcesso;
+            comm.Parameters.Add("@ativo", MySqlDbType.Byte).Value = isActive;
+            comm.Parameters.Add("@codVol", MySqlDbType.VarChar, 20).Value = codVol;
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+
+            try
+            {
+                int resp = comm.ExecuteNonQuery();
+
+                DataBaseConnection.CloseConnection();
+
+                return resp;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Erro ao editar dados do Voluntário!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+            }
+            return 0;
+        }
+
+        // Apaga os dados do registro do voluntário, mas não apaga o registro na tabela de voluntários
+        public int excluirDadosVoluntario(int codVol)
+        {
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = "UPDATE tbVoluntarios SET  telCel = '', cpf = '', cep = '', rua = '', numero = '', complemento  = '', bairro = '', cidade = '', estado = '', ativo = 0 WHERE codVol = @codVol;";
+            
+            //comm.CommandText = "UPDATE tbVoluntarios SET  telCel = '', cpf = '', cep = '', rua = '', numero = '', complemento  = '', bairro = '', cidade = '', estado = '' WHERE codVol = @codVol;";
+
+            comm.CommandType = CommandType.Text;
+
+            comm.Parameters.Clear();
+            comm.Parameters.Add("@codVol", MySqlDbType.VarChar, 20).Value = codVol;
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+
+            try
+            {
+                int resp = comm.ExecuteNonQuery();
+
+                DataBaseConnection.CloseConnection();
+
+                return resp;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Erro ao editar dados do Voluntário!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+            }
+            return 0;
+        }
+        
 
 
         //    -----    Métodos para limpeza de dados da janela
-
         // Limpa somente os campos de voluntario
         private void limparCamposVoluntario()
         {
@@ -430,7 +425,6 @@ namespace GPSFA_WinForms
 
 
         //    -----    Metodos para desabilitar ou habilitar campos da janela
-        
         // Desabilita botões da janela
         private void desativarBotoes()
         {
@@ -499,7 +493,6 @@ namespace GPSFA_WinForms
 
 
         //    -----    Métodos para integrações com APIs externas
-
         // Integração com API do ViaCep para buscar endereço através do CEP
         private async void buscarEnderecoPorCep()
         {
@@ -550,7 +543,7 @@ namespace GPSFA_WinForms
         }
 
         // Seleciona um estado da lista, com base na UF passada no método
-        private void SelecionarEstadoPorUF(string uf) 
+        private void SelecionarEstadoPorUF(string uf)
         {
             if (string.IsNullOrWhiteSpace(uf))
                 return;
@@ -575,7 +568,6 @@ namespace GPSFA_WinForms
 
 
         //    -----    Eventos diversos de botões e outros recursos da janela 
-
         // Evento de clique do botão "Novo"
         private void btnNovo_Click(object sender, EventArgs e)
         {
@@ -591,7 +583,7 @@ namespace GPSFA_WinForms
         private void btnCadastrar_Click(object sender, EventArgs e)
         {
             //    -----    Primeira etapa de validações -> dados de voluntário
-            // Valida se algum dos campos de voluntário, estão preenchidos
+            // Valida se algum dos campos de voluntário está vazio
             if (txtNomeVoluntario.Text.Equals("") || mskTelefone.Text.Equals("") || mskCpf.Text.Equals("") || mskCep.Text.Equals("") || txtRua.Text.Equals("") || txtNumero.Text.Equals("") || txtBairro.Text.Equals("") || txtCidade.Text.Equals("")) // Falta adicionar mais validações
             {
                 MessageBox.Show("Preencha os campos vazios para continuar!", "Mensagem do sistema",
@@ -611,7 +603,7 @@ namespace GPSFA_WinForms
                     limparCamposUsuario();
 
                     // Mensagem de confirmação para cadastrar voluntário sem usuário
-                    DialogResult resultado = MessageBox.Show("O voluntário será cadastrado SEM UM USUÁRIO.\nDeseja continuar?\n\nObs: A opção 'Editar usuário' deve estar habilitada", "Mensagem do sistema",
+                    DialogResult resultado = MessageBox.Show("O voluntário será cadastrado SEM UM USUÁRIO.\nDeseja continuar?\n\nObs: A opção 'Editar usuário' deve estar habilitada caso queira criar um usuário", "Mensagem do sistema",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);
 
@@ -925,45 +917,480 @@ namespace GPSFA_WinForms
         // Após pesquisar um voluntário e instânciar ele, permite alterar os dados
         private void btnAlterar_Click(object sender, EventArgs e)
         {
+            //    -----    Primeira etapa de validações -> dados de voluntário
+            // Valida se algum dos campos de voluntário está vazio
             if (txtNomeVoluntario.Text.Equals("") || mskTelefone.Text.Equals("") || mskCpf.Text.Equals("") || mskCep.Text.Equals("") || txtRua.Text.Equals("") || txtNumero.Text.Equals("") || txtBairro.Text.Equals("") || txtCidade.Text.Equals("")) // Falta adicionar mais validações
             {
-                MessageBox.Show("Favor inserir valores!", "Mensagem do sistema",
+                MessageBox.Show("Preencha os campos vazios para continuar!", "Mensagem do sistema",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information,
                     MessageBoxDefaultButton.Button1);
                 txtNomeVoluntario.Focus();
             }
+
+
+            //    -----    Segunda etapa de validações -> Os campos do voluntário estão preenchidos
             else
             {
-                int resp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString(), txtUsuario.Text, txtSenha.Text, codVolSelected);
-
-                if (resp.Equals(1))
+                // Valida se a edição de usuário está desabilitada e se não há usuário associado ao voluntário> CADASTRAR APENAS O VOLUNTÁRIO
+                if (ckbEditarUsuario.Checked == false && usuarioEncontrado == false)
                 {
-                    MessageBox.Show("dados do voluntário alterados com sucesso!", "Mensagem do sistema",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1);
-                    desativarBotoes();
-                    desabilitarCamposVoluntario();
-                    //desabilitarCamposUsuario();
-                    desativarBotoes();
-                    btnNovo.Enabled = true;
-                    btnNovo.Focus();
+                    limparCamposUsuario();
+
+                    // Mensagem de confirmação para cadastrar voluntário sem usuário
+                    DialogResult resultado = MessageBox.Show("O voluntário terá seus dados atualizados SEM UM USUÁRIO existente.\nDeseja continuar?\n\nObs: A opção 'Editar usuário' deve estar habilitada caso queira criar um usuário", "Mensagem do sistema",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    // Se o usuário clicar em SIM > Segue com a criação de voluntário sem usuário
+                    if (resultado == DialogResult.Yes)
+                    {
+                        // Faz a edição dos dados na linha referente ao voluntário
+                        int updtVolResp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtNumero.Text, txtRua.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString(), codVolSelected);
+
+                        // Se houver sucesso na edição do registro retorna mensagem de sucesso
+                        if (updtVolResp.Equals(1))
+                        {
+                            MessageBox.Show("Dados do Voluntário atualizados com sucesso!", "Mensagem do sistema",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information,
+                                MessageBoxDefaultButton.Button1);
+                            limparCamposVoluntario();
+                            desabilitarCamposVoluntario();
+                            limparCamposUsuario();
+                            desabilitarCamposUsuario();
+                            desativarBotoes();
+                            desativarBotoes();
+                            btnNovo.Enabled = true;
+                            btnNovo.Focus();
+                        }
+                        else
+                        {
+                            // Se houver alguma falha na criação do registro é retornada mensagem de erro
+                            MessageBox.Show("Erro ao atualizar dados do Voluntário!", "Mensagem do sistema",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error,
+                                MessageBoxDefaultButton.Button1);
+
+                            limparCamposVoluntario();
+                            desabilitarCamposVoluntario();
+                            limparCamposUsuario();
+                            desabilitarCamposUsuario();
+                            desativarBotoes();
+                            btnNovo.Enabled = true;
+                            btnNovo.Focus();
+                        }
+                    }
+                    // Caso o usuário selecione NÃO na mensagem de confirmação para criação de voluntário sem usuário,
+                    // o sistema não segue com a edição no registro do voluntário
+                    else if (resultado == DialogResult.No)
+                    {
+                        // Após isso, é colocado em foco o check box para habilitar a edição de dados de usuário
+                        ckbEditarUsuario.Focus();
+                        return;
+                    }
                 }
-                else
-                {
-                    MessageBox.Show("Erro ao alterar dados!", "Mensagem do sistema",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error,
-                        MessageBoxDefaultButton.Button1);
 
-                    limparCamposVoluntario();
-                    desabilitarCamposVoluntario();
-                    desativarBotoes();
-                    btnNovo.Enabled = true;
+                //    -----    Terceira etapa de validações - Para Atualização de dados do Voluntário + Criação de Usuário
+                else if (ckbEditarUsuario.Checked && usuarioEncontrado == false)
+                {
+                    // Atribui o valor TRUE ou FALSE para a variável global que guarda o estado do usuário (se ativo ou não) com base no radio button selecionado
+                    if (rdbtnUsuarioAtivo.Checked)
+                    {
+                        isUsuarioActive = true;
+                    }
+                    else if (rdbtnUsuarioDesativado.Checked)
+                    {
+                        isUsuarioActive = false;
+                    }
+
+                    // Valida se os campos de usuário estão preenchidos
+                    if (txtUsuario.Text.Equals("") || txtSenha.Text.Equals("") || txtConfirmaSenha.Text.Equals("") || cbbTipoDeAcesso.SelectedItem == null || (!rdbtnUsuarioAtivo.Checked && !rdbtnUsuarioDesativado.Checked))
+                    {
+                        MessageBox.Show("Preencha os campos vazios para continuar!", "Mensagem do sistema",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information,
+                            MessageBoxDefaultButton.Button1);
+                    }
+
+                    // Se todos os campos de usuário estiverem preenchidos ou selecionados segue para a próxima validação
+                    else
+                    {
+                        // Confirmação para editar voluntário e criar usuário desativado
+                        if (isUsuarioActive == false)
+                        {
+                            DialogResult resultado = MessageBox.Show("O usuário do voluntário será criado como DESATIVADO.\nDeseja continuar?", "Mensagem do sistema",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question);
+
+                            // Segue com o cadastro de voluntário + Criação de usuário desativado
+                            if (resultado == DialogResult.Yes)
+                            {
+                                // O sistema valida se as senhas são iguais
+                                if (!txtConfirmaSenha.Text.Equals(txtSenha.Text))
+                                {
+                                    MessageBox.Show("As senhas devem ser iguais!", "Mensagem do sistema",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Warning,
+                                        MessageBoxDefaultButton.Button1);
+                                }
+                                else
+                                {
+                                    // realiza a edição dos dados do voluntário
+                                    int updtVolResp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString(), codVolSelected);
+
+                                    // Retorno se a edição de dados foi bem sucedido
+                                    if (updtVolResp == 1)
+                                    {
+                                        // Faz a criação do usuário com os dados dos campos e código do voluntário registrado salvo globalmente
+                                        int userResp = cadastrarUsuario(isUsuarioActive, txtUsuario.Text, txtSenha.Text, cbbTipoDeAcesso.SelectedItem.ToString(), codVolSelected);
+
+                                        // Retorno se a criação de usuário for bem sucedida
+                                        if (userResp == 1)
+                                        {
+                                            // Mensagem de sucesso na criação de voluntário e usuário
+                                            MessageBox.Show("Dados do Voluntário atualizados e Usuário criado!", "Mensagem do sistema",
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Information,
+                                                MessageBoxDefaultButton.Button1);
+
+                                            limparCamposVoluntario();
+                                            desabilitarCamposVoluntario();
+                                            limparCamposUsuario();
+                                            desabilitarCamposUsuario();
+                                            desativarBotoes();
+                                            desativarBotoes();
+                                            btnNovo.Enabled = true;
+                                            btnNovo.Focus();
+                                        }
+
+                                        else
+                                        {
+                                            // Mensagem de erro na criação do usuário
+                                            MessageBox.Show("Erro ao criar Usuário!", "Mensagem do sistema",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Error,
+                                            MessageBoxDefaultButton.Button1);
+
+                                            limparCamposVoluntario();
+                                            desabilitarCamposVoluntario();
+                                            limparCamposUsuario();
+                                            desabilitarCamposUsuario();
+                                            desativarBotoes();
+                                            btnNovo.Enabled = true;
+                                            btnNovo.Focus();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Mensagem de erro na atualização do Voluntário
+                                        MessageBox.Show("Erro ao atualizar dados do Voluntário!", "Mensagem do sistema",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error,
+                                        MessageBoxDefaultButton.Button1);
+
+                                        limparCamposVoluntario();
+                                        desabilitarCamposVoluntario();
+                                        limparCamposUsuario();
+                                        desabilitarCamposUsuario();
+                                        desativarBotoes();
+                                        btnNovo.Enabled = true;
+                                        btnNovo.Focus();
+                                    }
+                                }
+                            }
+
+                            // Caso o usuário selecione a opção NÃO para criação de voluntário + usuário desativado,
+                            // o sistema retorna para a janela para que sejam aplicadas alterações
+                            else if (resultado == DialogResult.No)
+                            {
+                                rdbtnUsuarioAtivo.Focus();
+                                return;
+                            }
+                        }
+
+                        // realiza a edição do voluntário e usuário - mas com o usuário ativo > isUsuarioActive == true
+                        else
+                        {
+
+                            // Valida se as senhas são iguais
+                            if (!txtConfirmaSenha.Text.Equals(txtSenha.Text))
+                            {
+                                MessageBox.Show("As senhas devem ser iguais!", "Mensagem do sistema",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning,
+                                    MessageBoxDefaultButton.Button1);
+                            }
+                            else
+                            {
+                                // Realiza a criação de Voluntário no banco
+                                int updtVolResp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString(), codVolSelected);
+
+                                // Se a criação do voluntário for bem sucedida
+                                if (updtVolResp == 1)
+                                {
+                                    // Faz a busca do código do voluntário criado utilizando o cpf
+                                    buscarCodVolPorCPF(mskCpf.Text);
+
+                                    // Realiza a criação do usuário a partir do código do voluntário capturado
+                                    int userResp = cadastrarUsuario(isUsuarioActive, txtUsuario.Text, txtSenha.Text, cbbTipoDeAcesso.SelectedItem.ToString(), codVolSelected);
+
+                                    // Se a criação do usuário for bem sucedida - é editado voluntário e criado um usuário ativo
+                                    if (userResp == 1)
+                                    {
+                                        MessageBox.Show("Dados do Voluntário atualizados e Usuário criado!", "Mensagem do sistema",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Information,
+                                            MessageBoxDefaultButton.Button1);
+
+                                        limparCamposVoluntario();
+                                        desabilitarCamposVoluntario();
+                                        limparCamposUsuario();
+                                        desabilitarCamposUsuario();
+                                        desativarBotoes();
+                                        desativarBotoes();
+                                        btnNovo.Enabled = true;
+                                        btnNovo.Focus();
+                                    }
+
+                                    else
+                                    {
+                                        // Mensagem de erro na criação de usuário
+                                        MessageBox.Show("Erro ao criar Usuário!", "Mensagem do sistema",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error,
+                                        MessageBoxDefaultButton.Button1);
+
+                                        limparCamposVoluntario();
+                                        desabilitarCamposVoluntario();
+                                        limparCamposUsuario();
+                                        desabilitarCamposUsuario();
+                                        desativarBotoes();
+                                        btnNovo.Enabled = true;
+                                        btnNovo.Focus();
+                                    }
+                                }
+                                else
+                                {
+                                    // Mensagem de erro na edição de dados do voluntário
+                                    MessageBox.Show("Erro ao atualizar dados do Voluntário!", "Mensagem do sistema",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error,
+                                    MessageBoxDefaultButton.Button1);
+
+                                    limparCamposVoluntario();
+                                    desabilitarCamposVoluntario();
+                                    limparCamposUsuario();
+                                    desabilitarCamposUsuario();
+                                    desativarBotoes();
+                                    btnNovo.Enabled = true;
+                                    btnNovo.Focus();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // -----    Quarta etapa de validações - Para Atualização de dados do Voluntário + Atualização de dados do seu Usuário encontrado
+                else if (ckbEditarUsuario.Checked && usuarioEncontrado == true)
+                {
+                    // Atribui o valor TRUE ou FALSE para a variável global que guarda o estado do usuário (se ativo ou não) com base no radio button selecionado
+                    if (rdbtnUsuarioAtivo.Checked)
+                    {
+                        isUsuarioActive = true;
+                    }
+                    else if (rdbtnUsuarioDesativado.Checked)
+                    {
+                        isUsuarioActive = false;
+                    }
+
+                    // Valida se os campos de usuário estão preenchidos
+                    if (txtUsuario.Text.Equals("") || txtSenha.Text.Equals("") || txtConfirmaSenha.Text.Equals("") || cbbTipoDeAcesso.SelectedItem == null || (!rdbtnUsuarioAtivo.Checked && !rdbtnUsuarioDesativado.Checked))
+                    {
+                        MessageBox.Show("Preencha os campos vazios para continuar!", "Mensagem do sistema",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information,
+                            MessageBoxDefaultButton.Button1);
+                    }
+
+                    // Se todos os campos de usuário estiverem preenchidos ou selecionados segue para a próxima validação
+                    else
+                    {
+                        // Confirmação para editar voluntário e criar usuário desativado
+                        if (isUsuarioActive == false)
+                        {
+                            DialogResult resultado = MessageBox.Show("O usuário do voluntário será DESATIVADO.\nDeseja continuar?", "Mensagem do sistema",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Question);
+
+                            // Segue com a edição de voluntário + Edição de usuário e o desativando
+                            if (resultado == DialogResult.Yes)
+                            {
+                                // O sistema valida se as senhas são iguais
+                                if (!txtConfirmaSenha.Text.Equals(txtSenha.Text))
+                                {
+                                    MessageBox.Show("As senhas devem ser iguais!", "Mensagem do sistema",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Warning,
+                                        MessageBoxDefaultButton.Button1);
+                                }
+                                else
+                                {
+                                    // realiza a edição dos dados do voluntário
+                                    int updtVolResp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString(), codVolSelected);
+
+                                    // Retorno se a edição de dados foi bem sucedido
+                                    if (updtVolResp == 1)
+                                    {
+                                        // Faz a edição do usuário com os dados dos campos e código do voluntário registrado salvo globalmente
+                                        int updtUserResp = editarUsuario(isUsuarioActive, txtUsuario.Text, txtSenha.Text, cbbTipoDeAcesso.SelectedItem.ToString(), codVolSelected);
+
+                                        // Retorno se a edição de usuário for bem sucedida
+                                        if (updtUserResp == 1)
+                                        {
+                                            // Mensagem de sucesso na criação de voluntário e usuário
+                                            MessageBox.Show("Dados do Voluntário e Usuário atualizados!", "Mensagem do sistema",
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Information,
+                                                MessageBoxDefaultButton.Button1);
+
+                                            limparCamposVoluntario();
+                                            desabilitarCamposVoluntario();
+                                            limparCamposUsuario();
+                                            desabilitarCamposUsuario();
+                                            desativarBotoes();
+                                            desativarBotoes();
+                                            btnNovo.Enabled = true;
+                                            btnNovo.Focus();
+                                        }
+
+                                        else
+                                        {
+                                            // Mensagem de erro na atualização do usuário
+                                            MessageBox.Show("Erro ao atualizar dados do Usuário!", "Mensagem do sistema",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Error,
+                                            MessageBoxDefaultButton.Button1);
+
+                                            limparCamposVoluntario();
+                                            desabilitarCamposVoluntario();
+                                            limparCamposUsuario();
+                                            desabilitarCamposUsuario();
+                                            desativarBotoes();
+                                            btnNovo.Enabled = true;
+                                            btnNovo.Focus();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Mensagem de erro na atualização do Voluntário
+                                        MessageBox.Show("Erro ao atualizar dados do Voluntário!", "Mensagem do sistema",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error,
+                                        MessageBoxDefaultButton.Button1);
+
+                                        limparCamposVoluntario();
+                                        desabilitarCamposVoluntario();
+                                        limparCamposUsuario();
+                                        desabilitarCamposUsuario();
+                                        desativarBotoes();
+                                        btnNovo.Enabled = true;
+                                        btnNovo.Focus();
+                                    }
+                                }
+                            }
+
+                            // Caso o usuário selecione a opção NÃO para atualização de voluntário + usuário desativado,
+                            // o sistema retorna para a janela para que sejam aplicadas alterações
+                            else if (resultado == DialogResult.No)
+                            {
+                                rdbtnUsuarioAtivo.Focus();
+                                return;
+                            }
+                        }
+
+                        // realiza a edição do voluntário e usuário - mas com o usuário ativo > isUsuarioActive == true
+                        else
+                        {
+
+                            // Valida se as senhas são iguais
+                            if (!txtConfirmaSenha.Text.Equals(txtSenha.Text))
+                            {
+                                MessageBox.Show("As senhas devem ser iguais!", "Mensagem do sistema",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Warning,
+                                    MessageBoxDefaultButton.Button1);
+                            }
+                            else
+                            {
+                                // Realiza a edição de Voluntário no banco
+                                int updtVolResp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString(), codVolSelected);
+
+                                // Se a edição do voluntário for bem sucedida
+                                if (updtVolResp == 1)
+                                {
+                                    // Faz a busca do código do voluntário criado utilizando o cpf
+                                    buscarCodVolPorCPF(mskCpf.Text);
+
+                                    // Realiza a edição do usuário a partir do código do voluntário capturado
+                                    int updtUserResp = editarUsuario(isUsuarioActive, txtUsuario.Text, txtSenha.Text, cbbTipoDeAcesso.SelectedItem.ToString(), codVolSelected);
+
+                                    // Se a edição do usuário for bem sucedida retorna mensagem de sucesso
+                                    if (updtUserResp == 1)
+                                    {
+                                        MessageBox.Show("Dados do Voluntário e Usuário atualizados!", "Mensagem do sistema",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Information,
+                                            MessageBoxDefaultButton.Button1);
+
+                                        limparCamposVoluntario();
+                                        desabilitarCamposVoluntario();
+                                        limparCamposUsuario();
+                                        desabilitarCamposUsuario();
+                                        desativarBotoes();
+                                        desativarBotoes();
+                                        btnNovo.Enabled = true;
+                                        btnNovo.Focus();
+                                    }
+
+                                    else
+                                    {
+                                        // Mensagem de erro na atualização de usuário
+                                        MessageBox.Show("Erro ao atualizar dados do Usuário!", "Mensagem do sistema",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error,
+                                        MessageBoxDefaultButton.Button1);
+
+                                        limparCamposVoluntario();
+                                        desabilitarCamposVoluntario();
+                                        limparCamposUsuario();
+                                        desabilitarCamposUsuario();
+                                        desativarBotoes();
+                                        btnNovo.Enabled = true;
+                                        btnNovo.Focus();
+                                    }
+                                }
+                                else
+                                {
+                                    // Mensagem de erro na edição de dados do voluntário
+                                    MessageBox.Show("Erro ao atualizar dados do Voluntário!", "Mensagem do sistema",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error,
+                                    MessageBoxDefaultButton.Button1);
+
+                                    limparCamposVoluntario();
+                                    desabilitarCamposVoluntario();
+                                    limparCamposUsuario();
+                                    desabilitarCamposUsuario();
+                                    desativarBotoes();
+                                    btnNovo.Enabled = true;
+                                    btnNovo.Focus();
+                                }
+                            }
+                        }
+                    }
                 }
             }
-
         }
 
         // Aciona os métodos de limpeza dos campos e "reseta" a janela - finalizado
