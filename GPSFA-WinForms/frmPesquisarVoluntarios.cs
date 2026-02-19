@@ -91,7 +91,7 @@ namespace GPSFA_WinForms
             {
                 StringBuilder query = new StringBuilder();
 
-                query.Append("SELECT v.nome, v.cpf, v.telCel, CASE WHEN v.ativo = 1 THEN 'Sim' ELSE 'Não' END AS ativo FROM tbVoluntarios AS v LEFT JOIN tbUsuarios AS u ON u.codVol = v.codVol WHERE LOWER(v.nome) LIKE LOWER(@descricao) OR v.cpf LIKE @descricao OR v.telCel LIKE @descricao OR LOWER(u.usuario) LIKE LOWER(@descricao);");
+                query.Append("SELECT v.codVol, v.nome, v.cpf, v.telCel, CASE WHEN v.ativo = 1 THEN 'Sim' ELSE 'Não' END AS ativo FROM tbVoluntarios AS v LEFT JOIN tbUsuarios AS u ON u.codVol = v.codVol WHERE LOWER(v.nome) LIKE LOWER(@descricao) OR v.cpf LIKE @descricao OR v.telCel LIKE @descricao OR LOWER(u.usuario) LIKE LOWER(@descricao);");
 
                 MySqlCommand comm = new MySqlCommand();
                 comm.Connection = conexao;
@@ -134,7 +134,7 @@ namespace GPSFA_WinForms
             {
                 StringBuilder query = new StringBuilder();
 
-                query.Append("SELECT u.codVol, u.usuario, v.nome, v.cpf, v.telCel, CASE WHEN v.ativo = 1 THEN 'Sim' ELSE 'Não' END AS ativo FROM tbVoluntarios AS v LEFT JOIN tbUsuarios AS u ON u.codVol = v.codVol;");
+                query.Append("SELECT v.codVol, u.usuario, v.nome, v.cpf, v.telCel, CASE WHEN v.ativo = 1 THEN 'Sim' ELSE 'Não' END AS ativo FROM tbVoluntarios AS v LEFT JOIN tbUsuarios AS u ON u.codVol = v.codVol;");
 
                 MySqlCommand comm = new MySqlCommand();
                 comm.Connection = conexao;

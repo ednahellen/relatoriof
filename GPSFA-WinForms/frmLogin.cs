@@ -24,14 +24,6 @@ namespace GPSFA_WinForms
 
         // Implementar função de 'lembre-se de mim' somente com o uso de API + Token persistente - não seria o mais seguro e viável nesse primeiro momento
 
-        //Desativando botão fechar
-        private void frmLogin_Load(object sender, EventArgs e)
-        {
-            IntPtr hMenu = GetSystemMenu(this.Handle, false);
-            int MenuCount = GetMenuItemCount(hMenu) - 1;
-            RemoveMenu(hMenu, MenuCount, MF_BYCOMMAND);
-        }
-
         public frmLogin()
         {
             InitializeComponent();
@@ -141,6 +133,16 @@ namespace GPSFA_WinForms
                 txtUsuario.Focus();
                 return;
             }
+        }
+
+        private void frmLogin_KeyDown(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void frmLogin_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

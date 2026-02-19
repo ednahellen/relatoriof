@@ -69,12 +69,15 @@ namespace GPSFA_WinForms
         int codVolSelected = 0; // Código do voluntário
         bool isVoluntarioActive; // Estado do voluntário
         bool usuarioEncontrado; // Guarda globalmente se há usuário associado ao voluntário 
-        bool isUsuarioActive; // Estado do usuário do voluntário
+        bool isUsuarioActive; // Estado do usuário do voluntário// String para salvar o estado selecionado - para evitar enviar valor nulo na requisição para o banco
+        string estadoSelected;
+
+            
 
 
-        //    -----    Métodos para ações CRUD e queries do banco de dados
-        // Busca os dados de um voluntário através do código - para busca de dados exata
-        private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
+//    -----    Métodos para ações CRUD e queries do banco de dados
+// Busca os dados de um voluntário através do código - para busca de dados exata
+private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
                 {
                     MySqlCommand comm = new MySqlCommand();
                     comm.CommandText = $"SELECT * FROM tbVoluntarios WHERE codVol = @codVol;";
@@ -245,21 +248,25 @@ namespace GPSFA_WinForms
 
             try
             {
-                int resp = comm.ExecuteNonQuery();
+                comm.ExecuteNonQuery();
 
-                DataBaseConnection.CloseConnection();
-
-                return resp;
+                // ✅ ID do voluntário recém-criado
+                return (int)comm.LastInsertedId;
             }
-            catch (Exception)
+            catch (MySqlException ex) when (ex.Number == 1062)
             {
-                MessageBox.Show("Este voluntario já existe!", "Mensagem do sistema",
+                // 1062 = Duplicate entry
+                MessageBox.Show(
+                    "Já existe um voluntário cadastrado com esse CPF.",
+                    "Mensagem do sistema",
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1);
+                    MessageBoxIcon.Warning
+                );
+                return -1;
             }
-            return 0;
         }
+
+        
 
         // Cria um novo usuário associado e o associa a um voluntário por meio do código dele
         private int cadastrarUsuario(bool isActive, string usuario, string senha, string tipoAcesso, int codVol)
@@ -324,9 +331,9 @@ namespace GPSFA_WinForms
 
                 return resp;
             }
-            catch (Exception)
+            catch (Exception error)
             {
-                MessageBox.Show("Erro ao editar dados do Voluntário!", "Mensagem do sistema",
+                MessageBox.Show($"Erro ao editar dados do Voluntário! Erro:\n\n {error}", "Mensagem do sistema",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error,
                     MessageBoxDefaultButton.Button1);
@@ -624,11 +631,20 @@ namespace GPSFA_WinForms
         // Evento de clique do botão de cadastrar
         private void btnCadastrar_Click(object sender, EventArgs e)
         {
+            if (cbbEstado.SelectedItem == null)
+            {
+                estadoSelected = "";
+            }
+            else
+            {
+                estadoSelected = cbbEstado.SelectedItem.ToString();
+            }
+
             //    -----    Primeira etapa de validações -> dados de voluntário
             // Valida se algum dos campos de voluntário está vazio
-            if (txtNomeVoluntario.Text.Equals("") || mskTelefone.Text.Equals("") || mskCpf.Text.Equals("") || mskCep.Text.Equals("") || txtRua.Text.Equals("") || txtNumero.Text.Equals("") || txtBairro.Text.Equals("") || txtCidade.Text.Equals("")) // Falta adicionar mais validações
+            if (txtNomeVoluntario.Text.Equals("")) // Falta adicionar mais validações
             {
-                MessageBox.Show("Preencha os campos vazios para continuar!", "Mensagem do sistema",
+                MessageBox.Show("Preencha pelo menos o nome do voluntário para continuar!", "Mensagem do sistema",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information,
                     MessageBoxDefaultButton.Button1);
@@ -666,15 +682,15 @@ namespace GPSFA_WinForms
                             desativarBotoes();
                             btnNovo.Enabled = true;
                         }
-                        
+
                         // Segue por aqui caso não exista registro do voluntário
                         else
                         {
                             // Faz a criação de registro na tabela de voluntários com os dados da janela
-                            int resp = cadastrarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString());
+                            int respCodVol = cadastrarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, estadoSelected);
 
                             // Se houver sucesso na criação do registro retorna mensagem de sucesso
-                            if (resp.Equals(1))
+                            if (respCodVol > 0)
                             {
                                 MessageBox.Show("Voluntário cadastrado com sucesso!", "Mensagem do sistema",
                                     MessageBoxButtons.OK,
@@ -689,7 +705,7 @@ namespace GPSFA_WinForms
                                 btnNovo.Enabled = true;
                                 btnNovo.Focus();
                             }
-                            else 
+                            else
                             {
                                 // Se houver alguma falha na criação do registro é retornada mensagem de erro
                                 MessageBox.Show("Erro ao Cadastrar Voluntário!", "Mensagem do sistema",
@@ -768,7 +784,7 @@ namespace GPSFA_WinForms
                                     btnNovo.Enabled = true;
                                 }
                                 else
-                                {   
+                                {
                                     // Se o voluntário não tiver registro no banco, o sistema segue validando se as senhas são iguais
                                     if (!txtConfirmaSenha.Text.Equals(txtSenha.Text))
                                     {
@@ -780,13 +796,14 @@ namespace GPSFA_WinForms
                                     else
                                     {
                                         // realiza o cadastro do voluntário e usuário - mas com o usuário desativado
-                                        int volResp = cadastrarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString());
+                                        int respCodVol = cadastrarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString());
 
                                         // Retorno se o cadastro de voluntário foi bem sucedido
-                                        if (volResp == 1) 
+                                        if (respCodVol > 0)
                                         {
+                                            codVolSelected = respCodVol;
                                             // Busca o código do voluntário cadastrado para criação do usuário
-                                            buscarCodVolPorCPF(mskCpf.Text);
+                                            //buscarCodVolPorCPF(mskCpf.Text);
 
                                             // Faz a criação do usuário com os dados dos campos e código do voluntário registrado salvo globalmente
                                             int userResp = cadastrarUsuario(isUsuarioActive, txtUsuario.Text, txtSenha.Text, cbbTipoDeAcesso.SelectedItem.ToString(), codVolSelected);
@@ -855,7 +872,7 @@ namespace GPSFA_WinForms
                                 return;
                             }
                         }
-                            
+
                         // realiza o cadastro do voluntário e usuário - mas com o usuário ativo > isUsuarioActive == true
                         else
                         {
@@ -886,7 +903,7 @@ namespace GPSFA_WinForms
                                 else
                                 {
                                     // Realiza a criação de Voluntário no banco
-                                    int volResp = cadastrarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString());
+                                    int volResp = cadastrarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, estadoSelected);
 
                                     // Se a criação do voluntário for bem sucedida
                                     if (volResp == 1)
@@ -959,11 +976,20 @@ namespace GPSFA_WinForms
         // Após pesquisar um voluntário e instânciar ele, permite alterar os dados - ativando o voluntário instantâneamente
         private void btnAlterar_Click(object sender, EventArgs e)
         {
+            if (cbbEstado.SelectedItem == null)
+            {
+                estadoSelected = "";
+            }
+            else
+            {
+                estadoSelected = cbbEstado.SelectedItem.ToString();
+            }
+
             //    -----    Primeira etapa de validações -> dados de voluntário
             // Valida se algum dos campos de voluntário está vazio
-            if (txtNomeVoluntario.Text.Equals("") || mskTelefone.Text.Equals("") || mskCpf.Text.Equals("") || mskCep.Text.Equals("") || txtRua.Text.Equals("") || txtNumero.Text.Equals("") || txtBairro.Text.Equals("") || txtCidade.Text.Equals("")) // Falta adicionar mais validações
+            if (txtNomeVoluntario.Text.Equals("")) // Falta adicionar mais validações
             {
-                MessageBox.Show("Preencha os campos vazios para continuar!", "Mensagem do sistema",
+                MessageBox.Show("Preencha pelo menos o nome do voluntário para continuar!", "Mensagem do sistema",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information,
                     MessageBoxDefaultButton.Button1);
@@ -1162,7 +1188,7 @@ namespace GPSFA_WinForms
                             else
                             {
                                 // Realiza a criação de Voluntário no banco
-                                int updtVolResp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString(), codVolSelected);
+                                int updtVolResp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, estadoSelected, codVolSelected);
 
                                 // Se a criação do voluntário for bem sucedida
                                 if (updtVolResp == 1)
@@ -1275,7 +1301,7 @@ namespace GPSFA_WinForms
                                 else
                                 {
                                     // realiza a edição dos dados do voluntário
-                                    int updtVolResp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString(), codVolSelected);
+                                    int updtVolResp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, estadoSelected, codVolSelected);
 
                                     // Retorno se a edição de dados foi bem sucedido
                                     if (updtVolResp == 1)
@@ -1362,7 +1388,7 @@ namespace GPSFA_WinForms
                             else
                             {
                                 // Realiza a edição de Voluntário no banco
-                                int updtVolResp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, cbbEstado.SelectedItem.ToString(), codVolSelected);
+                                int updtVolResp = editarVoluntario(txtNomeVoluntario.Text, mskTelefone.Text, mskCpf.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, txtCidade.Text, estadoSelected, codVolSelected);
 
                                 // Se a edição do voluntário for bem sucedida
                                 if (updtVolResp == 1)
@@ -1629,6 +1655,7 @@ namespace GPSFA_WinForms
                     MessageBoxIcon.Error,
                     MessageBoxDefaultButton.Button1);
             }
+
             else
             {
                 DialogResult resultado = MessageBox.Show("Deseja realmente apagar os dados do voluntário?\n\nObs: Esta ação vai apenas apagar dados sensíveis e desativar o voluntário e seu uusário", "Mensagem do sistema",
@@ -1651,14 +1678,20 @@ namespace GPSFA_WinForms
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
 
-                                limparCamposVoluntario();
-                                desabilitarCamposVoluntario();
-                                limparCamposUsuario();
-                                desabilitarCamposUsuario();
-                                desativarBotoes();
-                                btnNovo.Enabled = true;
-                                btnNovo.Focus();
-
+                                if (codVolSelected == codUsuLogado)
+                                {
+                                    Application.Exit();
+                                }
+                                else
+                                {
+                                    limparCamposVoluntario();
+                                    desabilitarCamposVoluntario();
+                                    limparCamposUsuario();
+                                    desabilitarCamposUsuario();
+                                    desativarBotoes();
+                                    btnNovo.Enabled = true;
+                                    btnNovo.Focus();
+                                }
                             }
                             else
                             {
@@ -1696,7 +1729,7 @@ namespace GPSFA_WinForms
                     }
                     else
                     {
-                        MessageBox.Show("O voluntário já se encontra desativado e com dados apagados!","Mensagem do sistema",
+                        MessageBox.Show("O voluntário já se encontra desativado e com dados apagados!", "Mensagem do sistema",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Exclamation);
                     }

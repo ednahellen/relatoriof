@@ -268,6 +268,7 @@
             this.mskTelefone.Name = "mskTelefone";
             this.mskTelefone.Size = new System.Drawing.Size(207, 39);
             this.mskTelefone.TabIndex = 2;
+            this.mskTelefone.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
             // 
             // mskCep
             // 
@@ -277,6 +278,7 @@
             this.mskCep.Name = "mskCep";
             this.mskCep.Size = new System.Drawing.Size(148, 39);
             this.mskCep.TabIndex = 4;
+            this.mskCep.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
             this.mskCep.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mskCep_KeyDown);
             // 
             // mskCpf
@@ -287,6 +289,7 @@
             this.mskCpf.Name = "mskCpf";
             this.mskCpf.Size = new System.Drawing.Size(199, 39);
             this.mskCpf.TabIndex = 3;
+            this.mskCpf.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
             // 
             // lblTelefone
             // 
@@ -295,9 +298,9 @@
             this.lblTelefone.ForeColor = System.Drawing.Color.Black;
             this.lblTelefone.Location = new System.Drawing.Point(465, 41);
             this.lblTelefone.Name = "lblTelefone";
-            this.lblTelefone.Size = new System.Drawing.Size(143, 29);
+            this.lblTelefone.Size = new System.Drawing.Size(118, 29);
             this.lblTelefone.TabIndex = 79;
-            this.lblTelefone.Text = "*  Telefone";
+            this.lblTelefone.Text = "Telefone";
             // 
             // lblEstado
             // 
@@ -306,9 +309,9 @@
             this.lblEstado.ForeColor = System.Drawing.Color.Black;
             this.lblEstado.Location = new System.Drawing.Point(379, 227);
             this.lblEstado.Name = "lblEstado";
-            this.lblEstado.Size = new System.Drawing.Size(112, 29);
+            this.lblEstado.Size = new System.Drawing.Size(94, 29);
             this.lblEstado.TabIndex = 78;
-            this.lblEstado.Text = "* Estado";
+            this.lblEstado.Text = "Estado";
             // 
             // cbbEstado
             // 
@@ -354,9 +357,9 @@
             this.lblBairro.ForeColor = System.Drawing.Color.Black;
             this.lblBairro.Location = new System.Drawing.Point(25, 227);
             this.lblBairro.Name = "lblBairro";
-            this.lblBairro.Size = new System.Drawing.Size(102, 29);
+            this.lblBairro.Size = new System.Drawing.Size(84, 29);
             this.lblBairro.TabIndex = 75;
-            this.lblBairro.Text = "* Bairro";
+            this.lblBairro.Text = "Bairro";
             // 
             // txtBairro
             // 
@@ -396,9 +399,9 @@
             this.lblNumero.ForeColor = System.Drawing.Color.Black;
             this.lblNumero.Location = new System.Drawing.Point(676, 131);
             this.lblNumero.Name = "lblNumero";
-            this.lblNumero.Size = new System.Drawing.Size(124, 29);
+            this.lblNumero.Size = new System.Drawing.Size(106, 29);
             this.lblNumero.TabIndex = 71;
-            this.lblNumero.Text = "* Número";
+            this.lblNumero.Text = "Número";
             // 
             // txtNumero
             // 
@@ -417,9 +420,9 @@
             this.lblRua.ForeColor = System.Drawing.Color.Black;
             this.lblRua.Location = new System.Drawing.Point(25, 131);
             this.lblRua.Name = "lblRua";
-            this.lblRua.Size = new System.Drawing.Size(77, 29);
+            this.lblRua.Size = new System.Drawing.Size(59, 29);
             this.lblRua.TabIndex = 69;
-            this.lblRua.Text = "* Rua";
+            this.lblRua.Text = "Rua";
             // 
             // txtRua
             // 
@@ -438,9 +441,9 @@
             this.lblCep.ForeColor = System.Drawing.Color.Black;
             this.lblCep.Location = new System.Drawing.Point(919, 41);
             this.lblCep.Name = "lblCep";
-            this.lblCep.Size = new System.Drawing.Size(83, 29);
+            this.lblCep.Size = new System.Drawing.Size(65, 29);
             this.lblCep.TabIndex = 67;
-            this.lblCep.Text = "* CEP";
+            this.lblCep.Text = "CEP";
             // 
             // lblCpf
             // 
@@ -449,9 +452,9 @@
             this.lblCpf.ForeColor = System.Drawing.Color.Black;
             this.lblCpf.Location = new System.Drawing.Point(702, 41);
             this.lblCpf.Name = "lblCpf";
-            this.lblCpf.Size = new System.Drawing.Size(82, 29);
+            this.lblCpf.Size = new System.Drawing.Size(64, 29);
             this.lblCpf.TabIndex = 63;
-            this.lblCpf.Text = "* CPF";
+            this.lblCpf.Text = "CPF";
             // 
             // lblCidade
             // 
@@ -460,9 +463,9 @@
             this.lblCidade.ForeColor = System.Drawing.Color.Black;
             this.lblCidade.Location = new System.Drawing.Point(680, 226);
             this.lblCidade.Name = "lblCidade";
-            this.lblCidade.Size = new System.Drawing.Size(115, 29);
+            this.lblCidade.Size = new System.Drawing.Size(97, 29);
             this.lblCidade.TabIndex = 62;
-            this.lblCidade.Text = "* Cidade";
+            this.lblCidade.Text = "Cidade";
             // 
             // lblNome
             // 
@@ -471,9 +474,9 @@
             this.lblNome.ForeColor = System.Drawing.Color.Black;
             this.lblNome.Location = new System.Drawing.Point(25, 41);
             this.lblNome.Name = "lblNome";
-            this.lblNome.Size = new System.Drawing.Size(263, 29);
+            this.lblNome.Size = new System.Drawing.Size(245, 29);
             this.lblNome.TabIndex = 1;
-            this.lblNome.Text = "* Nome do Voluntário";
+            this.lblNome.Text = "Nome do Voluntário";
             // 
             // txtNomeVoluntario
             // 
