@@ -68,12 +68,12 @@
             this.pnlFiltrosDeBusca.Location = new System.Drawing.Point(0, 0);
             this.pnlFiltrosDeBusca.Name = "pnlFiltrosDeBusca";
             this.pnlFiltrosDeBusca.Padding = new System.Windows.Forms.Padding(10, 0, 10, 10);
-            this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1647, 133);
+            this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1163, 133);
             this.pnlFiltrosDeBusca.TabIndex = 4;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(869, 12);
+            this.button1.Location = new System.Drawing.Point(599, 12);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(164, 33);
             this.button1.TabIndex = 19;
@@ -83,7 +83,7 @@
             // 
             // btnMenu
             // 
-            this.btnMenu.Location = new System.Drawing.Point(1060, 12);
+            this.btnMenu.Location = new System.Drawing.Point(790, 12);
             this.btnMenu.Name = "btnMenu";
             this.btnMenu.Size = new System.Drawing.Size(164, 33);
             this.btnMenu.TabIndex = 18;
@@ -93,7 +93,7 @@
             // 
             // btnExportarExcel
             // 
-            this.btnExportarExcel.Location = new System.Drawing.Point(1253, 12);
+            this.btnExportarExcel.Location = new System.Drawing.Point(980, 12);
             this.btnExportarExcel.Name = "btnExportarExcel";
             this.btnExportarExcel.Size = new System.Drawing.Size(164, 33);
             this.btnExportarExcel.TabIndex = 17;
@@ -136,7 +136,7 @@
             // cbbUsuario
             // 
             this.cbbUsuario.FormattingEnabled = true;
-            this.cbbUsuario.Location = new System.Drawing.Point(857, 24);
+            this.cbbUsuario.Location = new System.Drawing.Point(587, 30);
             this.cbbUsuario.Name = "cbbUsuario";
             this.cbbUsuario.Size = new System.Drawing.Size(355, 29);
             this.cbbUsuario.TabIndex = 81;
@@ -145,7 +145,7 @@
             // 
             this.btnPesquisar.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPesquisar.Image = ((System.Drawing.Image)(resources.GetObject("btnPesquisar.Image")));
-            this.btnPesquisar.Location = new System.Drawing.Point(1241, 21);
+            this.btnPesquisar.Location = new System.Drawing.Point(971, 27);
             this.btnPesquisar.Name = "btnPesquisar";
             this.btnPesquisar.Size = new System.Drawing.Size(161, 46);
             this.btnPesquisar.TabIndex = 80;
@@ -248,7 +248,7 @@
             this.dgvProdutos.Name = "dgvProdutos";
             this.dgvProdutos.ReadOnly = true;
             this.dgvProdutos.RowHeadersWidth = 51;
-            this.dgvProdutos.Size = new System.Drawing.Size(1647, 637);
+            this.dgvProdutos.Size = new System.Drawing.Size(1163, 492);
             this.dgvProdutos.TabIndex = 17;
             // 
             // Column1
@@ -287,7 +287,7 @@
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
-            this.ClientSize = new System.Drawing.Size(1647, 770);
+            this.ClientSize = new System.Drawing.Size(1163, 625);
             this.Controls.Add(this.dgvProdutos);
             this.Controls.Add(this.pnlFiltrosDeBusca);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

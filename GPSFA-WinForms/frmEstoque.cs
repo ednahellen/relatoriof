@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ClosedXML.Excel;
+using GPSFA_WinForms;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,8 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using GPSFA_WinForms;
-using MySql.Data.MySqlClient;
+
 
 namespace Projeto_Socorrista
 {
@@ -479,5 +481,48 @@ namespace Projeto_Socorrista
             abrir.Show();
             this.Close();
         }
+
+        private void btnMenu_Click(object sender, EventArgs e)
+        {
+            frmMenuPrincipal abrir = new frmMenuPrincipal();
+            abrir.Show();
+            this.Hide();
+        }
+
+        private void btnExportarExcel_Click(object sender, EventArgs e)
+        {
+
+            if (dgvEstoque.Rows.Count == 0)
+                return;
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "Arquivo Excel (*.xlsx)|*.xlsx";
+                sfd.FileName = "Relatorio.xlsx";
+
+                if (sfd.ShowDialog() != DialogResult.OK)
+                    return;
+
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    var ws = wb.Worksheets.Add("Relatório");
+
+                    for (int i = 0; i < dgvEstoque.Columns.Count; i++)
+                        ws.Cell(1, i + 1).Value = dgvEstoque.Columns[i].HeaderText;
+
+                    for (int i = 0; i < dgvEstoque.Rows.Count; i++)
+                        for (int j = 0; j < dgvEstoque.Columns.Count; j++)
+                            ws.Cell(i + 2, j + 1).Value =
+                                dgvEstoque.Rows[i].Cells[j].Value?.ToString();
+
+                    ws.Columns().AdjustToContents();
+                    wb.SaveAs(sfd.FileName);
+                }
+
+                MessageBox.Show("Relatório exportado com sucesso.");
+            }
+        }
+
     }
 }
+
