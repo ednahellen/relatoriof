@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmRelatorios));
             this.pnlFiltrosDeBusca = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.btnMenu = new System.Windows.Forms.Button();
             this.btnExportarExcel = new System.Windows.Forms.Button();
             this.lblTitleRelatórios = new System.Windows.Forms.Label();
@@ -49,7 +50,6 @@
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.button1 = new System.Windows.Forms.Button();
             this.pnlFiltrosDeBusca.SuspendLayout();
             this.gpbFiltrosDoRelatorio.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProdutos)).BeginInit();
@@ -70,6 +70,16 @@
             this.pnlFiltrosDeBusca.Padding = new System.Windows.Forms.Padding(10, 0, 10, 10);
             this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1647, 133);
             this.pnlFiltrosDeBusca.TabIndex = 4;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(869, 12);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(164, 33);
+            this.button1.TabIndex = 19;
+            this.button1.Text = "Cadastrar";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // btnMenu
             // 
@@ -98,7 +108,7 @@
             this.lblTitleRelatórios.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.lblTitleRelatórios.Location = new System.Drawing.Point(12, 9);
             this.lblTitleRelatórios.Name = "lblTitleRelatórios";
-            this.lblTitleRelatórios.Size = new System.Drawing.Size(114, 27);
+            this.lblTitleRelatórios.Size = new System.Drawing.Size(93, 22);
             this.lblTitleRelatórios.TabIndex = 11;
             this.lblTitleRelatórios.Text = "Relatórios";
             // 
@@ -128,7 +138,7 @@
             this.cbbUsuario.FormattingEnabled = true;
             this.cbbUsuario.Location = new System.Drawing.Point(857, 24);
             this.cbbUsuario.Name = "cbbUsuario";
-            this.cbbUsuario.Size = new System.Drawing.Size(355, 35);
+            this.cbbUsuario.Size = new System.Drawing.Size(355, 29);
             this.cbbUsuario.TabIndex = 81;
             // 
             // btnPesquisar
@@ -187,7 +197,7 @@
             this.dtpDataFinalPeriodo.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpDataFinalPeriodo.Location = new System.Drawing.Point(362, 30);
             this.dtpDataFinalPeriodo.Name = "dtpDataFinalPeriodo";
-            this.dtpDataFinalPeriodo.Size = new System.Drawing.Size(164, 34);
+            this.dtpDataFinalPeriodo.Size = new System.Drawing.Size(164, 29);
             this.dtpDataFinalPeriodo.TabIndex = 2;
             // 
             // lblE
@@ -197,7 +207,7 @@
             this.lblE.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblE.Location = new System.Drawing.Point(289, 36);
             this.lblE.Name = "lblE";
-            this.lblE.Size = new System.Drawing.Size(47, 27);
+            this.lblE.Size = new System.Drawing.Size(38, 21);
             this.lblE.TabIndex = 5;
             this.lblE.Text = "Fim";
             // 
@@ -208,7 +218,7 @@
             this.lblDataInicial.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblDataInicial.Location = new System.Drawing.Point(32, 36);
             this.lblDataInicial.Name = "lblDataInicial";
-            this.lblDataInicial.Size = new System.Drawing.Size(63, 27);
+            this.lblDataInicial.Size = new System.Drawing.Size(51, 21);
             this.lblDataInicial.TabIndex = 4;
             this.lblDataInicial.Text = "Inicio";
             // 
@@ -218,7 +228,7 @@
             this.dtpDataInicialPeriodo.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpDataInicialPeriodo.Location = new System.Drawing.Point(122, 33);
             this.dtpDataInicialPeriodo.Name = "dtpDataInicialPeriodo";
-            this.dtpDataInicialPeriodo.Size = new System.Drawing.Size(161, 34);
+            this.dtpDataInicialPeriodo.Size = new System.Drawing.Size(161, 29);
             this.dtpDataInicialPeriodo.TabIndex = 1;
             // 
             // dgvProdutos
@@ -272,16 +282,6 @@
             this.Column4.Name = "Column4";
             this.Column4.ReadOnly = true;
             this.Column4.Width = 150;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(869, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(164, 33);
-            this.button1.TabIndex = 19;
-            this.button1.Text = "Cadastrar";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // frmRelatorios
             // 

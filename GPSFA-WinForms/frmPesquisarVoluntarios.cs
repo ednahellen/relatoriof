@@ -28,6 +28,15 @@ namespace GPSFA_WinForms
             desabilitarBotoes();
         }
 
+        int codUsuLogado;
+
+        public frmPesquisarVoluntarios(int codUsu)
+        {
+            codUsuLogado = codUsu;
+            InitializeComponent();
+            desabilitarBotoes();
+        }
+
         private void frmListaVoluntarios_Load(object sender, EventArgs e)
         {
             CarregarDadosNaListaDeVoluntarios();
@@ -108,8 +117,8 @@ namespace GPSFA_WinForms
             if (e.ColumnIndex == dgvVoluntarios.Columns["EditarDados"].Index && e.RowIndex >= 0)
             {
                 // Perform action for the clicked button
-                string codVol = dgvVoluntarios.Rows[e.RowIndex].Cells[0].Value.ToString();
-                frmVoluntarios abrir = new frmVoluntarios(codVol);
+                int codVol = Convert.ToInt32(dgvVoluntarios.Rows[e.RowIndex].Cells[0].Value);
+                frmVoluntarios abrir = new frmVoluntarios(codVol, codUsuLogado);
                 abrir.Show();
                 this.Close();
             }
@@ -125,7 +134,7 @@ namespace GPSFA_WinForms
             {
                 StringBuilder query = new StringBuilder();
 
-                query.Append("SELECT u.usuario, v.nome, v.cpf, v.telCel, CASE WHEN v.ativo = 1 THEN 'Sim' ELSE 'Não' END AS ativo FROM tbVoluntarios AS v LEFT JOIN tbUsuarios AS u ON u.codVol = v.codVol;");
+                query.Append("SELECT u.codVol, u.usuario, v.nome, v.cpf, v.telCel, CASE WHEN v.ativo = 1 THEN 'Sim' ELSE 'Não' END AS ativo FROM tbVoluntarios AS v LEFT JOIN tbUsuarios AS u ON u.codVol = v.codVol;");
 
                 MySqlCommand comm = new MySqlCommand();
                 comm.Connection = conexao;
@@ -145,7 +154,7 @@ namespace GPSFA_WinForms
 
         private void btnVoltar_Click(object sender, EventArgs e)
         {
-            frmVoluntarios abrir = new frmVoluntarios();
+            frmVoluntarios abrir = new frmVoluntarios(codUsuLogado);
             abrir.Show();
             this.Close();
         }

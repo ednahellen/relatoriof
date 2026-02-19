@@ -86,7 +86,7 @@ namespace GPSFA_WinForms
             //    ActiveButton(btnDashboard);
             //    FormShow(new frmDashboard());
 
-            frmDashboard abrir = new frmDashboard();
+            frmDashboard abrir = new frmDashboard(codUsuLogado);
             abrir.Show();
             this.Hide();
         }
@@ -98,7 +98,7 @@ namespace GPSFA_WinForms
 
             if (tipoAcessoUsuLogado.Equals("ADMIN")) // validação simples para limitar o acesso do usuário
             {
-                frmVoluntarios abrir = new frmVoluntarios();
+                frmVoluntarios abrir = new frmVoluntarios(codUsuLogado);
 
                 abrir.Show();
                 this.Hide();
@@ -116,7 +116,7 @@ namespace GPSFA_WinForms
             //ActiveButton(btnRelatorios);
             //FormShow(new frmRelatorios());
 
-            frmRelatorios abrir = new frmRelatorios();
+            frmRelatorios abrir = new frmRelatorios(codUsuLogado);
 
             abrir.Show();
             this.Hide();
@@ -127,7 +127,7 @@ namespace GPSFA_WinForms
             //ActiveButton(btnAlimentos);
             //FormShow(new frmEstoque());
 
-            frmEstoque abrir = new frmEstoque();
+            frmEstoque abrir = new frmEstoque(codUsuLogado);
 
             abrir.Show();
             this.Hide();
@@ -136,7 +136,7 @@ namespace GPSFA_WinForms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            frmGerenciarProdutos abrir = new frmGerenciarProdutos();
+            frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
             abrir.Show();
             this.Hide();
         }
