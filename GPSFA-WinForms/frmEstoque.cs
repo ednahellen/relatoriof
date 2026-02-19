@@ -26,6 +26,14 @@ namespace Projeto_Socorrista
             InitializeComponent();
         }
 
+        int codUsuLogado;
+
+        public frmEstoque(int codUsu)
+        {
+            InitializeComponent();
+            codUsuLogado = codUsu;
+        }
+
         private void ConfigurarDataGridView(bool modoAgrupado)
         {
             dgvEstoque.SuspendLayout();
@@ -467,7 +475,7 @@ namespace Projeto_Socorrista
 
         private void btnVoltar_Click(object sender, EventArgs e)
         {
-            frmMenuPrincipal abrir = new frmMenuPrincipal();
+            frmMenuPrincipal abrir = new frmMenuPrincipal(codUsuLogado);
             abrir.Show();
             this.Close();
         }

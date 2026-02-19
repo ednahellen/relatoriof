@@ -24,9 +24,21 @@ namespace GPSFA_WinForms
         static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
         [DllImport("user32")]
         static extern int GetMenuItemCount(IntPtr hWnd);
+        
         public frmPesquisarOrigemDoacao()
         {
             InitializeComponent();
+            btnPesquisarOrigem.Enabled = false;
+            ltbPesquisarOrigem.Enabled = false;
+            btnLimpar.Enabled = false;
+        }
+
+        int codUsuLogado;
+
+        public frmPesquisarOrigemDoacao(int codUsu)
+        {
+            InitializeComponent();
+            codUsuLogado = codUsu;
             btnPesquisarOrigem.Enabled = false;
             ltbPesquisarOrigem.Enabled = false;
             btnLimpar.Enabled = false;
@@ -102,7 +114,7 @@ namespace GPSFA_WinForms
 
         private void btnVoltar_Click(object sender, EventArgs e)
         {
-            frmOrigemDoacao abrir = new frmOrigemDoacao();
+            frmOrigemDoacao abrir = new frmOrigemDoacao(codUsuLogado);
             abrir.Show();
             this.Hide();
         }

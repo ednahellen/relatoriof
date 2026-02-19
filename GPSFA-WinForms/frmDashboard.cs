@@ -20,7 +20,14 @@ namespace GPSFA_WinForms
         {
             InitializeComponent();
         }
-        
+
+        int codUsuLogado;
+        public frmDashboard(int codUsu)
+        {
+            InitializeComponent();
+            codUsuLogado = codUsu;
+        }
+
         private void frmDashboard_Load(object sender, EventArgs e)
         {
             CarregarDados();
@@ -295,7 +302,7 @@ namespace GPSFA_WinForms
         
         private void btnMenu_Click(object sender, EventArgs e)
         {
-            frmMenuPrincipal abrir = new frmMenuPrincipal();
+            frmMenuPrincipal abrir = new frmMenuPrincipal(codUsuLogado);
             abrir.Show();
             this.Hide();
 
@@ -303,7 +310,7 @@ namespace GPSFA_WinForms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            frmGerenciarProdutos abrir = new frmGerenciarProdutos();
+            frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
             abrir.Show();
             this.Hide();
 

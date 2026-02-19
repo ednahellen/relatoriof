@@ -35,6 +35,18 @@ namespace GPSFA_WinForms
             carregarProdutosCbb();
         }
 
+        public frmGerenciarProdutos(int codUsu)
+        {
+            codUsuLogado = codUsu;
+            InitializeComponent();
+            carregarOrigemCbb();
+            carregarUnidadesCbb();
+            carregarProdutosCbb();
+        }
+
+        // Variavel global da janela para salvar o código do usuário logado
+        int codUsuLogado;
+
         //Desativando botão fechar da janela
 
         private void frmCadastrarAlimentos_Load(object sender, EventArgs e)
@@ -49,7 +61,7 @@ namespace GPSFA_WinForms
         private void carregarOrigemCbb()
         {
             MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "SELECT * FROM tbOrigemDoacao ORDER BY descricao ASC;";
+            comm.CommandText = "SELECT * FROM tbOrigemDoacao ORDER BY nome ASC;";
             comm.CommandType = CommandType.Text;
 
             comm.Connection = DataBaseConnection.OpenConnection();
@@ -508,23 +520,24 @@ namespace GPSFA_WinForms
         //    }
 
 
+        // Criada instância das janelas com o código do usuário imbutido
         private void btnDoacao_Click(object sender, EventArgs e)
         {
-            frmOrigemDoacao abrir = new frmOrigemDoacao();
+            frmOrigemDoacao abrir = new frmOrigemDoacao(codUsuLogado);
             abrir.Show();
             this.Hide();
         }
 
         private void btnLista_Click(object sender, EventArgs e)
         {
-            frmListaProdutos abrir = new frmListaProdutos();
+            frmListaProdutos abrir = new frmListaProdutos(codUsuLogado);
             abrir.Show();
             this.Hide();
         }
 
         private void btnMedida_Click(object sender, EventArgs e)
         {
-            frmUnidadeMedida abrir = new frmUnidadeMedida();
+            frmUnidadeMedida abrir = new frmUnidadeMedida(codUsuLogado);
             abrir.Show();
             this.Hide();
         }
@@ -536,7 +549,7 @@ namespace GPSFA_WinForms
 
         private void btnVoltar_Click(object sender, EventArgs e)
         {
-            frmMenuPrincipal abrir = new frmMenuPrincipal();
+            frmMenuPrincipal abrir = new frmMenuPrincipal(codUsuLogado);
             abrir.Show();
             this.Close();
         }

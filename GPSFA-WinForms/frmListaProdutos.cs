@@ -20,9 +20,18 @@ namespace GPSFA_WinForms
             carregarUnidadesCbb();
         }
 
+        // Variável global para salvar o código do usuário logado
+        int codUsuLogado;
+        public frmListaProdutos(int codUsu)
+        {
+            codUsuLogado = codUsu;
+            InitializeComponent();
+            carregarUnidadesCbb();
+        }
+
         private void btnMedida_Click(object sender, EventArgs e)
         {
-            frmUnidadeMedida abrir = new frmUnidadeMedida();
+            frmUnidadeMedida abrir = new frmUnidadeMedida(codUsuLogado);
             abrir.ShowDialog();
         }      
 
@@ -46,7 +55,7 @@ namespace GPSFA_WinForms
 
         private void btnVoltar_Click(object sender, EventArgs e)
         {
-            frmGerenciarProdutos abrir = new frmGerenciarProdutos();
+            frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
             abrir.Show();
             this.Close();
         }

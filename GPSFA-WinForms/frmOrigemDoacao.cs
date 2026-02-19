@@ -29,6 +29,18 @@ namespace GPSFA_WinForms
             desativarBotoes();
             desativarCampos();
         }
+
+        // Variavel global do código do usuário logado
+        int codUsuLogado;
+
+        public frmOrigemDoacao(int codUsu)
+        {   
+            codUsuLogado = codUsu;
+            InitializeComponent();
+            desativarBotoes();
+            desativarCampos();
+        }
+
         public frmOrigemDoacao(string nome, string cpf, string cnpj, string cep, string rua, string numero, string complemento, string bairro, string cidade, string estado, string telCel, string referencia)
         {            
             InitializeComponent();
@@ -320,7 +332,7 @@ namespace GPSFA_WinForms
         }
         private void btnVoltar_Click(object sender, EventArgs e)
         {
-            frmGerenciarProdutos abrir = new frmGerenciarProdutos();
+            frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
             abrir.Show();
             this.Hide();
         }
@@ -458,7 +470,7 @@ namespace GPSFA_WinForms
 
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
-            frmPesquisarOrigemDoacao abrir = new frmPesquisarOrigemDoacao();
+            frmPesquisarOrigemDoacao abrir = new frmPesquisarOrigemDoacao(codUsuLogado);
             abrir.Show();
             this.Hide();
         }
@@ -572,8 +584,6 @@ namespace GPSFA_WinForms
                btnExcluir.Enabled = false;
                desativarCampos();
                btnNovo.Focus(); 
-            
-            
         }
     }
 

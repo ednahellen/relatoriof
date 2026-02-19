@@ -29,7 +29,19 @@ namespace GPSFA_WinForms
             btnPesquisarUnidade.Enabled = false;
             ltbPesquisarUnidades.Enabled = false;
             btnLimpar.Enabled = false;
-        }        
+        }
+
+        //
+        int codUsuLogado;
+
+        public frmPesquisarUnidadeDeMedida(int codUsu)
+        {
+            InitializeComponent();
+            codUsuLogado = codUsu;
+            btnPesquisarUnidade.Enabled = false;
+            ltbPesquisarUnidades.Enabled = false;
+            btnLimpar.Enabled = false;
+        }
 
         public frmPesquisarUnidadeDeMedida(string descricao)
         {
@@ -110,14 +122,14 @@ namespace GPSFA_WinForms
         {          
             string descricao = ltbPesquisarUnidades.SelectedItem.ToString();          
            
-            frmUnidadeMedida abrir = new frmUnidadeMedida(descricao);
+            frmUnidadeMedida abrir = new frmUnidadeMedida(descricao, codUsuLogado);
             abrir.Show();
             this.Hide();
         }
 
         private void btnVoltar_Click_1(object sender, EventArgs e)
         {
-            frmUnidadeMedida abrir = new frmUnidadeMedida();
+            frmUnidadeMedida abrir = new frmUnidadeMedida(codUsuLogado);
             abrir.Show();
             this.Hide();
         }

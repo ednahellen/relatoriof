@@ -38,12 +38,25 @@ namespace GPSFA_WinForms
             desabilitarCamposVoluntario();
             desabilitarCamposUsuario();
         }
-        
+
+        public frmVoluntarios(int codUsu)
+        {
+            codUsuLogado = codUsu;
+            InitializeComponent();
+            desativarBotoes();
+            desabilitarCamposVoluntario();
+            desabilitarCamposUsuario();
+        }
+
+        // Variáveis globais da janela para salvar o usuário atualmente logado e seu tipo de acesso
+        int codUsuLogado;
+
         // Instância da Janela com variável imbutida
-        public frmVoluntarios(string text)
+        public frmVoluntarios(int codVol, int codUsu)
         {
             InitializeComponent();
-            codVolSelected = Convert.ToInt32(text);
+            codUsuLogado = codUsu;
+            codVolSelected = codVol;
             buscarDadosDoVoluntarioPeloCodigo(codVolSelected);
             buscarUsuarioPorCodVol(codVolSelected);
             habilitarCamposVoluntario();
@@ -55,8 +68,8 @@ namespace GPSFA_WinForms
         //    -----    Variaveis globais para edição dos dados do voluntário / usuário
         int codVolSelected = 0; // Código do voluntário
         bool isVoluntarioActive; // Estado do voluntário
-        bool isUsuarioActive; // Estado do usuário do voluntário
         bool usuarioEncontrado; // Guarda globalmente se há usuário associado ao voluntário 
+        bool isUsuarioActive; // Estado do usuário do voluntário
 
 
         //    -----    Métodos para ações CRUD e queries do banco de dados
@@ -1698,7 +1711,7 @@ namespace GPSFA_WinForms
         // Aciona a janela de pesquisa de voluntários - finalizado
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
-            frmPesquisarVoluntarios abrir = new frmPesquisarVoluntarios();
+            frmPesquisarVoluntarios abrir = new frmPesquisarVoluntarios(codUsuLogado);
             abrir.Show();
             this.Close();
         }
@@ -1706,7 +1719,7 @@ namespace GPSFA_WinForms
         // Volta para a anela de Menu Principal - finalizado
         private void btnVoltar_Click(object sender, EventArgs e)
         {
-            frmMenuPrincipal abrir = new frmMenuPrincipal();
+            frmMenuPrincipal abrir = new frmMenuPrincipal(codUsuLogado);
             abrir.Show();
             this.Close();
         }

@@ -33,9 +33,21 @@ namespace GPSFA_WinForms
             desativaCampos();
         }
 
-        public frmUnidadeMedida(string descricao)
+        // 
+        int codUsuLogado;
+
+        public frmUnidadeMedida(int codUsu)
         {
-            InitializeComponent();                   
+            InitializeComponent();
+            codUsuLogado = codUsu;
+            desativarBotoes();
+            desativaCampos();
+        }
+
+        public frmUnidadeMedida(string descricao, int codUsu)
+        {
+            InitializeComponent();            
+            codUsuLogado = codUsu;
             buscaCodigoUnidade(descricao);
             txtDescricao.Text = descricao;
             btnNovo.Enabled = false;
@@ -224,7 +236,7 @@ namespace GPSFA_WinForms
 
         private void btnVoltar_Click(object sender, EventArgs e)
         {
-            frmGerenciarProdutos abrir = new frmGerenciarProdutos();
+            frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
             abrir.Show();
             this.Hide();
         }
@@ -293,7 +305,7 @@ namespace GPSFA_WinForms
        
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
-            frmPesquisarUnidadeDeMedida abrir = new frmPesquisarUnidadeDeMedida();
+            frmPesquisarUnidadeDeMedida abrir = new frmPesquisarUnidadeDeMedida(codUsuLogado);
             abrir.Show();
             this.Hide();
         }
