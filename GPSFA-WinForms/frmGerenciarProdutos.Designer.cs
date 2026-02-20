@@ -276,6 +276,7 @@
             this.cbbOrigemDoacao.Name = "cbbOrigemDoacao";
             this.cbbOrigemDoacao.Size = new System.Drawing.Size(236, 39);
             this.cbbOrigemDoacao.TabIndex = 61;
+            this.cbbOrigemDoacao.SelectedIndexChanged += new System.EventHandler(this.cbbOrigemDoacao_SelectedIndexChanged);
             // 
             // btnMedida
             // 
@@ -318,6 +319,7 @@
             this.cbbDescricao.Name = "cbbDescricao";
             this.cbbDescricao.Size = new System.Drawing.Size(477, 39);
             this.cbbDescricao.TabIndex = 58;
+            this.cbbDescricao.SelectedIndexChanged += new System.EventHandler(this.cbbDescricao_SelectedIndexChanged);
             // 
             // pnlCrud
             // 
