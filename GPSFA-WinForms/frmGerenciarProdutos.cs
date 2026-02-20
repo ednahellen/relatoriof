@@ -42,6 +42,8 @@ namespace GPSFA_WinForms
             carregarOrigemCbb();
             carregarUnidadesCbb();
             carregarProdutosCbb();
+
+            dtpDiaDistribuicao.Value = diaDeDistribuicao;
         }
 
         // Variavel global da janela para salvar o código do usuário logado
@@ -67,10 +69,7 @@ namespace GPSFA_WinForms
         private void carregarOrigemCbb()
         {
             MySqlCommand comm = new MySqlCommand();
-<<<<<<< HEAD
 
-=======
->>>>>>> 5618a08e548db1543f9f68d47853e599ff11c352
             comm.CommandText = "SELECT * FROM TBOrigemDoacao ORDER BY nome ASC;";
 
             comm.CommandType = CommandType.Text;
@@ -127,6 +126,29 @@ namespace GPSFA_WinForms
 
             DataBaseConnection.CloseConnection();
         }
+
+        //Método para validar DataLimite de Saída
+        
+            int diaDeArrecadacao = DateTime.Now.Day;
+
+            DateTime diaDeDistribuicao = DateTime.Now.AddDays(7);          
+
+        private void validaSaida()
+        {
+            int dataValidade = Convert.ToInt32(dtpDataValidade.Value.Day);
+
+            int calculoData = Convert.ToInt32(dtpDiaDistribuicao.Value.Day);
+
+            if ()
+            {
+
+            }
+
+        }
+
+            
+
+        
 
         //Método para verificar Formatação de Campos
 
@@ -201,19 +223,20 @@ namespace GPSFA_WinForms
             return 0;
         }
 
-        //Botão ação cadastrar
 
+        //Botão ação cadastrar
         private void btnCadastrar_Click(object sender, EventArgs e)
         {
-            int resp = cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList);
+           
+            //int resp = cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList);
            
             if (dtpDataValidade.Value < DateTime.Today)
             {
-                MessageBox.Show("A data de validade não pode ser anterior a data atual!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                dtpDataValidade.Focus();
+                MessageBox.Show("A data de validade não pode ser anterior a data atual!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);                
+                dtpDataValidade.Focus();                
                 return;
             }
-            else if (resp.Equals(1))
+            else if (cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList).Equals(1))
             {
                 MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
                 MessageBoxButtons.OK,
@@ -426,6 +449,8 @@ namespace GPSFA_WinForms
                 codList = DR.GetInt32(0);
                 txtPeso.Text = DR.GetInt32(1).ToString();
                 cbbUnidadeMedida.Text = DR.GetString(2);
+                cbbUnidadeMedida.Enabled = false;
+                txtPeso.Enabled = false;
             }
 
             DataBaseConnection.CloseConnection();
