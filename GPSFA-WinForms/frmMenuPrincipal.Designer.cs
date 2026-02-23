@@ -30,13 +30,13 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMenuPrincipal));
             this.pnlForm = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.btnGerenciarProdutos = new System.Windows.Forms.Button();
             this.btnVoluntarios = new System.Windows.Forms.Button();
             this.btnRelatorios = new System.Windows.Forms.Button();
             this.btnAlimentos = new System.Windows.Forms.Button();
             this.pnlDadosProdutos = new System.Windows.Forms.Panel();
             this.btnDashboard = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
             this.pnlForm.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,6 +55,20 @@
             this.pnlForm.Name = "pnlForm";
             this.pnlForm.Size = new System.Drawing.Size(943, 507);
             this.pnlForm.TabIndex = 1;
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(116)))), ((int)(((byte)(11)))), ((int)(((byte)(13)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button1.Location = new System.Drawing.Point(783, 449);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(148, 46);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "&Sair";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.btnSair_Click);
             // 
             // btnGerenciarProdutos
             // 
@@ -161,19 +175,6 @@
             this.btnDashboard.UseVisualStyleBackColor = false;
             this.btnDashboard.Click += new System.EventHandler(this.btnDashboard_Click);
             // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(116)))), ((int)(((byte)(11)))), ((int)(((byte)(13)))));
-            this.button1.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button1.Location = new System.Drawing.Point(783, 449);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(148, 46);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "&Sair";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.btnSair_Click);
-            // 
             // frmMenuPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -187,7 +188,7 @@
             this.MaximizeBox = false;
             this.Name = "frmMenuPrincipal";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Grupo Socorrista Francisco de Assis";
+            this.Text = "Grupo Socorrista Francisco de Assis - Menu Principal";
             this.Load += new System.EventHandler(this.frmMenuPrincipal_Load);
             this.pnlForm.ResumeLayout(false);
             this.ResumeLayout(false);

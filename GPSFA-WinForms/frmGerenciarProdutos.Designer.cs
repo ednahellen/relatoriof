@@ -57,6 +57,7 @@
             this.btnAlterar = new System.Windows.Forms.Button();
             this.btnExcluir = new System.Windows.Forms.Button();
             this.btnCadastrar = new System.Windows.Forms.Button();
+            this.dtpDiaDistribuicao = new System.Windows.Forms.DateTimePicker();
             this.gpbCamposDoProduto.SuspendLayout();
             this.pnlCrud.SuspendLayout();
             this.SuspendLayout();
@@ -214,6 +215,7 @@
             // gpbCamposDoProduto
             // 
             this.gpbCamposDoProduto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
+            this.gpbCamposDoProduto.Controls.Add(this.dtpDiaDistribuicao);
             this.gpbCamposDoProduto.Controls.Add(this.btnDoacao);
             this.gpbCamposDoProduto.Controls.Add(this.lblOrigemDoacao);
             this.gpbCamposDoProduto.Controls.Add(this.cbbOrigemDoacao);
@@ -422,6 +424,13 @@
             this.btnCadastrar.UseVisualStyleBackColor = true;
             this.btnCadastrar.Click += new System.EventHandler(this.btnCadastrar_Click);
             // 
+            // dtpDiaDistribuicao
+            // 
+            this.dtpDiaDistribuicao.Location = new System.Drawing.Point(642, 364);
+            this.dtpDiaDistribuicao.Name = "dtpDiaDistribuicao";
+            this.dtpDiaDistribuicao.Size = new System.Drawing.Size(429, 34);
+            this.dtpDiaDistribuicao.TabIndex = 64;
+            // 
             // frmGerenciarProdutos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -472,5 +481,6 @@
         private System.Windows.Forms.Button btnDoacao;
         private System.Windows.Forms.Label lblOrigemDoacao;
         private System.Windows.Forms.ComboBox cbbOrigemDoacao;
+        private System.Windows.Forms.DateTimePicker dtpDiaDistribuicao;
     }
 }
