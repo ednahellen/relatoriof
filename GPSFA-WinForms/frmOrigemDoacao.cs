@@ -389,80 +389,82 @@ namespace GPSFA_WinForms
                     MessageBoxDefaultButton.Button1);
                 txtNomeFornecedor.Focus();
             }
-            else if (buscaOrigemDoacao(txtNomeFornecedor.Text).Equals(1))
+            //else if (buscaOrigemDoacao(txtNomeFornecedor.Text).Equals(1))
+            //{
+            //    MessageBox.Show("Este registro já existe!", "Mensagem do sistema",
+            //        MessageBoxButtons.OK,
+            //        MessageBoxIcon.Information,
+            //        MessageBoxDefaultButton.Button1);
+            //    txtNomeFornecedor.Focus();
+            //}
+            else if (rdbCpf.Checked.Equals(true))
             {
-                MessageBox.Show("Este registro já existe!", "Mensagem do sistema",
+                string cnpj = null;
+                //Regex utilizado para remover espaços extras entre as palavras.
+
+                int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), mskCpf.Text, cnpj, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
+
+                if (resp.Equals(1))
+                {
+                    MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information,
                     MessageBoxDefaultButton.Button1);
-                txtNomeFornecedor.Focus();
+                    desativarBotoes();
+                    limparCamposNovo();
+                    desativarCampos();
+                    btnNovo.Enabled = true;
+                    btnNovo.Focus();
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+
+                    //limparCampos();
+                    btnCadastrar.Enabled = false;
+                    btnLimpar.Enabled = false;
+                    btnNovo.Enabled = true;
+                    desativarCampos();
+
+                }
             }
-            //else if (rdbCpf.Checked.Equals(true))
-            //{
-            //    string cnpj = null;
-            //    //Regex utilizado para remover espaços extras entre as palavras.
+            else if (rdbCnpj.Checked)
+            {
+                string cpf = null;
+                //Regex utilizado para remover espaços extras entre as palavras.
 
-            //    int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), mskCpf.Text, cnpj, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
+                int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), cpf, mskCnpj.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
 
-            //    if (resp.Equals(1))
-            //    {
-            //        MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
-            //        MessageBoxButtons.OK,
-            //        MessageBoxIcon.Information,
-            //        MessageBoxDefaultButton.Button1);
-            //        desativarBotoes();
-            //        limparCamposNovo();
-            //        desativarCampos();
-            //        btnNovo.Enabled = true;
-            //        btnNovo.Focus();
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
-            //        MessageBoxButtons.OK,
-            //        MessageBoxIcon.Error,
-            //        MessageBoxDefaultButton.Button1);
+                if (resp.Equals(1))
+                {
+                    MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
+                    desativarBotoes();
+                    limparCamposNovo();
+                    desativarCampos();
+                    btnNovo.Enabled = true;
+                    btnNovo.Focus();
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
 
-            //        //limparCampos();
-            //        btnCadastrar.Enabled = false;
-            //        btnLimpar.Enabled = false;
-            //        btnNovo.Enabled = true;
-            //        desativarCampos();
+                    //limparCampos();
+                    btnCadastrar.Enabled = false;
+                    btnLimpar.Enabled = false;
+                    btnNovo.Enabled = true;
+                    desativarCampos();
 
-            //    }
-            //}
-            //else if (rdbCnpj.Checked) {
-            //    string cpf = null;
-            //    //Regex utilizado para remover espaços extras entre as palavras.
-
-            //    int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), cpf, mskCnpj.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
-
-            //    if (resp.Equals(1))
-            //    {
-            //        MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
-            //        MessageBoxButtons.OK,
-            //        MessageBoxIcon.Information,
-            //        MessageBoxDefaultButton.Button1);
-            //        desativarBotoes();
-            //        limparCamposNovo();
-            //        desativarCampos();
-            //        btnNovo.Enabled = true;
-            //        btnNovo.Focus();
-            //    }
-            //else
-            //{
-            //    MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
-            //    MessageBoxButtons.OK,
-            //    MessageBoxIcon.Error,
-            //    MessageBoxDefaultButton.Button1);
-
-            //    //limparCampos();
-            //    btnCadastrar.Enabled = false;
-            //    btnLimpar.Enabled = false;
-            //    btnNovo.Enabled = true;
-            //    desativarCampos();
-
-            //}
+                }
+            }
         }
         
 

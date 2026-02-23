@@ -193,6 +193,12 @@
     <Compile Include="classes\ViaCepResponse.cs" />
     <Compile Include="data.dbfransisco\DataBaseConnection.cs" />
     <Compile Include="classes\FiltroDeBuscaBD.cs" />
+    <Compile Include="frmDiaArrecadacao.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDiaArrecadacao.Designer.cs">
+      <DependentUpon>frmDiaArrecadacao.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmGerenciarProdutos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -284,6 +290,9 @@
     <Compile Include="ProductRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmDiaArrecadacao.resx">
+      <DependentUpon>frmDiaArrecadacao.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmGerenciarProdutos.resx">
       <DependentUpon>frmGerenciarProdutos.cs</DependentUpon>
     </EmbeddedResource>

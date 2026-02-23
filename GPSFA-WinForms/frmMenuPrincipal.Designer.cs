@@ -87,7 +87,7 @@
             this.btnGerenciarProdutos.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnGerenciarProdutos.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.btnGerenciarProdutos.UseVisualStyleBackColor = false;
-            this.btnGerenciarProdutos.Click += new System.EventHandler(this.button1_Click);
+            this.btnGerenciarProdutos.Click += new System.EventHandler(this.btnGerenciarProdutos_Click);
             // 
             // btnVoluntarios
             // 

@@ -44,6 +44,7 @@
             this.dtpDataEntrada = new System.Windows.Forms.DateTimePicker();
             this.lblDescricao = new System.Windows.Forms.Label();
             this.gpbCamposDoProduto = new System.Windows.Forms.GroupBox();
+            this.dtpDiaDistribuicao = new System.Windows.Forms.DateTimePicker();
             this.btnDoacao = new System.Windows.Forms.Button();
             this.lblOrigemDoacao = new System.Windows.Forms.Label();
             this.cbbOrigemDoacao = new System.Windows.Forms.ComboBox();
@@ -57,7 +58,6 @@
             this.btnAlterar = new System.Windows.Forms.Button();
             this.btnExcluir = new System.Windows.Forms.Button();
             this.btnCadastrar = new System.Windows.Forms.Button();
-            this.dtpDiaDistribuicao = new System.Windows.Forms.DateTimePicker();
             this.gpbCamposDoProduto.SuspendLayout();
             this.pnlCrud.SuspendLayout();
             this.SuspendLayout();
@@ -243,6 +243,13 @@
             this.gpbCamposDoProduto.TabStop = false;
             this.gpbCamposDoProduto.Enter += new System.EventHandler(this.gpbCamposDoProduto_Enter);
             // 
+            // dtpDiaDistribuicao
+            // 
+            this.dtpDiaDistribuicao.Location = new System.Drawing.Point(642, 364);
+            this.dtpDiaDistribuicao.Name = "dtpDiaDistribuicao";
+            this.dtpDiaDistribuicao.Size = new System.Drawing.Size(429, 34);
+            this.dtpDiaDistribuicao.TabIndex = 64;
+            // 
             // btnDoacao
             // 
             this.btnDoacao.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -423,13 +430,6 @@
             this.btnCadastrar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCadastrar.UseVisualStyleBackColor = true;
             this.btnCadastrar.Click += new System.EventHandler(this.btnCadastrar_Click);
-            // 
-            // dtpDiaDistribuicao
-            // 
-            this.dtpDiaDistribuicao.Location = new System.Drawing.Point(642, 364);
-            this.dtpDiaDistribuicao.Name = "dtpDiaDistribuicao";
-            this.dtpDiaDistribuicao.Size = new System.Drawing.Size(429, 34);
-            this.dtpDiaDistribuicao.TabIndex = 64;
             // 
             // frmGerenciarProdutos
             // 

@@ -132,14 +132,7 @@ namespace GPSFA_WinForms
             abrir.Show();
             this.Hide();
 
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
-            abrir.Show();
-            this.Hide();
-        }
+        }    
 
         private void frmMenuPrincipal_Load(object sender, EventArgs e)
         {
@@ -163,6 +156,14 @@ namespace GPSFA_WinForms
             {
                 return;
             }
+        }
+
+        private void btnGerenciarProdutos_Click(object sender, EventArgs e)
+        {
+            //frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
+            frmTipoDeArrecadacao abrir = new frmTipoDeArrecadacao(codUsuLogado);
+            abrir.Show();
+            this.Hide();
         }
     }
 }

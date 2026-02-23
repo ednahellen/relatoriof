@@ -46,6 +46,20 @@ namespace GPSFA_WinForms
             dtpDiaDistribuicao.Value = diaDeDistribuicao;
         }
 
+        public frmGerenciarProdutos(int codUsu, string origemSelecionada)
+        {
+            nomeOrigem = origemSelecionada;
+            codUsuLogado = codUsu;
+            InitializeComponent();
+            carregarOrigemCbb();
+            carregarUnidadesCbb();
+            carregarProdutosCbb();
+
+            cbbOrigemDoacao.Text = nomeOrigem;
+            
+            dtpDiaDistribuicao.Value = diaDeDistribuicao;
+        }
+
         // Variavel global da janela para salvar o código do usuário logado
         int codUsuLogado;
 
@@ -54,6 +68,11 @@ namespace GPSFA_WinForms
 
         // Variavel global da janela para salvar o código de Origem da tabela TBOrigemDoacao
         int codOri;
+
+        // Variavel global da janela para salvar o código de Origem da tabela TBOrigemDoacao
+        string nomeOrigem;
+
+        int codOrigem;
 
         //Desativando botão fechar da janela
 
@@ -139,10 +158,10 @@ namespace GPSFA_WinForms
 
             int calculoData = Convert.ToInt32(dtpDiaDistribuicao.Value.Day);
 
-            if ()
-            {
+            //if ()
+            //{
 
-            }
+            //}
 
         }
 
@@ -479,6 +498,7 @@ namespace GPSFA_WinForms
 
             DataBaseConnection.CloseConnection();
         }
+     
     }        
 
     }
