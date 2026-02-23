@@ -185,7 +185,7 @@ namespace GPSFA_WinForms
 
             if (dataValidade < DateTime.Now.AddMonths(-3))
             {
-                MessageBox.Show("O periodo para cadastro de doação excedeu!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("O período para cadastro de doação excedeu!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 dtpDataEntrada.Focus();
                 return false;
             }
@@ -202,7 +202,7 @@ namespace GPSFA_WinForms
 
         //Método para cadastrar Produtos na TBPRODUTOS
 
-        private int cadastrarProdutos(string descricao, int quantidade, int peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
+        private int cadastrarProdutos(string descricao, int quantidade, decimal peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
         {
 
             MySqlCommand comm = new MySqlCommand();
@@ -246,6 +246,15 @@ namespace GPSFA_WinForms
         //Botão ação cadastrar
         private void btnCadastrar_Click(object sender, EventArgs e)
         {
+<<<<<<< HEAD
+            if (dtpDataValidade.Value.Date < DateTime.Today)
+            {
+                MessageBox.Show("Data de validade inválida.");
+                return;
+            }
+
+            using (var conn = DataBaseConnection.OpenConnection())
+=======
            
             //int resp = cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList);
            
@@ -256,21 +265,99 @@ namespace GPSFA_WinForms
                 return;
             }
             else if (cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList).Equals(1))
+>>>>>>> 8f8a8eddb33d53196da667df434a240a8808af77
             {
-                MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information,
-                MessageBoxDefaultButton.Button1);
+                // Verifica se já existe produto
+                string sqlVerifica = "SELECT codProd, quantidade FROM tbProdutos WHERE codBar = @codBar";
+
+                using (var cmdVerifica = new MySqlCommand(sqlVerifica, conn))
+                {
+                    cmdVerifica.Parameters.AddWithValue("@codBar", txtCodBarras.Text);
+
+                    using (var reader = cmdVerifica.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int codProd = reader.GetInt32("codProd");
+                            int qtdAtual = reader.GetInt32("quantidade");
+                            reader.Close();
+
+                            // Atualiza estoque
+                            string sqlUpdate = "UPDATE tbProdutos SET quantidade = @novaQtd WHERE codProd = @codProd";
+
+                            using (var cmdUpdate = new MySqlCommand(sqlUpdate, conn))
+                            {
+                                cmdUpdate.Parameters.AddWithValue("@novaQtd",
+                                    qtdAtual + Convert.ToInt32(txtQuantidade.Text));
+                                cmdUpdate.Parameters.AddWithValue("@codProd", codProd);
+                                cmdUpdate.ExecuteNonQuery();
+                            }
+
+                            MessageBox.Show("Quantidade atualizada no estoque.");
+                            return;
+                        }
+                    }
+                }
+
+                // Se não existir, insere novo produto
+                string sqlInsert = @"INSERT INTO tbProdutos
+                             (descricao, quantidade, peso, unidade, codBar,
+                              dataDeEntrada, dataDeValidade, codUsu, codOri, codList)
+                             VALUES
+                             (@descricao, @qtd, @peso, @un, @codBar,
+                              @entrada, @validade, @codUsu, @codOri, @codList)";
+
+                using (var cmdInsert = new MySqlCommand(sqlInsert, conn))
+                {
+                    cmdInsert.Parameters.AddWithValue("@descricao", cbbDescricao.Text);
+                    cmdInsert.Parameters.AddWithValue("@qtd", Convert.ToInt32(txtQuantidade.Text));
+                    cmdInsert.Parameters.AddWithValue("@peso", Convert.ToDecimal(txtPeso.Text));
+                    cmdInsert.Parameters.AddWithValue("@un", cbbUnidadeMedida.Text);
+                    cmdInsert.Parameters.AddWithValue("@codBar", txtCodBarras.Text);
+                    cmdInsert.Parameters.AddWithValue("@entrada", DateTime.Now);
+                    cmdInsert.Parameters.AddWithValue("@validade", dtpDataValidade.Value);
+                    cmdInsert.Parameters.AddWithValue("@codUsu", codUsuLogado);
+                    cmdInsert.Parameters.AddWithValue("@codOri", 1);
+                    cmdInsert.Parameters.AddWithValue("@codList", 1);
+
+                    cmdInsert.ExecuteNonQuery();
+                }
+
+                MessageBox.Show("Produto cadastrado com sucesso.");
             }
-            else
-            {
-                MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error,
-                MessageBoxDefaultButton.Button1);
-            }
-        }           
-      
+        }
+
+
+        //Botão ação cadastrar
+
+        //private void btnCadastrar_Click(object sender, EventArgs e)
+        //{
+        //    int resp = cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList);
+
+        //    if (dtpDataValidade.Value < DateTime.Today)
+        //    {
+        //        MessageBox.Show("A data de validade não pode ser anterior a data atual!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        dtpDataValidade.Focus();
+        //        return;
+        //    }
+        //    else if (resp.Equals(1))
+        //    {
+        //        MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
+        //        MessageBoxButtons.OK,
+        //        MessageBoxIcon.Information,
+        //        MessageBoxDefaultButton.Button1);
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
+        //        MessageBoxButtons.OK,
+        //        MessageBoxIcon.Error,
+        //        MessageBoxDefaultButton.Button1);
+        //    }
+        //}
+
+
+        ///Exemplos para serem utilizados no futuro para validação de campos
 
         //    if (Regex.IsMatch(txtQuantidade.Text, @"[a-zA-Z]") || Convert.ToInt32(txtQuantidade.Text) == 0)
         //    {

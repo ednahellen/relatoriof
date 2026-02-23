@@ -177,6 +177,19 @@ FOREIGN KEY(codUsu) REFERENCES tbUsuarios(codUsu),
 FOREIGN KEY(codCli) REFERENCES tbClientes(codCli)
 );
 
+CREATE TABLE tbMovimentacao(
+    codMov INT AUTO_INCREMENT PRIMARY KEY,
+    codProd INT NOT NULL,
+    quantidade INT NOT NULL,
+    dataMov DATETIME NOT NULL,
+    tipo ENUM('ENTRADA','SAIDA') NOT NULL,
+    FOREIGN KEY (codProd) REFERENCES tbProdutos(codProd)
+);
+
+ALTER TABLE tbProdutos
+MODIFY peso DECIMAL(10,3) NOT NULL;
+
+
 INSERT INTO tbVoluntarios
 (nome, telCel, cpf, cep, rua, numero, complemento, bairro, cidade, estado)
 VALUES

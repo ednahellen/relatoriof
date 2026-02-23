@@ -1,6 +1,5 @@
 ﻿using ClosedXML.Excel;
 using MySql.Data.MySqlClient;
-using Mysqlx.Crud;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,11 +30,35 @@ namespace GPSFA_WinForms
         private void frmDashboard_Load(object sender, EventArgs e)
         {
             CarregarDados();
-            CarregarDashboard();
+            CarregarGraficoAnual();
+         
         }
 
         public void CarregarDados()
         {
+
+            string query = @"SELECT COUNT(*) AS totalProdutos, SUM(quantidade) AS totalQuantidade, SUM(quantidade* peso) AS totalPeso
+                             FROM tbProdutos;";
+             try
+            {
+                using (var conn = DataBaseConnection.OpenConnection())
+                using (var cmd = new MySqlCommand(query, conn))
+                using(var reader = cmd.ExecuteReader()) 
+
+                {
+                    if (reader.Read())
+                    {
+                        lblTotalProdutos.Text = reader["totalProdutos"].ToString();
+                        lblTotalQuantidade.Text = reader["totalQuantidade"] != DBNull.Value? Convert.ToInt64(reader["totalQuantidade"]).ToString("N0"): "0";
+
+                        label1.Text = reader["totalPeso"] != DBNull.Value? Convert.ToDecimal(reader["totalPeso"]).ToString("N2") + " kg": "0 kg";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao carregar dados do dashboard: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             // Atualiza o total dos itens (quantidade e depois o total em kg)
             AtualizarTotais();
 
@@ -54,7 +77,7 @@ namespace GPSFA_WinForms
 
         private void CarregarDashboard()
         {
-            DataTable dt = ProductRepository.BuscarTodosProdutos();
+            System.Data.DataTable dt = ProductRepository.BuscarTodosProdutos();
 
             lblTotalProdutos.Text = dt.Rows.Count.ToString();
 
@@ -145,7 +168,13 @@ namespace GPSFA_WinForms
 
             // Cria uma nova série de dados chamada "Itens por Mês"
             // Define o tipo do gráfico como linha (ideal para acompanhar variação temporal) e ativa a exibição dos valores acima de cada ponto
-            var series = new Series("Itens por Mês")
+            var seriesQuantidade = new Series("Quantidade")
+            {
+                ChartType = SeriesChartType.Line,
+                IsValueShownAsLabel = true
+            };
+
+            var seriesPeso = new Series("Peso (kg)")
             {
                 ChartType = SeriesChartType.Line,
                 IsValueShownAsLabel = true
@@ -153,16 +182,15 @@ namespace GPSFA_WinForms
 
             // Consulta SQL que retorna o total de produtos cadastrados em cada mês/ano
             // Agrupa os resultados por ano e mês, somando as quantidades de produtos e ordena os resultados em ordem cronológica crescente
-            string query = "SELECT YEAR(dataDeEntrada) AS ano, MONTH(dataDeEntrada) AS mes, SUM(quantidade) AS totalMensal FROM tbProdutos GROUP BY YEAR(dataDeEntrada), MONTH(dataDeEntrada) ORDER BY ano, mes;";
+            string query = @"SELECT YEAR(dataDeEntrada) AS ano,MONTH(dataDeEntrada) AS mes,SUM(quantidade) AS totalQuantidade,SUM(quantidade * peso) AS totalPeso FROM tbProdutos GROUP BY YEAR(dataDeEntrada), MONTH(dataDeEntrada) ORDER BY ano, mes;"; 
 
             try
             {   // Abre a conexão com o banco e executa o comando SQL
-                using (var cmd = new MySqlCommand(query, DataBaseConnection.OpenConnection()))
+                using (var conn = DataBaseConnection.OpenConnection())
+                using (var cmd = new MySqlCommand(query, conn))
+                using (var reader = cmd.ExecuteReader())
                 {
-                    // O reader permite percorrer os resultados da consulta linha por linha
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        // Lê cada registro retornado (um por mês/ano)
+                      // Lê cada registro retornado (um por mês/ano)
                         while (reader.Read())
                         {
                             // Extrai o mês e o ano dos dados retornados
@@ -174,19 +202,25 @@ namespace GPSFA_WinForms
 
                             // Adiciona o ponto ao gráfico:
                             // eixo X = mês/ano | eixo Y = total de produtos cadastrados no período
-                            series.Points.AddXY(
+                            seriesQuantidade.Points.AddXY(
                                 mesNome,
-                                Convert.ToDouble(reader["totalMensal"])
+                                Convert.ToDouble(reader["totalQuantidade"])
                             );
-                        }
+                            seriesPeso.Points.AddXY(
+                                mesNome,
+                                Convert.ToDouble(reader["totalPeso"])
+                             );
+                    
                     }
                 }
 
                 // Adiciona a série ao gráfico após carregar todos os dados
-                chartDoacaoMensal.Series.Add(series);
+                chartDoacaoMensal.Series.Add(seriesQuantidade);
+
+                chartDoacaoMensal.Series.Add(seriesPeso);
 
                 // Define o título exibido acima do gráfico
-                chartDoacaoMensal.Titles.Add("Quantidade de Itens Recebidos Mensalmente");
+                chartDoacaoMensal.Titles.Add("Quantidade e Peso de Itens Recebidos Mensalmente");
             }
             catch (Exception ex)
             {
@@ -251,6 +285,57 @@ namespace GPSFA_WinForms
             }
             // Fecha a conexão com o banco de dados para evitar vazamentos de recursos. 
             DataBaseConnection.CloseConnection();
+        }
+
+        private void CarregarGraficoAnual()
+        {
+            chartAnual.Series.Clear();
+            chartAnual.Titles.Clear();
+
+            var seriesQuantidade = new Series("Quantidade Anual")
+            {
+                ChartType = SeriesChartType.Column,
+                IsValueShownAsLabel = true
+            };
+
+            var seriesPeso = new Series("Peso Anual (kg)")
+            {
+                ChartType = SeriesChartType.Column,
+                IsValueShownAsLabel = true
+            };
+
+            string query = @" SELECT YEAR(dataDeEntrada) AS ano, SUM(quantidade) AS totalQuantidade,SUM(quantidade * peso) AS totalPeso FROM tbProdutos GROUP BY YEAR(dataDeEntrada) ORDER BY ano;";
+
+            try
+            {
+                using (var conn = DataBaseConnection.OpenConnection())
+                using (var cmd = new MySqlCommand(query, conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        string ano = reader["ano"].ToString();
+
+                        seriesQuantidade.Points.AddXY(
+                            ano,
+                            Convert.ToDouble(reader["totalQuantidade"])
+                        );
+
+                        seriesPeso.Points.AddXY(
+                            ano,
+                            Convert.ToDouble(reader["totalPeso"])
+                        );
+                    }
+                }
+
+                chartAnual.Series.Add(seriesQuantidade);
+                chartAnual.Series.Add(seriesPeso);
+                chartAnual.Titles.Add("Histórico Anual - Quantidade e Peso");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Erro ao carregar gráfico anual: " + ex.Message);
+            }
         }
 
         private void AtualizarTotais()

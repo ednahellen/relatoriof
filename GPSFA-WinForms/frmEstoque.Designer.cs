@@ -31,10 +31,13 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmEstoque));
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnLimparFiltros = new System.Windows.Forms.Button();
+            this.btnAplicarModo = new System.Windows.Forms.Button();
             this.lblTitleEstoque = new System.Windows.Forms.Label();
             this.btnVoltar = new System.Windows.Forms.Button();
             this.btnExportarExcel = new System.Windows.Forms.Button();
             this.gpbFiltrosDoRelatorio = new System.Windows.Forms.GroupBox();
+            this.btnAplicarFiltros = new System.Windows.Forms.Button();
             this.btnMenu = new System.Windows.Forms.Button();
             this.btnSair = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -52,17 +55,13 @@
             this.lblCodOrNome = new System.Windows.Forms.Label();
             this.btnPesquisar = new System.Windows.Forms.Button();
             this.dgvEstoque = new System.Windows.Forms.DataGridView();
-            this.codigo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.produto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.quantidade = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.unidade = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.peso = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.status = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataLimiteSaida = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlFiltrosDeBusca = new System.Windows.Forms.Panel();
-            this.btnAplicarModo = new System.Windows.Forms.Button();
-            this.btnLimparFiltros = new System.Windows.Forms.Button();
-            this.btnAplicarFiltros = new System.Windows.Forms.Button();
+            this.Data = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Saída = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Quantidade = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Peso = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Validade = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Cadastrado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.gpbFiltrosDoRelatorio.SuspendLayout();
@@ -100,6 +99,26 @@
             this.panel1.Padding = new System.Windows.Forms.Padding(10, 0, 10, 10);
             this.panel1.Size = new System.Drawing.Size(1323, 146);
             this.panel1.TabIndex = 18;
+            // 
+            // btnLimparFiltros
+            // 
+            this.btnLimparFiltros.Location = new System.Drawing.Point(806, 16);
+            this.btnLimparFiltros.Name = "btnLimparFiltros";
+            this.btnLimparFiltros.Size = new System.Drawing.Size(164, 33);
+            this.btnLimparFiltros.TabIndex = 20;
+            this.btnLimparFiltros.Text = "Limpar Filtros";
+            this.btnLimparFiltros.UseVisualStyleBackColor = true;
+            this.btnLimparFiltros.Click += new System.EventHandler(this.btnLimparFiltros_Click_1);
+            // 
+            // btnAplicarModo
+            // 
+            this.btnAplicarModo.Location = new System.Drawing.Point(433, 13);
+            this.btnAplicarModo.Name = "btnAplicarModo";
+            this.btnAplicarModo.Size = new System.Drawing.Size(164, 33);
+            this.btnAplicarModo.TabIndex = 19;
+            this.btnAplicarModo.Text = "Aplicar Modo";
+            this.btnAplicarModo.UseVisualStyleBackColor = true;
+            this.btnAplicarModo.Click += new System.EventHandler(this.btnAplicarModo_Click);
             // 
             // lblTitleEstoque
             // 
@@ -159,6 +178,16 @@
             this.gpbFiltrosDoRelatorio.TabIndex = 16;
             this.gpbFiltrosDoRelatorio.TabStop = false;
             this.gpbFiltrosDoRelatorio.Text = "Filtros";
+            // 
+            // btnAplicarFiltros
+            // 
+            this.btnAplicarFiltros.Location = new System.Drawing.Point(907, 23);
+            this.btnAplicarFiltros.Name = "btnAplicarFiltros";
+            this.btnAplicarFiltros.Size = new System.Drawing.Size(164, 33);
+            this.btnAplicarFiltros.TabIndex = 79;
+            this.btnAplicarFiltros.Text = "Aplicar Filtros";
+            this.btnAplicarFiltros.UseVisualStyleBackColor = true;
+            this.btnAplicarFiltros.Click += new System.EventHandler(this.btnAplicarFiltros_Click_1);
             // 
             // btnMenu
             // 
@@ -360,13 +389,12 @@
             this.dgvEstoque.AllowUserToAddRows = false;
             this.dgvEstoque.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvEstoque.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.codigo,
-            this.produto,
-            this.quantidade,
-            this.unidade,
-            this.peso,
-            this.status,
-            this.dataLimiteSaida});
+            this.Data,
+            this.Saída,
+            this.Quantidade,
+            this.Peso,
+            this.Validade,
+            this.Cadastrado});
             this.dgvEstoque.Location = new System.Drawing.Point(3, 236);
             this.dgvEstoque.Margin = new System.Windows.Forms.Padding(5);
             this.dgvEstoque.Name = "dgvEstoque";
@@ -375,48 +403,6 @@
             this.dgvEstoque.TabIndex = 5;
             this.dgvEstoque.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEstoque_CellContentClick);
             this.dgvEstoque.Paint += new System.Windows.Forms.PaintEventHandler(this.dgvEstoque_Paint);
-            // 
-            // codigo
-            // 
-            this.codigo.HeaderText = "Código";
-            this.codigo.Name = "codigo";
-            this.codigo.ReadOnly = true;
-            // 
-            // produto
-            // 
-            this.produto.HeaderText = "Produto";
-            this.produto.Name = "produto";
-            this.produto.ReadOnly = true;
-            // 
-            // quantidade
-            // 
-            this.quantidade.HeaderText = "Quantidade";
-            this.quantidade.Name = "quantidade";
-            this.quantidade.ReadOnly = true;
-            // 
-            // unidade
-            // 
-            this.unidade.HeaderText = "Unidade";
-            this.unidade.Name = "unidade";
-            this.unidade.ReadOnly = true;
-            // 
-            // peso
-            // 
-            this.peso.HeaderText = "Peso";
-            this.peso.Name = "peso";
-            this.peso.ReadOnly = true;
-            // 
-            // status
-            // 
-            this.status.HeaderText = "Status";
-            this.status.Name = "status";
-            this.status.ReadOnly = true;
-            // 
-            // dataLimiteSaida
-            // 
-            this.dataLimiteSaida.HeaderText = "Limite de Saída ";
-            this.dataLimiteSaida.Name = "dataLimiteSaida";
-            this.dataLimiteSaida.ReadOnly = true;
             // 
             // pnlFiltrosDeBusca
             // 
@@ -431,35 +417,41 @@
             this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1337, 1435);
             this.pnlFiltrosDeBusca.TabIndex = 15;
             // 
-            // btnAplicarModo
+            // Data
             // 
-            this.btnAplicarModo.Location = new System.Drawing.Point(433, 13);
-            this.btnAplicarModo.Name = "btnAplicarModo";
-            this.btnAplicarModo.Size = new System.Drawing.Size(164, 33);
-            this.btnAplicarModo.TabIndex = 19;
-            this.btnAplicarModo.Text = "Aplicar Modo";
-            this.btnAplicarModo.UseVisualStyleBackColor = true;
-            this.btnAplicarModo.Click += new System.EventHandler(this.btnAplicarModo_Click);
+            this.Data.HeaderText = "Data Entrada";
+            this.Data.Name = "Data";
+            this.Data.ReadOnly = true;
             // 
-            // btnLimparFiltros
+            // Saída
             // 
-            this.btnLimparFiltros.Location = new System.Drawing.Point(806, 16);
-            this.btnLimparFiltros.Name = "btnLimparFiltros";
-            this.btnLimparFiltros.Size = new System.Drawing.Size(164, 33);
-            this.btnLimparFiltros.TabIndex = 20;
-            this.btnLimparFiltros.Text = "Limpar Filtros";
-            this.btnLimparFiltros.UseVisualStyleBackColor = true;
-            this.btnLimparFiltros.Click += new System.EventHandler(this.btnLimparFiltros_Click_1);
+            this.Saída.HeaderText = "Data Saída";
+            this.Saída.Name = "Saída";
+            this.Saída.ReadOnly = true;
             // 
-            // btnAplicarFiltros
+            // Quantidade
             // 
-            this.btnAplicarFiltros.Location = new System.Drawing.Point(907, 23);
-            this.btnAplicarFiltros.Name = "btnAplicarFiltros";
-            this.btnAplicarFiltros.Size = new System.Drawing.Size(164, 33);
-            this.btnAplicarFiltros.TabIndex = 79;
-            this.btnAplicarFiltros.Text = "Aplicar Filtros";
-            this.btnAplicarFiltros.UseVisualStyleBackColor = true;
-            this.btnAplicarFiltros.Click += new System.EventHandler(this.btnAplicarFiltros_Click_1);
+            this.Quantidade.HeaderText = "Quantidade";
+            this.Quantidade.Name = "Quantidade";
+            this.Quantidade.ReadOnly = true;
+            // 
+            // Peso
+            // 
+            this.Peso.HeaderText = "Peso";
+            this.Peso.Name = "Peso";
+            this.Peso.ReadOnly = true;
+            // 
+            // Validade
+            // 
+            this.Validade.HeaderText = "Data Validade";
+            this.Validade.Name = "Validade";
+            this.Validade.ReadOnly = true;
+            // 
+            // Cadastrado
+            // 
+            this.Cadastrado.HeaderText = "Cadastrado";
+            this.Cadastrado.Name = "Cadastrado";
+            this.Cadastrado.ReadOnly = true;
             // 
             // frmEstoque
             // 
@@ -518,16 +510,15 @@
         private System.Windows.Forms.Label lblCodOrNome;
         private System.Windows.Forms.Button btnPesquisar;
         private System.Windows.Forms.DataGridView dgvEstoque;
-        private System.Windows.Forms.DataGridViewTextBoxColumn codigo;
-        private System.Windows.Forms.DataGridViewTextBoxColumn produto;
-        private System.Windows.Forms.DataGridViewTextBoxColumn quantidade;
-        private System.Windows.Forms.DataGridViewTextBoxColumn unidade;
-        private System.Windows.Forms.DataGridViewTextBoxColumn peso;
-        private System.Windows.Forms.DataGridViewTextBoxColumn status;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataLimiteSaida;
         private System.Windows.Forms.Panel pnlFiltrosDeBusca;
         private System.Windows.Forms.Button btnLimparFiltros;
         private System.Windows.Forms.Button btnAplicarModo;
         private System.Windows.Forms.Button btnAplicarFiltros;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Data;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Saída;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Quantidade;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Peso;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Validade;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Cadastrado;
     }
 }
