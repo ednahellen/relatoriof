@@ -136,32 +136,6 @@
     <value>True</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnVoltar.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAABNVJREFUWEft
-        l1tPG0cUx8lrPwj2EtqEhz5UiUrA5to0jR0pD0UyUgsEMAQoGNvgQGyCibEhgHEgmDt2wNx9Ad+wMdgB
-        J0QhN/UmpVUqpZeXfoV/dXYMBJK8NK2Rqh7pJ+3OzDnnf2Zmd2dTUv63v2FF3UXVR9uSZoW6wvZLBsnv
-        R9uTYgW6go7lnbtomWlKvoBCXb5h/sEoXv75BJppRXIFFOjyjDPxAXz7awzf/RZDk70ueQLy2/JM9q1e
-        PHrpx85PPuz+4ofSVpUcAXltud0TMSO2Xywi+sMCT/znJTRMVfzx6tWrD/4Jjubct1xtTs9I9AbC308i
-        8GwcgefjCD4fR+THSfQFm6Gwl7w3l0yFSMnTid9G39DGNaw+tcD5yAznrhmuXTPcj83wPDFj9bkF3teg
-        +32eMVaIpwzPE4b7sQUuYpfRaCvF0cJP5GpF/ZZIIxYeGTBzvx0O4kE7ZncYc8TDd5AYQ5AP+c7ECT2m
-        t/W4u6WH/Z4e9pgetpgeNaMypAD7nMjRZt/uDdXCFtdgLKrCeEyFiXuMyS0VJrdVmCLib4f6ebaYzzgR
-        U/GxRjfVGNlQYziihnVdjaGwGpXWywfJxdqswe61SlijtbgdkmMgLMfguhx3NhhDm3IMReWwEjHGcIK9
-        e+qjMXc2E34RFoNiWUJyWNaq0B+sgjlQhV5fFUoHL7LkIu25oa5gOcyhUpi8MnT7ZbgVkKEnKEPPmgy9
-        IRn6wjKY1xn9ERn6N44QOeinseRDvhSDYnX5ZHxs40oxOj3FuOkuRrElDyni1sxhU/AKTL4itDmluOGW
-        Qu+RomNVipteCQw+CTr9EhgDEpjWJDCFJOgiwkcIJfqDbCz5kC/F6FiRot0jwfXl81DPiVFrO4OykVM4
-        b/iQCejwF6PVmQ+F4yzU85nQLGWjxSnGdbcIWo8IulUR2rwi3PCJ0O4XQR8gstERZNA1tVFfmy8b2pVM
-        XHOdRdPyJ1DMf4w6RwbktpMon+BQNsahZITD19Y0fN75UWIJWs8N6X0yKBfOoGKKg9zOoXpaiBoHh7r5
-        NDQspqNxOR1KZzpUrnSo3elo8jDUnpNQudOgdHFQLAtQvyTAN4tC1M0LUTMrxNUZIaruClFp41AxyeHK
-        OIfSUQ4lw2m40Hnq8CY0BsrQ7PyUd6ieYQEoEAVsWBJA4RSg0SWA0i2AynOAknCzvn0RC0LUkgiHkC9G
-        TiKmOJRPHszCF8bTbz6Gt9aq0erJwlWHELVzQj7Q68kpoXpFgCYvkcpYFUC1woS8LqKORLxlFsoSs3DR
-        mHFIwP6LyBxuQJtXzFdfv8gC8pVT8lUBmr2p0PhSofEn8KXybSSMF+EUoGGZLcWhWbBz/BJfmUgIMGW8
-        +1U8EGlGRzCPr4SqpymmBNrgaZg2s9AVzUJ3jEHX1GaMZMMQzsbNENuc7QG2cWkT02ZudYvQ4hRBsyRC
-        04IYRf2ZSMnVit9BTo91UwdjuJCvaK/6wfhl9AVb0Ggve28umT5741twyOhzPBY14NbGBV4ArbX1/pdQ
-        TMn//c/xntGBZOpeD8xRKS9g5IEMSltNcg4ke0ZHsuntAdzeuoyxna/QbK9PrgAyOpTOxkex/mIQ16aV
-        yRdARsdy18NZtDo0xyOAjP2YSI9PANmx/pr95+wv+HIw7H0aMO0AAAAASUVORK5CYII=
-</value>
-  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAYAEAwAAAAAIAC6AgAAZgAAACAYAAAAACAAoQcAACADAAAwJAAAAAAgANkMAADBCgAAQDAAAAAA

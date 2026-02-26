@@ -34,7 +34,6 @@
             this.btnLimparFiltros = new System.Windows.Forms.Button();
             this.btnAplicarModo = new System.Windows.Forms.Button();
             this.lblTitleEstoque = new System.Windows.Forms.Label();
-            this.btnVoltar = new System.Windows.Forms.Button();
             this.btnExportarExcel = new System.Windows.Forms.Button();
             this.gpbFiltrosDoRelatorio = new System.Windows.Forms.GroupBox();
             this.btnAplicarFiltros = new System.Windows.Forms.Button();
@@ -55,13 +54,14 @@
             this.lblCodOrNome = new System.Windows.Forms.Label();
             this.btnPesquisar = new System.Windows.Forms.Button();
             this.dgvEstoque = new System.Windows.Forms.DataGridView();
-            this.pnlFiltrosDeBusca = new System.Windows.Forms.Panel();
             this.Data = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Saída = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Quantidade = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Peso = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Validade = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Cadastrado = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pnlFiltrosDeBusca = new System.Windows.Forms.Panel();
+            this.btnProdutosPrincipais = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.gpbFiltrosDoRelatorio.SuspendLayout();
@@ -86,10 +86,10 @@
             // 
             this.panel1.AutoSize = true;
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
+            this.panel1.Controls.Add(this.btnProdutosPrincipais);
             this.panel1.Controls.Add(this.btnLimparFiltros);
             this.panel1.Controls.Add(this.btnAplicarModo);
             this.panel1.Controls.Add(this.lblTitleEstoque);
-            this.panel1.Controls.Add(this.btnVoltar);
             this.panel1.Controls.Add(this.btnExportarExcel);
             this.panel1.Controls.Add(this.gpbFiltrosDoRelatorio);
             this.panel1.Controls.Add(this.cbxModoExibicao);
@@ -102,7 +102,7 @@
             // 
             // btnLimparFiltros
             // 
-            this.btnLimparFiltros.Location = new System.Drawing.Point(806, 16);
+            this.btnLimparFiltros.Location = new System.Drawing.Point(963, 12);
             this.btnLimparFiltros.Name = "btnLimparFiltros";
             this.btnLimparFiltros.Size = new System.Drawing.Size(164, 33);
             this.btnLimparFiltros.TabIndex = 20;
@@ -131,21 +131,6 @@
             this.lblTitleEstoque.Size = new System.Drawing.Size(186, 20);
             this.lblTitleEstoque.TabIndex = 11;
             this.lblTitleEstoque.Text = "Controle de Alimentos";
-            // 
-            // btnVoltar
-            // 
-            this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnVoltar.Font = new System.Drawing.Font("Microsoft YaHei", 12F);
-            this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
-            this.btnVoltar.Location = new System.Drawing.Point(976, 13);
-            this.btnVoltar.Name = "btnVoltar";
-            this.btnVoltar.Size = new System.Drawing.Size(164, 33);
-            this.btnVoltar.TabIndex = 4;
-            this.btnVoltar.Text = "&Voltar";
-            this.btnVoltar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnVoltar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnVoltar.UseVisualStyleBackColor = true;
-            this.btnVoltar.Click += new System.EventHandler(this.btnVoltar_Click);
             // 
             // btnExportarExcel
             // 
@@ -401,21 +386,7 @@
             this.dgvEstoque.ReadOnly = true;
             this.dgvEstoque.Size = new System.Drawing.Size(1309, 431);
             this.dgvEstoque.TabIndex = 5;
-            this.dgvEstoque.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvEstoque_CellContentClick);
             this.dgvEstoque.Paint += new System.Windows.Forms.PaintEventHandler(this.dgvEstoque_Paint);
-            // 
-            // pnlFiltrosDeBusca
-            // 
-            this.pnlFiltrosDeBusca.AutoSize = true;
-            this.pnlFiltrosDeBusca.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
-            this.pnlFiltrosDeBusca.Controls.Add(this.panel2);
-            this.pnlFiltrosDeBusca.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlFiltrosDeBusca.Location = new System.Drawing.Point(0, 0);
-            this.pnlFiltrosDeBusca.Margin = new System.Windows.Forms.Padding(5);
-            this.pnlFiltrosDeBusca.Name = "pnlFiltrosDeBusca";
-            this.pnlFiltrosDeBusca.Padding = new System.Windows.Forms.Padding(17, 0, 17, 16);
-            this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1337, 1435);
-            this.pnlFiltrosDeBusca.TabIndex = 15;
             // 
             // Data
             // 
@@ -452,6 +423,29 @@
             this.Cadastrado.HeaderText = "Cadastrado";
             this.Cadastrado.Name = "Cadastrado";
             this.Cadastrado.ReadOnly = true;
+            // 
+            // pnlFiltrosDeBusca
+            // 
+            this.pnlFiltrosDeBusca.AutoSize = true;
+            this.pnlFiltrosDeBusca.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
+            this.pnlFiltrosDeBusca.Controls.Add(this.panel2);
+            this.pnlFiltrosDeBusca.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlFiltrosDeBusca.Location = new System.Drawing.Point(0, 0);
+            this.pnlFiltrosDeBusca.Margin = new System.Windows.Forms.Padding(5);
+            this.pnlFiltrosDeBusca.Name = "pnlFiltrosDeBusca";
+            this.pnlFiltrosDeBusca.Padding = new System.Windows.Forms.Padding(17, 0, 17, 16);
+            this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1337, 1435);
+            this.pnlFiltrosDeBusca.TabIndex = 15;
+            // 
+            // btnProdutosPrincipais
+            // 
+            this.btnProdutosPrincipais.Location = new System.Drawing.Point(793, 12);
+            this.btnProdutosPrincipais.Name = "btnProdutosPrincipais";
+            this.btnProdutosPrincipais.Size = new System.Drawing.Size(164, 33);
+            this.btnProdutosPrincipais.TabIndex = 21;
+            this.btnProdutosPrincipais.Text = "Produtos Principais";
+            this.btnProdutosPrincipais.UseVisualStyleBackColor = true;
+            this.btnProdutosPrincipais.Click += new System.EventHandler(this.btnProdutosPrincipais_Click);
             // 
             // frmEstoque
             // 
@@ -490,7 +484,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lblTitleEstoque;
-        private System.Windows.Forms.Button btnVoltar;
         private System.Windows.Forms.Button btnExportarExcel;
         private System.Windows.Forms.GroupBox gpbFiltrosDoRelatorio;
         private System.Windows.Forms.Button btnMenu;
@@ -520,5 +513,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Peso;
         private System.Windows.Forms.DataGridViewTextBoxColumn Validade;
         private System.Windows.Forms.DataGridViewTextBoxColumn Cadastrado;
+        private System.Windows.Forms.Button btnProdutosPrincipais;
     }
 }

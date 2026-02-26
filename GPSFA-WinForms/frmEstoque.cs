@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
 using GPSFA_WinForms;
 using MySql.Data.MySqlClient;
 using System;
@@ -11,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
 namespace Projeto_Socorrista
@@ -71,16 +73,6 @@ namespace Projeto_Socorrista
                 dgvEstoque.Columns.Add("StatusValidade", "Status");
                 dgvEstoque.Columns.Add("DataDeEntrada", "Entrada");
                 dgvEstoque.Columns.Add("DataDeValidade", "Validade");
-
-                // botão editar
-                DataGridViewButtonColumn btnEditar = new DataGridViewButtonColumn
-                {
-                    Name = "Editar",
-                    HeaderText = "Editar",
-                    Text = "Editar",
-                    UseColumnTextForButtonValue = true
-                };
-                dgvEstoque.Columns.Add(btnEditar);
             }
 
             dgvEstoque.ResumeLayout();
@@ -95,7 +87,7 @@ namespace Projeto_Socorrista
             comm.CommandText = @"
         SELECT
             l.descricao AS descricao,
-            SUM(p.quantidade) AS quantidade_total,
+            SUM(p.estoqueAtual) AS quantidade_total,
             u.descricao AS unidade,
             l.peso AS peso,
             MIN(p.dataDeValidade) AS validade_minima,
@@ -316,38 +308,6 @@ namespace Projeto_Socorrista
             dataValidade = validadeSelecionada ? dtpDataValidade.Value.Date : (DateTime?)null;
 
             carregaDados();
-        }
-
-        private void dgvEstoque_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-
-            // se não existe coluna Editar ou estamos no modo agrupado, ignore
-            if (!dgvEstoque.Columns.Contains("Editar") || modoAgrupado)
-            {
-                MessageBox.Show("Mude para o modo detalhado para editar um item.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            if (dgvEstoque.Columns["Editar"].Index == e.ColumnIndex)
-            {
-                var cell = dgvEstoque.Rows[e.RowIndex].Cells["CodProd"];
-                if (cell == null || cell.Value == null)
-                {
-                    MessageBox.Show("Código do produto não encontrado nesta linha.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                string codigo = cell.Value.ToString();
-                frmEditarEstoque f = new frmEditarEstoque(codigo);
-                f.DadosAtualizados += () =>
-                {
-                    AtualizarStatusValidade();
-                    carregaDados();
-                };
-
-                f.Show();
-            }
         }
 
         private void btnLimparFiltros_Click(object sender, EventArgs e)
@@ -571,6 +531,105 @@ namespace Projeto_Socorrista
         {
             AplicarFiltros();
 
+        }
+
+        private void btnProdutosPrincipais_Click(object sender, EventArgs e)
+        {
+            List<string> palavrasBusca = new List<string>
+                {
+                    "MACARRAO",
+                    "MOLHO DE TOMATE",
+                    "ARROZ 1KG",
+                    "FEIJAO",
+                    "LEITE",
+                    "FUBA",
+                    "OLEO",
+                    "AÇUCAR",
+                    "SAL",
+                    "ARROZ 5KG",
+                    "ARROZ 2KG"
+                };
+
+            carregarProdutosPrincipais(palavrasBusca, null, "Selecione...", "Selecione...");
+        }
+
+        private void carregarProdutosPrincipais(List<string> palavras, DateTime? validade = null, string unidade = "", string status = "") {
+            dgvEstoque.Rows.Clear();
+            MySqlCommand comm = new MySqlCommand();
+
+            // Lista para guardar as cláusulas de busca dinâmica
+            List<string> buscaQueries = new List<string>();
+
+            // Se a lista tiver palavras, montamos a query dinâmica
+            if (palavras != null && palavras.Count > 0)
+            {
+                for (int i = 0; i < palavras.Count; i++)
+                {
+                    string paramName = "@busca" + i;
+                    // Cria a cláusula buscando em descricao ou codProd
+                    buscaQueries.Add($"(l.descricao LIKE {paramName} OR p.codProd LIKE {paramName})");
+                    // Adiciona o valor com as porcentagens do LIKE
+                    comm.Parameters.AddWithValue(paramName, "%" + palavras[i] + "%");
+                }
+            }
+
+            // Une as cláusulas com OR. Se não houver palavras, usamos "1=1" (sempre verdadeiro)
+            string filtroBusca = buscaQueries.Count > 0 ? $"({string.Join(" OR ", buscaQueries)})" : "1=1";
+
+            comm.CommandText = $@"
+                SELECT
+                    l.descricao AS descricao,
+                    SUM(p.estoqueAtual) AS quantidade_total,
+                    u.descricao AS unidade,
+                    l.peso AS peso,
+                    MIN(p.dataDeValidade) AS validade_minima,
+                    CASE
+                        WHEN MIN(p.dataDeValidade) < CURDATE() THEN 'Vencido'
+                        WHEN DATEDIFF(MIN(p.dataDeValidade), CURDATE()) <= 60 THEN 'Próximo do vencimento'
+                        ELSE 'Válido'
+                    END AS status_validade
+                FROM tbprodutos p
+                INNER JOIN tblista l ON l.codList = p.codList
+                INNER JOIN tbunidades u ON u.codUni = l.codUni
+                WHERE
+                    {filtroBusca}
+                    AND (@unidade = '' OR u.descricao = @unidade)
+                    AND (@validade IS NULL OR DATE(p.dataDeValidade) = @validade)
+                GROUP BY l.codList, l.descricao, u.descricao, l.peso
+                HAVING
+                    (@status = '')
+                    OR (@status = 'Vencido' AND validade_minima < CURDATE())
+                    OR (@status = 'Próximo do vencimento' AND DATEDIFF(validade_minima, CURDATE()) <= 60 AND validade_minima >= CURDATE())
+                    OR (@status = 'Válido' AND DATEDIFF(validade_minima, CURDATE()) > 60)
+                ORDER BY l.descricao;";
+
+            // Demais parâmetros fixos
+            comm.Parameters.AddWithValue("@unidade", unidade == "Selecione..." ? "" : unidade ?? "");
+            comm.Parameters.AddWithValue("@validade", validade.HasValue ? validade.Value.Date : (object)DBNull.Value);
+            comm.Parameters.AddWithValue("@status", status == "Selecione..." ? "" : status ?? "");
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+
+            MySqlDataReader DR = comm.ExecuteReader();
+
+            while (DR.Read())
+            {
+                string validadeMinima = DR["validade_minima"] == DBNull.Value
+                    ? ""
+                    : Convert.ToDateTime(DR["validade_minima"]).ToString("dd/MM/yyyy");
+
+                dgvEstoque.Rows.Add(
+                    DR["descricao"].ToString(),
+                    DR["quantidade_total"].ToString(),
+                    DR["unidade"].ToString(),
+                    DR["peso"].ToString(),
+                    DR["status_validade"].ToString(),
+                    validadeMinima
+                );
+            }
+
+            DR.Close();
+            DataBaseConnection.CloseConnection();
         }
     }
 }
