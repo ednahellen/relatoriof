@@ -82,7 +82,6 @@ namespace GPSFA_WinForms
 
         public int buscaOrigemDoacao(string nome)
         {
-
             MySqlCommand comm = new MySqlCommand();
             comm.CommandText = $"SELECT nome, cpf, cnpj, cep, rua, numero, complemento, bairro, cidade, estado, telCel, referencia FROM tborigemdoacao WHERE nome LIKE '%{nome}%';";
             comm.CommandType = CommandType.Text;
@@ -90,15 +89,15 @@ namespace GPSFA_WinForms
             MySqlDataReader DR;
             DR = comm.ExecuteReader();
 
-            limparCamposNovo();
 
             if (DR.HasRows == false)
             {
                 MessageBox.Show("Nenhuma origem encontrada com este valor.",
                     "Mensagem do sistema",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1);               
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information,
+                        MessageBoxDefaultButton.Button1);               
+                limparCamposNovo();
             }
             else
             {
@@ -198,9 +197,7 @@ namespace GPSFA_WinForms
         {
             MySqlCommand comm = new MySqlCommand();
             comm.CommandText = $"SELECT codOri FROM tborigemdoacao WHERE nome LIKE '%{nome}%';";
-
             comm.CommandType = CommandType.Text;
-
             comm.Connection = DataBaseConnection.OpenConnection();
 
             MySqlDataReader DR;
@@ -389,15 +386,7 @@ namespace GPSFA_WinForms
                     MessageBoxDefaultButton.Button1);
                 txtNomeFornecedor.Focus();
             }
-            //else if (buscaOrigemDoacao(txtNomeFornecedor.Text).Equals(1))
-            //{
-            //    MessageBox.Show("Este registro já existe!", "Mensagem do sistema",
-            //        MessageBoxButtons.OK,
-            //        MessageBoxIcon.Information,
-            //        MessageBoxDefaultButton.Button1);
-            //    txtNomeFornecedor.Focus();
-            //}
-            else if (rdbCpf.Checked.Equals(true))
+            else if (rdbCpf.Checked)
             {
                 string cnpj = null;
                 //Regex utilizado para remover espaços extras entre as palavras.
@@ -434,8 +423,8 @@ namespace GPSFA_WinForms
             else if (rdbCnpj.Checked)
             {
                 string cpf = null;
-                //Regex utilizado para remover espaços extras entre as palavras.
 
+                //Regex utilizado para remover espaços extras entre as palavras.
                 int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), cpf, mskCnpj.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
 
                 if (resp.Equals(1))
@@ -463,6 +452,38 @@ namespace GPSFA_WinForms
                     btnNovo.Enabled = true;
                     desativarCampos();
 
+                }
+            }
+            else if (!txtNomeFornecedor.Text.Equals("") && !buscaOrigemDoacao(txtNomeFornecedor.Text).Equals(1))
+            {
+                string cpf = null;
+                string cnpj = null;
+
+                //Regex utilizado para remover espaços extras entre as palavras.
+                int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), cpf, cnpj, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
+
+                if (resp.Equals(1))
+                {
+                    MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
+                    desativarBotoes();
+                    limparCamposNovo();
+                    desativarCampos();
+                    btnNovo.Enabled = true;
+                    btnNovo.Focus();
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);                    
+                    btnCadastrar.Enabled = false;
+                    btnLimpar.Enabled = false;
+                    btnNovo.Enabled = true;
+                    desativarCampos();
                 }
             }
         }
@@ -525,11 +546,10 @@ namespace GPSFA_WinForms
             }
             else if (alterarOrigemDoacao(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper()).Equals(1))
             {
-
                 MessageBox.Show("Fornecedor alterado com sucesso!", "Mensagem do sistema",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information,
-                MessageBoxDefaultButton.Button1);
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
                 limparCamposNovo();
                 desativarCampos();
                 btnLimpar.Enabled = false;
@@ -541,9 +561,9 @@ namespace GPSFA_WinForms
             else
             {
                 MessageBox.Show("Erro ao alterar!", "Mensagem do sistema",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error,
-                MessageBoxDefaultButton.Button1);
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
                 limparCamposNovo();
                 btnLimpar.Enabled = false;
                 btnAlterar.Enabled = false;
@@ -563,7 +583,6 @@ namespace GPSFA_WinForms
                 btnExcluir.Enabled = false;
             }
         }
-
         private void btnLimpar_Click(object sender, EventArgs e)
         {
             if (txtNomeFornecedor.Text.Equals(""))
@@ -585,5 +604,4 @@ namespace GPSFA_WinForms
                btnNovo.Focus(); 
         }
     }
-
 }

@@ -147,7 +147,7 @@ CREATE TABLE tbProdutos(
 codProd INT NOT NULL AUTO_INCREMENT,  
 descricao VARCHAR(100) NOT NULL,
 quantidade INT NOT NULL,
-peso INT NOT NULL,
+peso DECIMAL (10,3) NOT NULL,
 unidade VARCHAR(20) NOT NULL,
 codBar VARCHAR(13) NOT NULL,
 dataDeEntrada DATETIME NOT NULL,
@@ -173,24 +173,12 @@ codProd INT NOT NULL,
 codUsu INT NOT NULL,
 dataDeMontagem DATETIME NOT NULL,
 codCli INT NOT NULL,
-PRIMARY KEY(codCes),
-FOREIGN KEY(codProd) REFERENCES tbProdutos(codProd),
+PRIMARY KEY(codCes, codProd),
 FOREIGN KEY(codUsu) REFERENCES tbUsuarios(codUsu),
 FOREIGN KEY(codCli) REFERENCES tbClientes(codCli)
 );
 
-CREATE TABLE tbMovimentacao(
-    codMov INT AUTO_INCREMENT PRIMARY KEY,
-    codProd INT NOT NULL,
-    quantidade INT NOT NULL,
-    dataMov DATETIME NOT NULL,
-    tipo ENUM('ENTRADA','SAIDA') NOT NULL,
-    FOREIGN KEY (codProd) REFERENCES tbProdutos(codProd)
-);
-
-ALTER TABLE tbProdutos
-MODIFY peso DECIMAL(10,3) NOT NULL;
-
+-- FOREIGN KEY(codProd) REFERENCES tbProdutos(codProd),
 
 INSERT INTO tbVoluntarios
 (nome, telCel, cpf, cep, rua, numero, complemento, bairro, cidade, estado)
