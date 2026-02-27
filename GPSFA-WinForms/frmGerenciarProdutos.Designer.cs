@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmGerenciarProdutos));
-            this.btnNovo = new System.Windows.Forms.Button();
             this.lblCodBarras = new System.Windows.Forms.Label();
             this.txtCodBarras = new System.Windows.Forms.TextBox();
             this.lblUnidadeDeMedida = new System.Windows.Forms.Label();
@@ -45,36 +44,23 @@
             this.lblDescricao = new System.Windows.Forms.Label();
             this.gpbCamposDoProduto = new System.Windows.Forms.GroupBox();
             this.dtpDiaDistribuicao = new System.Windows.Forms.DateTimePicker();
-            this.btnDoacao = new System.Windows.Forms.Button();
             this.lblOrigemDoacao = new System.Windows.Forms.Label();
             this.cbbOrigemDoacao = new System.Windows.Forms.ComboBox();
-            this.btnMedida = new System.Windows.Forms.Button();
-            this.btnLista = new System.Windows.Forms.Button();
             this.cbbDescricao = new System.Windows.Forms.ComboBox();
             this.pnlCrud = new System.Windows.Forms.Panel();
+            this.btnDoacao = new System.Windows.Forms.Button();
+            this.btnMedida = new System.Windows.Forms.Button();
+            this.btnLista = new System.Windows.Forms.Button();
             this.btnVoltar = new System.Windows.Forms.Button();
             this.btnLimpar = new System.Windows.Forms.Button();
             this.btnPesquisar = new System.Windows.Forms.Button();
             this.btnAlterar = new System.Windows.Forms.Button();
             this.btnExcluir = new System.Windows.Forms.Button();
             this.btnCadastrar = new System.Windows.Forms.Button();
+            this.btnNovo = new System.Windows.Forms.Button();
             this.gpbCamposDoProduto.SuspendLayout();
             this.pnlCrud.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnNovo
-            // 
-            this.btnNovo.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnNovo.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNovo.Image = ((System.Drawing.Image)(resources.GetObject("btnNovo.Image")));
-            this.btnNovo.Location = new System.Drawing.Point(3, 12);
-            this.btnNovo.Name = "btnNovo";
-            this.btnNovo.Size = new System.Drawing.Size(166, 70);
-            this.btnNovo.TabIndex = 11;
-            this.btnNovo.Text = "&Novo";
-            this.btnNovo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnNovo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnNovo.UseVisualStyleBackColor = true;
             // 
             // lblCodBarras
             // 
@@ -250,22 +236,6 @@
             this.dtpDiaDistribuicao.Size = new System.Drawing.Size(429, 34);
             this.dtpDiaDistribuicao.TabIndex = 64;
             // 
-            // btnDoacao
-            // 
-            this.btnDoacao.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDoacao.FlatAppearance.BorderSize = 0;
-            this.btnDoacao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDoacao.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDoacao.Image = ((System.Drawing.Image)(resources.GetObject("btnDoacao.Image")));
-            this.btnDoacao.Location = new System.Drawing.Point(709, 111);
-            this.btnDoacao.Name = "btnDoacao";
-            this.btnDoacao.Size = new System.Drawing.Size(48, 36);
-            this.btnDoacao.TabIndex = 63;
-            this.btnDoacao.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnDoacao.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnDoacao.UseVisualStyleBackColor = true;
-            this.btnDoacao.Click += new System.EventHandler(this.btnDoacao_Click);
-            // 
             // lblOrigemDoacao
             // 
             this.lblOrigemDoacao.AutoSize = true;
@@ -287,9 +257,52 @@
             this.cbbOrigemDoacao.TabIndex = 61;
             this.cbbOrigemDoacao.SelectedIndexChanged += new System.EventHandler(this.cbbOrigemDoacao_SelectedIndexChanged);
             // 
+            // cbbDescricao
+            // 
+            this.cbbDescricao.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbbDescricao.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbbDescricao.FormattingEnabled = true;
+            this.cbbDescricao.Location = new System.Drawing.Point(35, 223);
+            this.cbbDescricao.Name = "cbbDescricao";
+            this.cbbDescricao.Size = new System.Drawing.Size(477, 39);
+            this.cbbDescricao.TabIndex = 58;
+            this.cbbDescricao.SelectedIndexChanged += new System.EventHandler(this.cbbDescricao_SelectedIndexChanged);
+            // 
+            // pnlCrud
+            // 
+            this.pnlCrud.BackColor = System.Drawing.Color.White;
+            this.pnlCrud.Controls.Add(this.btnVoltar);
+            this.pnlCrud.Controls.Add(this.btnLimpar);
+            this.pnlCrud.Controls.Add(this.btnPesquisar);
+            this.pnlCrud.Controls.Add(this.btnAlterar);
+            this.pnlCrud.Controls.Add(this.btnExcluir);
+            this.pnlCrud.Controls.Add(this.btnCadastrar);
+            this.pnlCrud.Controls.Add(this.btnNovo);
+            this.pnlCrud.Location = new System.Drawing.Point(12, 494);
+            this.pnlCrud.Name = "pnlCrud";
+            this.pnlCrud.Size = new System.Drawing.Size(1214, 94);
+            this.pnlCrud.TabIndex = 11;
+            // 
+            // btnDoacao
+            // 
+            this.btnDoacao.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDoacao.FlatAppearance.BorderSize = 0;
+            this.btnDoacao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDoacao.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDoacao.Image = ((System.Drawing.Image)(resources.GetObject("btnDoacao.Image")));
+            this.btnDoacao.Location = new System.Drawing.Point(709, 111);
+            this.btnDoacao.Name = "btnDoacao";
+            this.btnDoacao.Size = new System.Drawing.Size(48, 36);
+            this.btnDoacao.TabIndex = 63;
+            this.btnDoacao.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnDoacao.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDoacao.UseVisualStyleBackColor = true;
+            this.btnDoacao.Click += new System.EventHandler(this.btnDoacao_Click);
+            // 
             // btnMedida
             // 
             this.btnMedida.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnMedida.Enabled = false;
             this.btnMedida.FlatAppearance.BorderSize = 0;
             this.btnMedida.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMedida.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -318,32 +331,6 @@
             this.btnLista.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnLista.UseVisualStyleBackColor = true;
             this.btnLista.Click += new System.EventHandler(this.btnLista_Click);
-            // 
-            // cbbDescricao
-            // 
-            this.cbbDescricao.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbbDescricao.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbbDescricao.FormattingEnabled = true;
-            this.cbbDescricao.Location = new System.Drawing.Point(35, 223);
-            this.cbbDescricao.Name = "cbbDescricao";
-            this.cbbDescricao.Size = new System.Drawing.Size(477, 39);
-            this.cbbDescricao.TabIndex = 58;
-            this.cbbDescricao.SelectedIndexChanged += new System.EventHandler(this.cbbDescricao_SelectedIndexChanged);
-            // 
-            // pnlCrud
-            // 
-            this.pnlCrud.BackColor = System.Drawing.Color.White;
-            this.pnlCrud.Controls.Add(this.btnVoltar);
-            this.pnlCrud.Controls.Add(this.btnLimpar);
-            this.pnlCrud.Controls.Add(this.btnPesquisar);
-            this.pnlCrud.Controls.Add(this.btnAlterar);
-            this.pnlCrud.Controls.Add(this.btnExcluir);
-            this.pnlCrud.Controls.Add(this.btnCadastrar);
-            this.pnlCrud.Controls.Add(this.btnNovo);
-            this.pnlCrud.Location = new System.Drawing.Point(12, 494);
-            this.pnlCrud.Name = "pnlCrud";
-            this.pnlCrud.Size = new System.Drawing.Size(1214, 94);
-            this.pnlCrud.TabIndex = 11;
             // 
             // btnVoltar
             // 
@@ -430,6 +417,20 @@
             this.btnCadastrar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnCadastrar.UseVisualStyleBackColor = true;
             this.btnCadastrar.Click += new System.EventHandler(this.btnCadastrar_Click);
+            // 
+            // btnNovo
+            // 
+            this.btnNovo.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNovo.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNovo.Image = ((System.Drawing.Image)(resources.GetObject("btnNovo.Image")));
+            this.btnNovo.Location = new System.Drawing.Point(3, 12);
+            this.btnNovo.Name = "btnNovo";
+            this.btnNovo.Size = new System.Drawing.Size(166, 70);
+            this.btnNovo.TabIndex = 11;
+            this.btnNovo.Text = "&Novo";
+            this.btnNovo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnNovo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnNovo.UseVisualStyleBackColor = true;
             // 
             // frmGerenciarProdutos
             // 

@@ -20,8 +20,9 @@ namespace GPSFA_WinForms
             carregarUnidadesCbb();
         }
 
-        // Variável global para salvar o código do usuário logado
-        int codUsuLogado;
+        // Variável global para salvar o código do usuário logado e codigo do produto da lista, e codigo da unidade de medida selecionados
+        int codUsuLogado, codListSelecionado, codUniSelecionado;
+
         public frmListaProdutos(int codUsu)
         {
             codUsuLogado = codUsu;
@@ -29,12 +30,25 @@ namespace GPSFA_WinForms
             carregarUnidadesCbb();
         }
 
-        private void btnMedida_Click(object sender, EventArgs e)
+        public frmListaProdutos(int codUsu, int codList)
         {
-            frmUnidadeMedida abrir = new frmUnidadeMedida(codUsuLogado);
-            abrir.ShowDialog();
-        }      
+            codUsuLogado = codUsu;
+            codListSelecionado = codList;
+            InitializeComponent();
+            carregarUnidadesCbb();
+            buscarProdutoPorCodList(codList);
+            buscarCodUniPorUnidadeSelecionada(cbbUnidadeMedida.SelectedItem.ToString());
+        }
 
+        private void limparCampos()
+        {
+            codListSelecionado = 0;
+            cbbUnidadeMedida.SelectedItem = null;
+            txtPeso.Clear();
+            txtDescricao.Clear();
+        }
+
+        //  ----  Métodos para realizar queries no banco de dados
         private void carregarUnidadesCbb()
         {
             MySqlCommand comm = new MySqlCommand();
@@ -53,56 +67,36 @@ namespace GPSFA_WinForms
             DataBaseConnection.CloseConnection();
         }
 
-        private void btnVoltar_Click(object sender, EventArgs e)
+        public int atualizarProduto(int codList, string descricao, int peso, string unidade)
         {
-            frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
-            abrir.Show();
-            this.Close();
-        }
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = "INSERT INTO tbLista(descricao, peso, unidade, codUni)VALUES(@descricao, @peso, @unidade, @codList);";
+            comm.CommandType = CommandType.Text;
 
-        private void btnCadastrar_Click(object sender, EventArgs e)
-        {
-            if (txtDescricao.Text.Equals(""))
+            comm.Parameters.Clear();
+            comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = descricao;
+            comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
+            comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 20).Value = unidade;
+            comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codList;
+
+            comm.Connection = DataBaseConnection.OpenConnection();
+
+            try
             {
-                MessageBox.Show("Favor inserir valores!", "Mensagem do sistema",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1);
-                txtDescricao.Focus();
-            }     
-            else
+                int resp = comm.ExecuteNonQuery();
+
+                DataBaseConnection.CloseConnection();
+
+                return resp;
+            }
+            catch (Exception)
             {
-
-                //Regex utilizado para remover espaços extras entre as palavras.
-                double peso = Double.Parse(txtPeso.Text);              
-                int resp = cadastrarProdutos(Regex.Replace(txtDescricao.Text, @"\s+", " ").Trim().ToUpper(), peso, cbbUnidadeMedida.Text, 1);
-
-                if (resp.Equals(1))
-                {
-                    MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1);                    
-                    txtDescricao.Clear();
-                    txtDescricao.Enabled = false;
-                    btnNovo.Enabled = true;
-                    btnNovo.Focus();
-                }
-                else
-                {
-                    MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
+                MessageBox.Show("Este registro já existe!", "Mensagem do sistema",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error,
                     MessageBoxDefaultButton.Button1);
-
-                   
-                    btnCadastrar.Enabled = false;
-                    btnLimpar.Enabled = false;
-                    btnNovo.Enabled = true;
-                    txtDescricao.Enabled = false;
-
-                }
             }
+            return 0;
         }
 
         public int cadastrarProdutos(string descricao, double peso, string unidade, int codUni)
@@ -136,5 +130,179 @@ namespace GPSFA_WinForms
             }
             return 0;
         }
+
+        // Busca o código da unidade de medida ao selecionar um item da combobox
+        private void buscarCodUniPorUnidadeSelecionada(string unidade)
+        {
+            using (MySqlCommand comm = new MySqlCommand())
+            {
+                comm.CommandText = $"SELECT codUni FROM tbunidades WHERE descricao = @descricao;";
+
+                comm.CommandType = CommandType.Text;
+                comm.Parameters.Clear();
+                comm.Parameters.Add("@descricao", MySqlDbType.VarChar).Value = unidade;
+
+                comm.Connection = DataBaseConnection.OpenConnection();
+
+                using (MySqlDataReader DR = comm.ExecuteReader())
+                {
+                    if (DR.Read())
+                    {
+                        if (DR.GetInt32("codUni") > 0)
+                        {
+                            codUniSelecionado = DR.GetInt32("codUni");
+
+                            DataBaseConnection.CloseConnection();
+                        }
+                        else 
+                        {
+                            MessageBox.Show("Codigo não encontrado");
+                            DataBaseConnection.CloseConnection();
+                        }
+                    }
+                }
+            }
+        }
+
+        // Faz a busca do produto com seu código para retornar em tela seus dados
+        private void buscarProdutoPorCodList(int codList)
+        {
+            using (MySqlCommand comm = new MySqlCommand())
+            {
+                comm.CommandText = $"SELECT * FROM tblista WHERE codList = @codList;";
+
+                comm.CommandType = CommandType.Text;
+                comm.Parameters.Clear();
+                comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codList;
+
+                comm.Connection = DataBaseConnection.OpenConnection();
+
+                using (MySqlDataReader DR = comm.ExecuteReader())
+                {
+                    if (DR.Read())
+                    {
+                        // caso o usuário associado ao voluntário seja encontrado, os dados são coletados e aplicados nos campos da janela
+
+                        txtDescricao.Text = DR.GetString("descricao");
+                        txtPeso.Text = DR.GetInt32("peso").ToString();
+                        SelecionarUnidadeDoProduto(DR.GetString("unidade"));
+                    }
+                }
+            }
+
+            DataBaseConnection.CloseConnection();
+
+            return;
+        }
+
+        // Mapeia a unidade de medida do produto e retorna ela no campo cbbUnidadeMedida
+        private void SelecionarUnidadeDoProduto(string unidade)
+        {
+            if (string.IsNullOrWhiteSpace(unidade))
+                return;
+
+            unidade = unidade.ToUpper();
+
+            for (int i = 0; i < cbbUnidadeMedida.Items.Count; i++)
+            {
+                string item = cbbUnidadeMedida.Items[i].ToString();
+
+                if (item.Equals($"{unidade}"))
+                {
+                    cbbUnidadeMedida.SelectedIndex = i;
+                    return;
+                }
+            }
+        }
+        
+
+        //  ----  Métodos para eventos de clique dos botões
+        private void btnCadastrar_Click(object sender, EventArgs e)
+        {
+            if (txtDescricao.Text.Equals(""))
+            {
+                MessageBox.Show("Favor inserir valores!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
+                txtDescricao.Focus();
+            }     
+            else
+            {
+
+                //Regex utilizado para remover espaços extras entre as palavras.
+                double peso = Double.Parse(txtPeso.Text);              
+                int resp = cadastrarProdutos(Regex.Replace(txtDescricao.Text, @"\s+", " ").Trim().ToUpper(), peso, cbbUnidadeMedida.SelectedItem.ToString(), codUniSelecionado);
+
+                if (resp.Equals(1))
+                {
+                    MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
+                    limparCampos();
+                    txtDescricao.Enabled = false;
+                    btnNovo.Enabled = true;
+                    btnNovo.Focus();
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+
+                   
+                    btnCadastrar.Enabled = false;
+                    btnLimpar.Enabled = false;
+                    btnNovo.Enabled = true;
+                    txtDescricao.Enabled = false;
+
+                }
+            }
+        }
+
+        private void btnVoltar_Click(object sender, EventArgs e)
+        {
+            frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
+            abrir.Show();
+            this.Close();
+        }
+
+        private void btnMedida_Click(object sender, EventArgs e)
+        {
+            frmUnidadeMedida abrir = new frmUnidadeMedida(codUsuLogado);
+            abrir.Show();
+            this.Close();
+        }      
+        
+        private void btnPesquisar_Click(object sender, EventArgs e)
+        {
+            frmPesquisarProdutosLista abrir = new frmPesquisarProdutosLista(codUsuLogado);
+            abrir.Show();
+            this.Close();
+        }
+
+        private void btnExcluir_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnAlterar_Click(object sender, EventArgs e)
+        {
+
+        }
+        
+        private void btnLimpar_Click(object sender, EventArgs e)
+        {
+            limparCampos();
+        }
+
+        // faz a busca do código da unidade de medida ao selecionar algo da combobox
+        private void cbbUnidadeMedida_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            buscarCodUniPorUnidadeSelecionada(cbbUnidadeMedida.Text);
+        }
+
     }
 }
