@@ -540,12 +540,12 @@ namespace Projeto_Socorrista
                     "MACARRAO",
                     "MOLHO DE TOMATE",
                     "ARROZ 1KG",
-                    "FEIJAO",
+                    "FEIJAO 1KG",
                     "LEITE",
                     "FUBA",
                     "OLEO",
-                    "AÇUCAR",
-                    "SAL",
+                    "AÇUCAR 1KG",
+                    "SAL 1KG",
                     "ARROZ 5KG",
                     "ARROZ 2KG"
                 };

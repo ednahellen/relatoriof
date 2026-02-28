@@ -54,7 +54,7 @@
             // 
             this.btnExcluir.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExcluir.Image = ((System.Drawing.Image)(resources.GetObject("btnExcluir.Image")));
-            this.btnExcluir.Location = new System.Drawing.Point(505, 16);
+            this.btnExcluir.Location = new System.Drawing.Point(503, 3);
             this.btnExcluir.Name = "btnExcluir";
             this.btnExcluir.Size = new System.Drawing.Size(119, 40);
             this.btnExcluir.TabIndex = 8;
@@ -62,12 +62,13 @@
             this.btnExcluir.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnExcluir.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnExcluir.UseVisualStyleBackColor = true;
+            this.btnExcluir.Click += new System.EventHandler(this.btnExcluir_Click);
             // 
             // btnCadastrar
             // 
             this.btnCadastrar.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCadastrar.Image = ((System.Drawing.Image)(resources.GetObject("btnCadastrar.Image")));
-            this.btnCadastrar.Location = new System.Drawing.Point(129, 14);
+            this.btnCadastrar.Location = new System.Drawing.Point(128, 3);
             this.btnCadastrar.Name = "btnCadastrar";
             this.btnCadastrar.Size = new System.Drawing.Size(119, 40);
             this.btnCadastrar.TabIndex = 5;
@@ -81,7 +82,7 @@
             // 
             this.btnVoltar.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
-            this.btnVoltar.Location = new System.Drawing.Point(753, 15);
+            this.btnVoltar.Location = new System.Drawing.Point(759, 3);
             this.btnVoltar.Name = "btnVoltar";
             this.btnVoltar.Size = new System.Drawing.Size(119, 40);
             this.btnVoltar.TabIndex = 10;
@@ -95,7 +96,7 @@
             // 
             this.btnLimpar.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLimpar.Image = ((System.Drawing.Image)(resources.GetObject("btnLimpar.Image")));
-            this.btnLimpar.Location = new System.Drawing.Point(380, 16);
+            this.btnLimpar.Location = new System.Drawing.Point(378, 3);
             this.btnLimpar.Name = "btnLimpar";
             this.btnLimpar.Size = new System.Drawing.Size(119, 40);
             this.btnLimpar.TabIndex = 7;
@@ -103,12 +104,13 @@
             this.btnLimpar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnLimpar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnLimpar.UseVisualStyleBackColor = true;
+            this.btnLimpar.Click += new System.EventHandler(this.btnLimpar_Click);
             // 
             // btnPesquisar
             // 
             this.btnPesquisar.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPesquisar.Image = ((System.Drawing.Image)(resources.GetObject("btnPesquisar.Image")));
-            this.btnPesquisar.Location = new System.Drawing.Point(628, 14);
+            this.btnPesquisar.Location = new System.Drawing.Point(628, 3);
             this.btnPesquisar.Name = "btnPesquisar";
             this.btnPesquisar.Size = new System.Drawing.Size(119, 40);
             this.btnPesquisar.TabIndex = 9;
@@ -116,6 +118,7 @@
             this.btnPesquisar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnPesquisar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnPesquisar.UseVisualStyleBackColor = true;
+            this.btnPesquisar.Click += new System.EventHandler(this.btnPesquisar_Click);
             // 
             // panel1
             // 
@@ -127,16 +130,16 @@
             this.panel1.Controls.Add(this.btnExcluir);
             this.panel1.Controls.Add(this.btnCadastrar);
             this.panel1.Controls.Add(this.btnNovo);
-            this.panel1.Location = new System.Drawing.Point(12, 263);
+            this.panel1.Location = new System.Drawing.Point(12, 274);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(881, 60);
+            this.panel1.Size = new System.Drawing.Size(881, 46);
             this.panel1.TabIndex = 15;
             // 
             // btnAlterar
             // 
             this.btnAlterar.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAlterar.Image = ((System.Drawing.Image)(resources.GetObject("btnAlterar.Image")));
-            this.btnAlterar.Location = new System.Drawing.Point(255, 14);
+            this.btnAlterar.Location = new System.Drawing.Point(253, 3);
             this.btnAlterar.Name = "btnAlterar";
             this.btnAlterar.Size = new System.Drawing.Size(119, 40);
             this.btnAlterar.TabIndex = 6;
@@ -144,12 +147,13 @@
             this.btnAlterar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnAlterar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnAlterar.UseVisualStyleBackColor = true;
+            this.btnAlterar.Click += new System.EventHandler(this.btnAlterar_Click);
             // 
             // btnNovo
             // 
             this.btnNovo.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnNovo.Image = ((System.Drawing.Image)(resources.GetObject("btnNovo.Image")));
-            this.btnNovo.Location = new System.Drawing.Point(3, 14);
+            this.btnNovo.Location = new System.Drawing.Point(3, 3);
             this.btnNovo.Name = "btnNovo";
             this.btnNovo.Size = new System.Drawing.Size(119, 40);
             this.btnNovo.TabIndex = 4;
@@ -183,7 +187,7 @@
             this.gpbCamposDoProduto.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gpbCamposDoProduto.Location = new System.Drawing.Point(12, 2);
             this.gpbCamposDoProduto.Name = "gpbCamposDoProduto";
-            this.gpbCamposDoProduto.Size = new System.Drawing.Size(881, 255);
+            this.gpbCamposDoProduto.Size = new System.Drawing.Size(881, 266);
             this.gpbCamposDoProduto.TabIndex = 14;
             this.gpbCamposDoProduto.TabStop = false;
             // 
@@ -221,6 +225,7 @@
             this.cbbUnidadeMedida.Name = "cbbUnidadeMedida";
             this.cbbUnidadeMedida.Size = new System.Drawing.Size(236, 39);
             this.cbbUnidadeMedida.TabIndex = 2;
+            this.cbbUnidadeMedida.SelectedIndexChanged += new System.EventHandler(this.cbbUnidadeMedida_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -267,6 +272,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
             this.ClientSize = new System.Drawing.Size(900, 332);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.gpbCamposDoProduto);

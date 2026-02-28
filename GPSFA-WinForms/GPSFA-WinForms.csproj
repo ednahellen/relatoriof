@@ -223,6 +223,12 @@
     <Compile Include="frmListaProdutos.Designer.cs">
       <DependentUpon>frmListaProdutos.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmPesquisarProdutosLista.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPesquisarProdutosLista.Designer.cs">
+      <DependentUpon>frmPesquisarProdutosLista.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmPesquisarVoluntarios.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -300,6 +306,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmListaProdutos.resx">
       <DependentUpon>frmListaProdutos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPesquisarProdutosLista.resx">
+      <DependentUpon>frmPesquisarProdutosLista.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmPesquisarVoluntarios.resx">
       <DependentUpon>frmPesquisarVoluntarios.cs</DependentUpon>

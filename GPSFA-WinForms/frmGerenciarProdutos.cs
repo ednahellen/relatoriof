@@ -181,28 +181,30 @@ namespace GPSFA_WinForms
                 txtQuantidade.Focus();
                 return false;
             }
+
+
             return true;
         }
 
         //Método para cadastrar Produtos na TBPRODUTOS
 
-        private int cadastrarProdutos(string descricao, int quantidade, decimal peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
+        private int cadastrarProdutos(string descricao, int estoqueAtual, decimal peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
         {
 
             MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "INSERT INTO tbprodutos(descricao, quantidade, peso, unidade, codBar, dataDeEntrada, dataDeValidade, dataLimiteDeSaida, codUsu, codOri, codList)VALUES(@descricao, @quantidade, @peso, @unidade, @codBar, @dataDeEntrada, @dataDeValidade, @dataLimiteDeSaida, @codUsu, @codOri, @codList);";
+            comm.CommandText = "INSERT INTO tbprodutos(descricao, estoqueAtual, peso, unidade, codBar, dataDeEntrada, dataDeValidade, dataLimiteDeSaida, codUsu, codOri, codList)VALUES(@descricao, @estoqueAtual, @peso, @unidade, @codBar, @dataDeEntrada, @dataDeValidade, @dataLimiteDeSaida, @codUsu, @codOri, @codList);";
             comm.CommandType = CommandType.Text;
 
             comm.Parameters.Clear();
             comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = descricao;
-            comm.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidade;
+            comm.Parameters.Add("@estoqueAtual", MySqlDbType.Int32).Value = estoqueAtual;
             comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
             comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 20).Value = unidade;
             comm.Parameters.Add("@codBar", MySqlDbType.VarChar, 13).Value = codBar;
             comm.Parameters.Add("@dataDeEntrada", MySqlDbType.Date).Value = dataDeEntrada;
             comm.Parameters.Add("@dataDeValidade", MySqlDbType.Date).Value = dataDeValidade;
             comm.Parameters.Add("@dataLimiteDeSaida", MySqlDbType.Date).Value = dataLimiteDeSaida;
-            comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
+            comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = 1;
             comm.Parameters.Add("@codOri", MySqlDbType.Int32).Value = codOri;
             comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codList;
 
@@ -230,17 +232,28 @@ namespace GPSFA_WinForms
         //Botão ação cadastrar
         private void btnCadastrar_Click(object sender, EventArgs e)
         {
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
             if (dtpDataValidade.Value.Date < DateTime.Today)
             {
                 MessageBox.Show("Data de validade inválida.");
                 return;
             }
 
+            if (VerificaFormatacaoDosCampos()) {
+                //MessageBox.Show("Um ou mais campos estão em brancos!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             using (var conn = DataBaseConnection.OpenConnection())
+<<<<<<< Updated upstream
 
            
             //int resp = cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList);
+=======
+>>>>>>> Stashed changes
            
             if (dtpDataValidade.Value < DateTime.Today)
             {
@@ -248,11 +261,15 @@ namespace GPSFA_WinForms
                 dtpDataValidade.Focus();                
                 return;
             }
-            else if (cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList).Equals(1))
 
+            else if (cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList).Equals(1))
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
             {
                 // Verifica se já existe produto
-                string sqlVerifica = "SELECT codProd, quantidade FROM tbProdutos WHERE codBar = @codBar";
+                string sqlVerifica = "SELECT codProd, estoqueAtual FROM tbProdutos WHERE codBar = @codBar";
 
                 using (var cmdVerifica = new MySqlCommand(sqlVerifica, conn))
                 {
@@ -263,11 +280,11 @@ namespace GPSFA_WinForms
                         if (reader.Read())
                         {
                             int codProd = reader.GetInt32("codProd");
-                            int qtdAtual = reader.GetInt32("quantidade");
+                            int qtdAtual = reader.GetInt32("estoqueAtual");
                             reader.Close();
 
                             // Atualiza estoque
-                            string sqlUpdate = "UPDATE tbProdutos SET quantidade = @novaQtd WHERE codProd = @codProd";
+                            string sqlUpdate = "UPDATE tbProdutos SET estoqueAtual = @novaQtd WHERE codProd = @codProd";
 
                             using (var cmdUpdate = new MySqlCommand(sqlUpdate, conn))
                             {
@@ -571,6 +588,5 @@ namespace GPSFA_WinForms
         }
      
     }        
-
-    }
+}
 

@@ -236,7 +236,7 @@ namespace GPSFA_WinForms
 
         private void btnVoltar_Click(object sender, EventArgs e)
         {
-            frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
+            frmListaProdutos abrir = new frmListaProdutos(codUsuLogado);
             abrir.Show();
             this.Hide();
         }
