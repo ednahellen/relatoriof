@@ -93,12 +93,12 @@ namespace GPSFA_WinForms
             }
         }
 
-        // Carregar dados no datagrid view ao selecionar o modelo de cesta e a quantidade de cestas - A FAZER
+        // Carregar dados no datagrid view ao selecionar o modelo de cesta e a quantidade de cestas - OK
         private void carregarDadosNoDgvItensDaCesta(int codModelo)
         {
             using (MySqlCommand comm = new MySqlCommand())
             {
-                comm.CommandText = $"SELECT l.descricao, imc.quantidadeMinima, IFNULL(SUM(p.quantidade), 0) AS estoqueAtual FROM tbItensDoModeloCesta imc INNER JOIN tbLista l ON l.codList = imc.codList LEFT JOIN tbProdutos p ON p.codList = l.codList WHERE imc.codModelo = 1 GROUP BY imc.codModelo, imc.codList, l.descricao, l.unidade, imc.quantidadeMinima;";
+                comm.CommandText = $"SELECT l.codList, l.descricao, imc.quantidadeMinima, IFNULL(SUM(p.quantidade), 0) AS estoqueAtual FROM tbItensDoModeloCesta imc INNER JOIN tbLista l ON l.codList = imc.codList LEFT JOIN tbEstoqueItens p ON p.codList = l.codList WHERE imc.codModelo = 1 GROUP BY imc.codModelo, imc.codList, l.descricao, l.unidade, imc.quantidadeMinima;";
                 comm.CommandType = CommandType.Text;
                 comm.Parameters.Clear();
                 comm.Parameters.Add("@codModelo", MySqlDbType.Int32).Value = codModelo;
@@ -110,6 +110,7 @@ namespace GPSFA_WinForms
                     while (DR.Read())
                     {
                         dgvItensDaCesta.Rows.Add(
+                            DR["codList"].ToString(),
                             DR["descricao"].ToString(),
                             DR["quantidadeMinima"].ToString(),
                             DR["estoqueAtual"].ToString()
@@ -121,6 +122,58 @@ namespace GPSFA_WinForms
             }
         }
 
+        // Faz a criação de cestas com base na quantidade e registra itens em uma cesta - OK
+        private void montarCestas(int quantidadeDeCestas, int codUsu)
+        {
+            try
+            {
+                MySqlCommand comm = new MySqlCommand();
+                MySqlConnection conn = DataBaseConnection.OpenConnection();
+
+                //using (var transaction = conn.BeginTransaction())
+
+                for (int i = 0; i < quantidadeDeCestas; i++)
+                {
+                    // 1️⃣ Inserir cesta
+                    var cmdCesta = new MySqlCommand(
+                        "INSERT INTO tbCestas(codUsu) VALUES(@codUsu); SELECT LAST_INSERT_ID();",
+                        conn
+                    //transaction
+                    );
+
+                    cmdCesta.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
+
+                    int codCesta = Convert.ToInt32(cmdCesta.ExecuteScalar());
+
+                    // 2️⃣ Inserir itens da cesta
+                    foreach (DataGridViewRow row in dgvItensDaCesta.Rows)
+                    {
+                        int codList = Convert.ToInt32(row.Cells["codList"].Value);
+                        int quantidade = Convert.ToInt32(row.Cells["QtdePorCesta"].Value);
+
+                        var cmdItem = new MySqlCommand(
+                            "INSERT INTO tbItensCesta(codCes, codList, quantidade) VALUES(@codCes, @codList, @quantidade)",
+                            conn
+                        //transaction
+                        );
+
+                        cmdItem.Parameters.Add("@codCes", MySqlDbType.Int32).Value = codCesta;
+                        cmdItem.Parameters.Add("@codList", MySqlDbType.Int32).Value = codList;
+                        cmdItem.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidade;
+
+                        cmdItem.ExecuteNonQuery();
+
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show($"Erro ao montar cestas! Erro:\n\n{error}", "Mensagem do sistema");
+            }
+
+            DataBaseConnection.CloseConnection();
+        }
+
 
         // CONFIGURAÇÕES E AÇÕES DA JANELA
         // Configuração adicional DO DESIGN do datagrid view de intes da cesta - OK
@@ -130,6 +183,7 @@ namespace GPSFA_WinForms
             dgvItensDaCesta.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             // Alternar cores das linhas
             dgvItensDaCesta.RowsDefaultCellStyle.BackColor = System.Drawing.Color.LightGray;
+
             // Aumentar fonte
             dgvItensDaCesta.RowsDefaultCellStyle.Font = new System.Drawing.Font("Arial", 10, FontStyle.Regular);
             dgvItensDaCesta.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Arial", 10, FontStyle.Bold);
@@ -144,7 +198,7 @@ namespace GPSFA_WinForms
             dgvItensDaCesta.MultiSelect = false;
 
             DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
-            buttonColumn.HeaderText = "Remover produto";
+            buttonColumn.HeaderText = "";
             buttonColumn.Name = "RemoverProduto"; // Name for programmatic reference
             buttonColumn.Text = "Remover"; // The text displayed on the button
             buttonColumn.UseColumnTextForButtonValue = true; // Use the Text property value for all buttons
@@ -205,7 +259,7 @@ namespace GPSFA_WinForms
                 }
                 else
                 {
-                    row.Cells["Status"].Style.BackColor = System.Drawing.Color.White;
+                    row.Cells["Status"].Style.BackColor = System.Drawing.Color.LightGray;
                     row.Cells["Status"].Value = "Ok";
                 }
             }
@@ -260,11 +314,31 @@ namespace GPSFA_WinForms
             // aqui é realizada a busca dos dados do produto salvando na variável {estoqueAtual}
             int estoqueAtual = obterEstoqueAtual(nomeProduto);
 
-            dgvItensDaCesta.Rows.Add(
-                nomeProduto,
-                quantidadePorCesta,
-                estoqueAtual
-            );
+            using (MySqlCommand comm = new MySqlCommand())
+            {
+                comm.CommandText = $"SELECT codList FROM tbLista WHERE descricao = @descricao";
+                comm.CommandType = CommandType.Text;
+                comm.Parameters.Clear();
+                comm.Parameters.Add("@descricao", MySqlDbType.VarChar).Value = nomeProduto;
+
+                comm.Connection = DataBaseConnection.OpenConnection();
+
+                using (MySqlDataReader DR = comm.ExecuteReader())
+                {
+                    while (DR.Read())
+                    {
+                        dgvItensDaCesta.Rows.Add(
+                            DR["codList"].ToString(),
+                            nomeProduto,
+                            quantidadePorCesta,
+                            estoqueAtual
+                        );
+                    }
+
+                    DataBaseConnection.CloseConnection();
+                }
+            }
+
         }
 
 
@@ -319,24 +393,14 @@ namespace GPSFA_WinForms
             }
         }
 
-        // Realiza o registro de montagem de cestas
-        private void btnMontar_Click(object sender, EventArgs e)
-        {   // valida se o usuário confirma a montagem
-            DialogResult result = MessageBox.Show("Deseja confirmar a montagem de cestas?", "Mensagem do sistema", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if (result == DialogResult.Yes) 
-            {
-            }
-        }
-
-        // Instancia do evento de clique do botão de limpar - A FAZER
+        // Instancia do evento de clique do botão de limpar - OK
         private void btnLimpar_Click(object sender, EventArgs e)
         {
             limparDados();
         }
 
-
-        // Evento de alterar o valor de quantidade de cestas
+        // Evento de alterar o valor de quantidade de cestas - OK
         private void txtQtdCestas_TextChanged(object sender, EventArgs e)
         {
             calcularTotalNecessario();
@@ -351,7 +415,7 @@ namespace GPSFA_WinForms
             }
         }
 
-        // Evento de alterar o valor de alguma célular dentro do dgv
+        // Evento de alterar o valor de alguma célular dentro do dgv - OK
         private void dgvItensDaCesta_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (dgvItensDaCesta.Columns[e.ColumnIndex].Name == "QtdePorCesta")
@@ -360,6 +424,7 @@ namespace GPSFA_WinForms
             }
         }
 
+        // Evento de pressionar teclas na caixa de texto de quantidade - limita a entrada de dados a números
         private void dgvItensDaCesta_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             if (dgvItensDaCesta.CurrentCell.ColumnIndex == dgvItensDaCesta.Columns["QtdePorCesta"].Index)
@@ -374,9 +439,65 @@ namespace GPSFA_WinForms
             }
         }
 
+        // Abre o modal para configurar modelos de cesta
         private void btnModeloDeCesta_Click(object sender, EventArgs e)
         {
-            calcularTotalNecessario();
+        }
+
+        // Parte crírica fluxo de montagem de cestas
+
+        // Método para validar se alguma linha da coluna "Status" contém a informação "Insuficiente"
+        private bool ExisteItemInsuficiente()
+        {
+            foreach (DataGridViewRow row in dgvItensDaCesta.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                var valor = row.Cells["Status"].Value?.ToString();
+
+                if (!string.IsNullOrEmpty(valor) &&
+                    valor.Equals("Insuficiente", StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Realiza o registro de montagem de cestas - A FAZER
+        private void btnMontar_Click(object sender, EventArgs e)
+        {   
+            // Valida se o DGV ou txtQtdCestas está vazio
+            if (dgvItensDaCesta.Rows.Count < 5 || txtQtdCestas.Text.Equals(""))
+            {
+                MessageBox.Show("A cesta deve conter pelo menos 5 itens e a quantidade não pode estar vazia", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                // valida se o usuário confirma a montagem
+                DialogResult result = MessageBox.Show($"Deseja confirmar a montagem de {txtQtdCestas.Text} cestas?", "Mensagem do sistema", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes) 
+                {
+                    if (!ExisteItemInsuficiente())
+                    {
+                        montarCestas(Convert.ToInt32(txtQtdCestas.Text), codUsuLogado);
+                        MessageBox.Show("Cestas montadas com sucesso", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        limparDados();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Existem itens com estoque insuficiente!", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+                else
+                {
+                    limparDados();
+                    return;
+                }
+            }
         }
     }
 }
