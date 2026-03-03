@@ -256,7 +256,7 @@ namespace GPSFA_WinForms
                 else if (cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList).Equals(1))
                 {
                     // Verifica se já existe produto
-                    string sqlVerifica = "SELECT codProd, estoqueAtual FROM tbProdutos WHERE codBar = @codBar";
+                    string sqlVerifica = "SELECT codProd, quantidade FROM tbProdutos WHERE codBar = @codBar";
 
                     using (var cmdVerifica = new MySqlCommand(sqlVerifica, conn))
                     {
@@ -267,11 +267,11 @@ namespace GPSFA_WinForms
                             if (reader.Read())
                             {
                                 int codProd = reader.GetInt32("codProd");
-                                int qtdAtual = reader.GetInt32("estoqueAtual");
+                                int qtdAtual = reader.GetInt32("quantidade");
                                 reader.Close();
 
                                 // Atualiza estoque
-                                string sqlUpdate = "UPDATE tbProdutos SET estoqueAtual = @novaQtd WHERE codProd = @codProd";
+                                string sqlUpdate = "UPDATE tbProdutos SET quantidade = @novaQtd WHERE codProd = @codProd";
 
                                 using (var cmdUpdate = new MySqlCommand(sqlUpdate, conn))
                                 {

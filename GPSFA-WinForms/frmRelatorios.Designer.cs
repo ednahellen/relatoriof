@@ -132,7 +132,7 @@
             this.lblTitleRelatórios.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.lblTitleRelatórios.Location = new System.Drawing.Point(12, 9);
             this.lblTitleRelatórios.Name = "lblTitleRelatórios";
-            this.lblTitleRelatórios.Size = new System.Drawing.Size(93, 22);
+            this.lblTitleRelatórios.Size = new System.Drawing.Size(114, 27);
             this.lblTitleRelatórios.TabIndex = 11;
             this.lblTitleRelatórios.Text = "Relatórios";
             // 
@@ -164,20 +164,20 @@
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatus.Font = new System.Drawing.Font("Microsoft YaHei", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblStatus.ForeColor = System.Drawing.SystemColors.Window;
-            this.lblStatus.Location = new System.Drawing.Point(849, 19);
+            this.lblStatus.Location = new System.Drawing.Point(719, 17);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(57, 21);
+            this.lblStatus.Size = new System.Drawing.Size(59, 23);
             this.lblStatus.TabIndex = 86;
             this.lblStatus.Text = "Status";
             // 
             // cbxStatus
             // 
             this.cbxStatus.FormattingEnabled = true;
-            this.cbxStatus.Location = new System.Drawing.Point(843, 42);
+            this.cbxStatus.Location = new System.Drawing.Point(831, 42);
             this.cbxStatus.Name = "cbxStatus";
-            this.cbxStatus.Size = new System.Drawing.Size(260, 29);
+            this.cbxStatus.Size = new System.Drawing.Size(260, 35);
             this.cbxStatus.TabIndex = 85;
             // 
             // label2
@@ -185,9 +185,9 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.Window;
-            this.label2.Location = new System.Drawing.Point(590, 19);
+            this.label2.Location = new System.Drawing.Point(587, 14);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(72, 21);
+            this.label2.Size = new System.Drawing.Size(90, 27);
             this.label2.TabIndex = 84;
             this.label2.Text = "Produto";
             // 
@@ -196,18 +196,18 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.Window;
-            this.label1.Location = new System.Drawing.Point(359, 18);
+            this.label1.Location = new System.Drawing.Point(359, 14);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 21);
+            this.label1.Size = new System.Drawing.Size(85, 27);
             this.label1.TabIndex = 83;
             this.label1.Text = "Usuário";
             // 
             // cbxProduto
             // 
             this.cbxProduto.FormattingEnabled = true;
-            this.cbxProduto.Location = new System.Drawing.Point(594, 42);
+            this.cbxProduto.Location = new System.Drawing.Point(585, 42);
             this.cbxProduto.Name = "cbxProduto";
-            this.cbxProduto.Size = new System.Drawing.Size(232, 29);
+            this.cbxProduto.Size = new System.Drawing.Size(232, 35);
             this.cbxProduto.TabIndex = 81;
             // 
             // cbbUsuario
@@ -215,7 +215,7 @@
             this.cbbUsuario.FormattingEnabled = true;
             this.cbbUsuario.Location = new System.Drawing.Point(351, 43);
             this.cbbUsuario.Name = "cbbUsuario";
-            this.cbbUsuario.Size = new System.Drawing.Size(223, 29);
+            this.cbbUsuario.Size = new System.Drawing.Size(223, 35);
             this.cbbUsuario.TabIndex = 81;
             // 
             // btnSair
@@ -260,7 +260,7 @@
             this.dtpDataFinalPeriodo.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpDataFinalPeriodo.Location = new System.Drawing.Point(181, 43);
             this.dtpDataFinalPeriodo.Name = "dtpDataFinalPeriodo";
-            this.dtpDataFinalPeriodo.Size = new System.Drawing.Size(164, 29);
+            this.dtpDataFinalPeriodo.Size = new System.Drawing.Size(164, 34);
             this.dtpDataFinalPeriodo.TabIndex = 2;
             // 
             // lblE
@@ -268,9 +268,9 @@
             this.lblE.AutoSize = true;
             this.lblE.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblE.ForeColor = System.Drawing.SystemColors.Window;
-            this.lblE.Location = new System.Drawing.Point(186, 18);
+            this.lblE.Location = new System.Drawing.Point(185, 16);
             this.lblE.Name = "lblE";
-            this.lblE.Size = new System.Drawing.Size(38, 21);
+            this.lblE.Size = new System.Drawing.Size(47, 27);
             this.lblE.TabIndex = 5;
             this.lblE.Text = "Fim";
             // 
@@ -279,9 +279,9 @@
             this.lblDataInicial.AutoSize = true;
             this.lblDataInicial.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblDataInicial.ForeColor = System.Drawing.SystemColors.Window;
-            this.lblDataInicial.Location = new System.Drawing.Point(6, 22);
+            this.lblDataInicial.Location = new System.Drawing.Point(6, 16);
             this.lblDataInicial.Name = "lblDataInicial";
-            this.lblDataInicial.Size = new System.Drawing.Size(51, 21);
+            this.lblDataInicial.Size = new System.Drawing.Size(63, 27);
             this.lblDataInicial.TabIndex = 4;
             this.lblDataInicial.Text = "Início";
             // 
@@ -291,7 +291,7 @@
             this.dtpDataInicialPeriodo.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpDataInicialPeriodo.Location = new System.Drawing.Point(4, 43);
             this.dtpDataInicialPeriodo.Name = "dtpDataInicialPeriodo";
-            this.dtpDataInicialPeriodo.Size = new System.Drawing.Size(161, 29);
+            this.dtpDataInicialPeriodo.Size = new System.Drawing.Size(161, 34);
             this.dtpDataInicialPeriodo.TabIndex = 1;
             // 
             // dgvProdutos
@@ -322,38 +322,51 @@
             this.Cadastro});
             this.dgvRelatorios.Location = new System.Drawing.Point(0, 133);
             this.dgvRelatorios.Name = "dgvRelatorios";
+            this.dgvRelatorios.RowHeadersWidth = 51;
             this.dgvRelatorios.Size = new System.Drawing.Size(1163, 492);
             this.dgvRelatorios.TabIndex = 19;
             // 
             // DataEntrada
             // 
             this.DataEntrada.HeaderText = "Data Entrada";
+            this.DataEntrada.MinimumWidth = 6;
             this.DataEntrada.Name = "DataEntrada";
+            this.DataEntrada.Width = 125;
             // 
             // DataSaida
             // 
             this.DataSaida.HeaderText = "Data Saída";
+            this.DataSaida.MinimumWidth = 6;
             this.DataSaida.Name = "DataSaida";
+            this.DataSaida.Width = 125;
             // 
             // Qtd
             // 
             this.Qtd.HeaderText = "Quantidade";
+            this.Qtd.MinimumWidth = 6;
             this.Qtd.Name = "Qtd";
+            this.Qtd.Width = 125;
             // 
             // Pes
             // 
             this.Pes.HeaderText = "Peso";
+            this.Pes.MinimumWidth = 6;
             this.Pes.Name = "Pes";
+            this.Pes.Width = 125;
             // 
             // DataVal
             // 
             this.DataVal.HeaderText = "Data Validade";
+            this.DataVal.MinimumWidth = 6;
             this.DataVal.Name = "DataVal";
+            this.DataVal.Width = 125;
             // 
             // Cadastro
             // 
             this.Cadastro.HeaderText = "Usuário";
+            this.Cadastro.MinimumWidth = 6;
             this.Cadastro.Name = "Cadastro";
+            this.Cadastro.Width = 125;
             // 
             // frmRelatorios
             // 

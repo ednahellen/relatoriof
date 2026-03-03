@@ -1,13 +1,7 @@
-﻿using ClosedXML.Excel;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -15,159 +9,126 @@ namespace GPSFA_WinForms
 {
     public partial class frmDashboard : Form
     {
+        private int codUsuLogado;
+
         public frmDashboard()
         {
             InitializeComponent();
         }
 
-        int codUsuLogado;
         public frmDashboard(int codUsu)
         {
             InitializeComponent();
             codUsuLogado = codUsu;
+            AtualizarPesoMesAtual();
         }
 
         private void frmDashboard_Load(object sender, EventArgs e)
         {
-            CarregarDados();
+            AtualizarTotais();
+            AtualizarLabelMesAtual();
+            CarregarDadosNoChartProdutos();
+            CarregarDadosNoGraficoMensal();
             CarregarGraficoAnual();
-         
         }
 
-        public void CarregarDados()
-        {
+        #region TOTAIS
 
-            string query = @"SELECT COUNT(*) AS totalProdutos, SUM(quantidade) AS totalQuantidade, SUM(quantidade* peso) AS totalPeso
+        private void AtualizarTotais()
+        {
+            string query = @"SELECT 
+                                SUM(quantidade) AS totalQuantidade,
+                                SUM(quantidade * peso) AS totalPeso
                              FROM tbProdutos;";
-             try
+
+            try
             {
                 using (var conn = DataBaseConnection.OpenConnection())
                 using (var cmd = new MySqlCommand(query, conn))
-                using(var reader = cmd.ExecuteReader()) 
-
+                using (var reader = cmd.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        lblTotalProdutos.Text = reader["totalProdutos"].ToString();
-                        lblTotalQuantidade.Text = reader["totalQuantidade"] != DBNull.Value? Convert.ToInt64(reader["totalQuantidade"]).ToString("N0"): "0";
+                        lblTotalQuantidade.Text =
+                            reader["totalQuantidade"] != DBNull.Value
+                            ? Convert.ToInt64(reader["totalQuantidade"]).ToString("N0")
+                            : "0";
 
-                        label1.Text = reader["totalPeso"] != DBNull.Value? Convert.ToDecimal(reader["totalPeso"]).ToString("N2") + " kg": "0 kg";
+                        lblTotalItens.Text =
+                            reader["totalPeso"] != DBNull.Value
+                            ? Convert.ToDecimal(reader["totalPeso"]).ToString("N2") + " kg"
+                            : "0 kg";
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao carregar dados do dashboard: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Erro ao carregar totais: " + ex.Message,
+                    "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            // Atualiza o total dos itens (quantidade e depois o total em kg)
-            AtualizarTotais();
-
-            // Atualiza e exibe mês atual com base na último cadastro de produto
-            AtualizarLabelMesAtual();
-
-            // Carrega no gráfico de produtos os 8 itens mais recebidos
-            CarregarDadosNoChartProdutos();
-
-            // Carrega a quantidade total de itens recebidos por mês
-            CarregarDadosNoGraficoMensal();
-
-            // Carrega no datagrid view os últimos produtos adicionados no banco
-            //CarregarDadosNaListaDeProdutos();
         }
 
-        private void CarregarDashboard()
-        {
-            System.Data.DataTable dt = ProductRepository.BuscarTodosProdutos();
+        #endregion
 
-            lblTotalProdutos.Text = dt.Rows.Count.ToString();
-
-            int totalQuantidade = 0;
-            int totalPeso = 0;
-
-            foreach (DataRow row in dt.Rows)
-            {
-                totalQuantidade += Convert.ToInt32(row["quantidade"]);
-                totalPeso += Convert.ToInt32(row["peso"]);
-            }
-
-            lblTotalQuantidade.Text = totalQuantidade.ToString();
-            label1.Text = totalPeso.ToString() + " kg";
-        }
+        #region GRÁFICO PRODUTOS MAIS RECEBIDOS
 
         private void CarregarDadosNoChartProdutos()
         {
-            // Remove todas as séries e títulos existentes do gráfico
-            // Isso garante que o gráfico será redesenhado do zero, sem sobreposição de dados antigos
             chartProdutos.Series.Clear();
             chartProdutos.Titles.Clear();
 
-            // Cria uma nova série para o gráfico chamada "Produtos Recebidos"
-            // Define o tipo como gráfico de colunas (barras verticais) e exibe os valores numéricos diretamente sobre cada coluna
             var series = new Series("Produtos Recebidos")
             {
                 ChartType = SeriesChartType.Column,
                 IsValueShownAsLabel = true
             };
 
-            // Consulta SQL que obtém os 8 produtos com maior quantidade total cadastrada
-            // Soma as quantidades de cada produto (SUM) e agrupa por nome
-            // Ordena do maior para o menor e limita a 8 resultados
-            string query = "SELECT p.descricao AS descricaoProduto, SUM(p.quantidade) AS totalQuantidadeProdutos FROM tbProdutos as p GROUP BY p.descricao ORDER BY totalQuantidadeProdutos DESC LIMIT 8;";
+            string query = @"SELECT descricao,
+                             SUM(quantidade) AS totalQuantidade
+                             FROM tbProdutos
+                             GROUP BY descricao
+                             ORDER BY totalQuantidade DESC
+                             LIMIT 8;";
 
             try
             {
-                // Abre a conexão com o banco e executa a consulta
                 using (var conn = DataBaseConnection.OpenConnection())
+                using (var cmd = new MySqlCommand(query, conn))
+                using (var reader = cmd.ExecuteReader())
                 {
-                    // O ExecuteReader permite percorrer os resultados linha por linha  
-                    using (var cmd = new MySqlCommand(query, conn))
-                    { 
-                        using (var reader = cmd.ExecuteReader())
-                            // Lê cada produto retornado pela consulta
-                            while (reader.Read())
-                            {
-                            // Obtém o nome do produto
-                                string descricao = reader["descricaoProduto"].ToString();
+                    while (reader.Read())
+                    {
+                        string descricao = reader["descricao"].ToString();
 
-                            // Se o nome for muito longo, encurta e adiciona "..." - Isso evita sobreposição dos rótulos no gráfico
-                                if (descricao.Length > 15) descricao = descricao.Substring(0, 12) + "...";
+                        if (descricao.Length > 15)
+                            descricao = descricao.Substring(0, 12) + "...";
 
-                            // Adiciona um ponto ao gráfico (eixo X = descricao do produto, eixo Y = quantidade total)
-                                series.Points.AddXY(
-                                    descricao,
-                                    Convert.ToDouble(reader["totalQuantidadeProdutos"])
-                            );
-                        }
+                        series.Points.AddXY(
+                            descricao,
+                            Convert.ToDouble(reader["totalQuantidade"])
+                        );
                     }
                 }
 
-                // Adiciona a série finalizada ao gráfico
                 chartProdutos.Series.Add(series);
-
-                // Define o título do gráfico
-                chartProdutos.Titles.Add("Produtos Mais Recebidos No Mês");
-
-                // Inclina os rótulos do eixo X em -45° para melhor leitura
+                chartProdutos.Titles.Add("Top 8 Produtos Mais Recebidos");
                 chartProdutos.ChartAreas[0].AxisX.LabelStyle.Angle = -45;
             }
             catch (Exception ex)
             {
-                // Caso ocorra erro (ex: falha de conexão, erro SQL), exibe uma mensagem informando o problema ao usuário
-                MessageBox.Show("Erro ao carregar gráfico de produtos: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Erro ao carregar gráfico de produtos: " + ex.Message);
             }
-            // Fecha a conexão com o banco de dados para liberar recursos
-            DataBaseConnection.CloseConnection();
-        } 
+        }
+
+        #endregion
+
+        #region GRÁFICO MENSAL
 
         private void CarregarDadosNoGraficoMensal()
         {
-            // Remove quaisquer séries e títulos existentes no gráfico
-            // Isso evita sobreposição de dados antigos e garante um novo carregamento limpo
             chartDoacaoMensal.Series.Clear();
             chartDoacaoMensal.Titles.Clear();
 
-            // Cria uma nova série de dados chamada "Itens por Mês"
-            // Define o tipo do gráfico como linha (ideal para acompanhar variação temporal) e ativa a exibição dos valores acima de cada ponto
             var seriesQuantidade = new Series("Quantidade")
             {
                 ChartType = SeriesChartType.Line,
@@ -180,112 +141,53 @@ namespace GPSFA_WinForms
                 IsValueShownAsLabel = true
             };
 
-            // Consulta SQL que retorna o total de produtos cadastrados em cada mês/ano
-            // Agrupa os resultados por ano e mês, somando as quantidades de produtos e ordena os resultados em ordem cronológica crescente
-            string query = @"SELECT YEAR(dataDeEntrada) AS ano,MONTH(dataDeEntrada) AS mes,SUM(quantidade) AS totalQuantidade,SUM(quantidade * peso) AS totalPeso FROM tbProdutos GROUP BY YEAR(dataDeEntrada), MONTH(dataDeEntrada) ORDER BY ano, mes;"; 
+            string query = @"SELECT 
+                            YEAR(dataDeEntrada) AS ano,
+                            MONTH(dataDeEntrada) AS mes,
+                            SUM(quantidade) AS totalQuantidade,
+                            SUM(quantidade * peso) AS totalPeso
+                            FROM tbProdutos
+                            GROUP BY YEAR(dataDeEntrada), MONTH(dataDeEntrada)
+                            ORDER BY ano, mes;";
 
             try
-            {   // Abre a conexão com o banco e executa o comando SQL
+            {
                 using (var conn = DataBaseConnection.OpenConnection())
                 using (var cmd = new MySqlCommand(query, conn))
                 using (var reader = cmd.ExecuteReader())
                 {
-                      // Lê cada registro retornado (um por mês/ano)
-                        while (reader.Read())
-                        {
-                            // Extrai o mês e o ano dos dados retornados
-                            int mes = Convert.ToInt32(reader["mes"]);
-                            int ano = Convert.ToInt32(reader["ano"]);
-
-                            // Cria o rótulo do eixo X no formato "mês/ano"
-                            string mesNome = new DateTime (ano, mes, 1).ToString ("MMM/yyyy");
-
-                            // Adiciona o ponto ao gráfico:
-                            // eixo X = mês/ano | eixo Y = total de produtos cadastrados no período
-                            seriesQuantidade.Points.AddXY(
-                                mesNome,
-                                Convert.ToDouble(reader["totalQuantidade"])
-                            );
-                            seriesPeso.Points.AddXY(
-                                mesNome,
-                                Convert.ToDouble(reader["totalPeso"])
-                             );
-                    
-                    }
-                }
-
-                // Adiciona a série ao gráfico após carregar todos os dados
-                chartDoacaoMensal.Series.Add(seriesQuantidade);
-
-                chartDoacaoMensal.Series.Add(seriesPeso);
-
-                // Define o título exibido acima do gráfico
-                chartDoacaoMensal.Titles.Add("Quantidade e Peso de Itens Recebidos Mensalmente");
-            }
-            catch (Exception ex)
-            {
-                // Caso ocorra qualquer erro (falha de conexão, erro SQL, etc.),
-                // exibe uma mensagem amigável ao usuário com detalhes do problema
-                MessageBox.Show("Erro ao carregar gráfico mensal: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            // Fecha a conexão com o banco de dados para liberar recursos e evitar bloqueios
-            DataBaseConnection.CloseConnection();
-        }
-
-        private void AtualizarLabelMesAtual()
-        {   /*
-                Comportamento "inesperado" encontrado: Só mostra o mês atual se houver um cadastro no mês de referência
-
-                Ex:
-                    - Só mostra o mês de Novembro se tiver ocorrido algum cadastro em Novembro
-                    - Do contrário, exibirá o componente "lblMesAtualDataReceiver" com o valor base "mês"
-            */
-            try
-            {
-                // Consulta SQL que conta quantos produtos foram cadastrados no mês e ano atual
-                // Utiliza as funções do MySQL MONTH() e YEAR() comparadas com CURDATE() (data atual do servidor)
-                string query = "SELECT COUNT(*) as total_mes_atual FROM tbProdutos WHERE MONTH(dataDeEntrada) = MONTH(CURDATE()) AND YEAR(dataDeEntrada) = YEAR(CURDATE());";
-
-                // Cria o comando SQL e abre a conexão com o banco de dados
-                // O 'using' garante que o objeto será liberado automaticamente ao final do bloco
-                using (var cmd = new MySqlCommand(query, DataBaseConnection.OpenConnection()))
-                {
-                    // Executa a consulta e retorna o primeiro valor (total de registros)
-                    int totalMesAtual = Convert.ToInt32(cmd.ExecuteScalar());
-
-                    // Se houver produtos cadastrados no mês atual
-                    if (totalMesAtual > 0)
+                    while (reader.Read())
                     {
-                        // Array com os nomes dos meses em português
-                        string[] meses =
-                        {
-                            "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-                        };
-                        // Obtém o nome do mês atual baseado na data do sistema
-                        string mesAtual = DateTime.Now.ToString("MMMM");
-                        lblMesAtualDataReceiver.Text = mesAtual;
+                        int mes = Convert.ToInt32(reader["mes"]);
+                        int ano = Convert.ToInt32(reader["ano"]);
 
-                        // Obtém o ano atual (não utilizado, mas pode ser útil em versões futuras)
-                        int anoAtual = DateTime.Now.Year;
+                        string mesNome = new DateTime(ano, mes, 1).ToString("MMM/yyyy");
 
-                        // Atualiza o label na interface com o nome do mês atual0
-                        lblMesAtualDataReceiver.Text = mesAtual;
-                        lblMesAtualDataReceiver.Visible = true;
-                        lblMesAtualDataReceiver.ForeColor = Color.Orange;
+                        seriesQuantidade.Points.AddXY(
+                            mesNome,
+                            Convert.ToDouble(reader["totalQuantidade"])
+                        );
+
+                        seriesPeso.Points.AddXY(
+                            mesNome,
+                            Convert.ToDouble(reader["totalPeso"])
+                        );
                     }
                 }
+
+                chartDoacaoMensal.Series.Add(seriesQuantidade);
+                chartDoacaoMensal.Series.Add(seriesPeso);
+                chartDoacaoMensal.Titles.Add("Itens Recebidos por Mês");
             }
             catch (Exception ex)
             {
-                // Caso ocorra qualquer erro (falha de conexão, SQL, etc.), exibe uma mensagem de erro para o usuário
-                lblMesAtualDataReceiver.Text = "Erro ao carregar informações do mês";
-                lblMesAtualDataReceiver.Visible = true;
-                lblMesAtualDataReceiver.ForeColor = Color.Red;
-                Console.WriteLine("Erro ao atualizar label do mês: " + ex.Message);
+                MessageBox.Show("Erro ao carregar gráfico mensal: " + ex.Message);
             }
-            // Fecha a conexão com o banco de dados para evitar vazamentos de recursos. 
-            DataBaseConnection.CloseConnection();
         }
+
+        #endregion
+
+        #region GRÁFICO ANUAL
 
         private void CarregarGraficoAnual()
         {
@@ -304,7 +206,13 @@ namespace GPSFA_WinForms
                 IsValueShownAsLabel = true
             };
 
-            string query = @" SELECT YEAR(dataDeEntrada) AS ano, SUM(quantidade) AS totalQuantidade,SUM(quantidade * peso) AS totalPeso FROM tbProdutos GROUP BY YEAR(dataDeEntrada) ORDER BY ano;";
+            string query = @"SELECT 
+                            YEAR(dataDeEntrada) AS ano,
+                            SUM(quantidade) AS totalQuantidade,
+                            SUM(quantidade * peso) AS totalPeso
+                            FROM tbProdutos
+                            GROUP BY YEAR(dataDeEntrada)
+                            ORDER BY ano;";
 
             try
             {
@@ -330,7 +238,7 @@ namespace GPSFA_WinForms
 
                 chartAnual.Series.Add(seriesQuantidade);
                 chartAnual.Series.Add(seriesPeso);
-                chartAnual.Titles.Add("Histórico Anual - Quantidade e Peso");
+                chartAnual.Titles.Add("Histórico Anual");
             }
             catch (Exception ex)
             {
@@ -338,49 +246,106 @@ namespace GPSFA_WinForms
             }
         }
 
-        private void AtualizarTotais()
+        #endregion
+
+        #region MÊS ATUAL
+
+        private void AtualizarPesoMesAtual()
         {
-            // Consulta que retorna a soma total de todos os itens cadastrados na tabela
-            string queryTotalItens = "SELECT SUM(quantidade) as total_itens FROM tbProdutos;";
-
-            // Consulta que retorna o peso total (em kg) de todos os produtos cuja unidade é "KG"
-            // Multiplica a quantidade de cada produto pelo seu peso individual
-            string queryTotalKilos = "SELECT SUM(quantidade * peso) as total_peso FROM tbProdutos WHERE unidade = 'KG';";
-
             try
             {
-                // Abre uma única conexão com o banco de dados para executar ambas as consultas
+                decimal pesoMesAtual = 0;
+                decimal pesoMesAnterior = 0;
+                decimal pesoMesmoMesAnoAnterior = 0;
+
                 using (var conn = DataBaseConnection.OpenConnection())
                 {
-                    // ===== CONSULTA 1: Total de Itens =====
-                    using (var cmd1 = new MySqlCommand(queryTotalItens, conn))
-                    {
-                        // Executa a consulta e obtém o resultado (primeiro valor da primeira linha)
-                        object result = cmd1.ExecuteScalar();
+                    // PESO MÊS ATUAL
+                    string queryMesAtual = @"SELECT SUM(quantidade * peso) 
+                                     FROM tbProdutos
+                                     WHERE MONTH(dataDeEntrada) = MONTH(CURDATE())
+                                     AND YEAR(dataDeEntrada) = YEAR(CURDATE());";
 
-                        // Se houver valor válido, converte para inteiro e formata com separadores de milhar
-                        // Caso contrário, exibe "0"
-                        lblTotalItens.Text = result != DBNull.Value ? Convert.ToInt64(result).ToString("N0") : "0";
+                    using (var cmd = new MySqlCommand(queryMesAtual, conn))
+                    {
+                        var result = cmd.ExecuteScalar();
+                        if (result != DBNull.Value && result != null)
+                            pesoMesAtual = Convert.ToDecimal(result);
                     }
 
+                    // PESO MÊS ANTERIOR
+                    string queryMesAnterior = @"SELECT SUM(quantidade * peso) 
+                                        FROM tbProdutos
+                                        WHERE MONTH(dataDeEntrada) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+                                        AND YEAR(dataDeEntrada) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH));";
+
+                    using (var cmd = new MySqlCommand(queryMesAnterior, conn))
+                    {
+                        var result = cmd.ExecuteScalar();
+                        if (result != DBNull.Value && result != null)
+                            pesoMesAnterior = Convert.ToDecimal(result);
+                    }
+
+                    // MESMO MÊS ANO ANTERIOR
+                    string queryAnoAnterior = @"SELECT SUM(quantidade * peso) 
+                                        FROM tbProdutos
+                                        WHERE MONTH(dataDeEntrada) = MONTH(CURDATE())
+                                        AND YEAR(dataDeEntrada) = YEAR(CURDATE()) - 1;";
+
+                    using (var cmd = new MySqlCommand(queryAnoAnterior, conn))
+                    {
+                        var result = cmd.ExecuteScalar();
+                        if (result != DBNull.Value && result != null)
+                            pesoMesmoMesAnoAnterior = Convert.ToDecimal(result);
+                    }
+                }
+
+                // 🔹 Atualiza peso do mês atual
+                lblPeso.Text = pesoMesAtual.ToString("N2") + " kg";
+
+                // 🔹 Comparativo com mês anterior
+                if (pesoMesAnterior > 0)
+                {
+                    decimal percentualMes = ((pesoMesAtual - pesoMesAnterior) / pesoMesAnterior) * 100;
+                    lblComparativoMes.Text = percentualMes.ToString("N1") + "% vs mês anterior";
+                }
+                else
+                {
+                    lblComparativoMes.Text = "Sem dados mês anterior";
+                }
+
+                //Comparativo com ano anterior
+                if (pesoMesmoMesAnoAnterior > 0)
+                {
+                    decimal percentualAno = ((pesoMesAtual - pesoMesmoMesAnoAnterior) / pesoMesmoMesAnoAnterior) * 100;
+                    lblComparativoAno.Text = percentualAno.ToString("N1") + "% vs ano anterior";
+                }
+                else
+                {
+                    lblComparativoAno.Text = "Sem dados ano anterior";
                 }
             }
             catch (Exception ex)
-
-            {   // Caso ocorra qualquer erro (SQL, conexão ou conversão), exibe uma mensagem ao usuário
-                MessageBox.Show("Erro ao carregar totais: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            {
+                MessageBox.Show("Erro ao calcular comparativos: " + ex.Message);
             }
-            // Fecha a conexão com o banco de dados para evitar vazamentos de recursos
-            DataBaseConnection.CloseConnection();
+        }
+        private void AtualizarLabelMesAtual()
+        {
+            lblMesAtualDataReceiver.Text = DateTime.Now.ToString("MMMM");
+            lblMesAtualDataReceiver.ForeColor = Color.Orange;
+            lblMesAtualDataReceiver.Visible = true;
         }
 
-        
+        #endregion
+
+        #region NAVEGAÇÃO
+
         private void btnMenu_Click(object sender, EventArgs e)
         {
             frmMenuPrincipal abrir = new frmMenuPrincipal(codUsuLogado);
             abrir.Show();
             this.Hide();
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -388,12 +353,8 @@ namespace GPSFA_WinForms
             frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
             abrir.Show();
             this.Hide();
-
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
+        #endregion
     }
 }

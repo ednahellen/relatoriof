@@ -40,8 +40,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDashboard));
             this.tbctrlDashboardAnual = new System.Windows.Forms.TabControl();
             this.tbpgDashboardAlimentos = new System.Windows.Forms.TabPage();
-            this.lblTotalProdutos = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.lbTotalPeso = new System.Windows.Forms.TextBox();
+            this.lblPeso = new System.Windows.Forms.Label();
             this.lblTotalQuantidade = new System.Windows.Forms.Label();
             this.lblMesAtualDataReceiver = new System.Windows.Forms.Label();
             this.lblTotalItens = new System.Windows.Forms.Label();
@@ -54,11 +57,10 @@
             this.btnCadastrar = new System.Windows.Forms.Button();
             this.btnMenu = new System.Windows.Forms.Button();
             this.lblTitleDashboard = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.txtCompativoMes = new System.Windows.Forms.TextBox();
+            this.lblComparativoMes = new System.Windows.Forms.Label();
+            this.txtCompativoAno = new System.Windows.Forms.TextBox();
+            this.lblComparativoAno = new System.Windows.Forms.Label();
             this.tbctrlDashboardAnual.SuspendLayout();
             this.tbpgDashboardAlimentos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartProdutos)).BeginInit();
@@ -85,53 +87,76 @@
             // 
             // tbpgDashboardAlimentos
             // 
+            this.tbpgDashboardAlimentos.Controls.Add(this.lblComparativoAno);
+            this.tbpgDashboardAlimentos.Controls.Add(this.txtCompativoAno);
+            this.tbpgDashboardAlimentos.Controls.Add(this.lblComparativoMes);
+            this.tbpgDashboardAlimentos.Controls.Add(this.txtCompativoMes);
             this.tbpgDashboardAlimentos.Controls.Add(this.textBox6);
             this.tbpgDashboardAlimentos.Controls.Add(this.textBox5);
             this.tbpgDashboardAlimentos.Controls.Add(this.textBox3);
-            this.tbpgDashboardAlimentos.Controls.Add(this.textBox2);
-            this.tbpgDashboardAlimentos.Controls.Add(this.textBox1);
-            this.tbpgDashboardAlimentos.Controls.Add(this.lblTotalProdutos);
-            this.tbpgDashboardAlimentos.Controls.Add(this.label1);
+            this.tbpgDashboardAlimentos.Controls.Add(this.lbTotalPeso);
+            this.tbpgDashboardAlimentos.Controls.Add(this.lblPeso);
             this.tbpgDashboardAlimentos.Controls.Add(this.lblTotalQuantidade);
             this.tbpgDashboardAlimentos.Controls.Add(this.lblMesAtualDataReceiver);
             this.tbpgDashboardAlimentos.Controls.Add(this.lblTotalItens);
             this.tbpgDashboardAlimentos.Controls.Add(this.chartProdutos);
-            this.tbpgDashboardAlimentos.Location = new System.Drawing.Point(4, 29);
+            this.tbpgDashboardAlimentos.Location = new System.Drawing.Point(4, 34);
             this.tbpgDashboardAlimentos.Name = "tbpgDashboardAlimentos";
             this.tbpgDashboardAlimentos.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpgDashboardAlimentos.Size = new System.Drawing.Size(1616, 680);
+            this.tbpgDashboardAlimentos.Size = new System.Drawing.Size(1616, 675);
             this.tbpgDashboardAlimentos.TabIndex = 0;
             this.tbpgDashboardAlimentos.Text = "Alimentos mais recebidos";
             this.tbpgDashboardAlimentos.UseVisualStyleBackColor = true;
             // 
-            // lblTotalProdutos
+            // textBox6
             // 
-            this.lblTotalProdutos.AutoSize = true;
-            this.lblTotalProdutos.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotalProdutos.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblTotalProdutos.Location = new System.Drawing.Point(1095, 248);
-            this.lblTotalProdutos.Name = "lblTotalProdutos";
-            this.lblTotalProdutos.Size = new System.Drawing.Size(20, 24);
-            this.lblTotalProdutos.TabIndex = 16;
-            this.lblTotalProdutos.Text = "0";
+            this.textBox6.Location = new System.Drawing.Point(884, 64);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(166, 30);
+            this.textBox6.TabIndex = 23;
+            this.textBox6.Text = "Mês atual:";
             // 
-            // label1
+            // textBox5
             // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(1097, 216);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(18, 20);
-            this.label1.TabIndex = 15;
-            this.label1.Text = "0";
+            this.textBox5.Location = new System.Drawing.Point(885, 152);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(206, 30);
+            this.textBox5.TabIndex = 22;
+            this.textBox5.Text = "Total de itens:";
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(885, 184);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(206, 30);
+            this.textBox3.TabIndex = 20;
+            this.textBox3.Text = "Total de Quantidade:";
+            // 
+            // lbTotalPeso
+            // 
+            this.lbTotalPeso.Location = new System.Drawing.Point(884, 216);
+            this.lbTotalPeso.Name = "lbTotalPeso";
+            this.lbTotalPeso.Size = new System.Drawing.Size(207, 30);
+            this.lbTotalPeso.TabIndex = 19;
+            this.lbTotalPeso.Text = "Total de Peso:";
+            // 
+            // lblPeso
+            // 
+            this.lblPeso.AutoSize = true;
+            this.lblPeso.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblPeso.Location = new System.Drawing.Point(1097, 216);
+            this.lblPeso.Name = "lblPeso";
+            this.lblPeso.Size = new System.Drawing.Size(23, 25);
+            this.lblPeso.TabIndex = 15;
+            this.lblPeso.Text = "0";
             // 
             // lblTotalQuantidade
             // 
             this.lblTotalQuantidade.AutoSize = true;
             this.lblTotalQuantidade.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblTotalQuantidade.Location = new System.Drawing.Point(1097, 184);
+            this.lblTotalQuantidade.Location = new System.Drawing.Point(1098, 186);
             this.lblTotalQuantidade.Name = "lblTotalQuantidade";
-            this.lblTotalQuantidade.Size = new System.Drawing.Size(18, 20);
+            this.lblTotalQuantidade.Size = new System.Drawing.Size(23, 25);
             this.lblTotalQuantidade.TabIndex = 13;
             this.lblTotalQuantidade.Text = "0";
             // 
@@ -141,7 +166,7 @@
             this.lblMesAtualDataReceiver.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblMesAtualDataReceiver.Location = new System.Drawing.Point(1076, 64);
             this.lblMesAtualDataReceiver.Name = "lblMesAtualDataReceiver";
-            this.lblMesAtualDataReceiver.Size = new System.Drawing.Size(39, 20);
+            this.lblMesAtualDataReceiver.Size = new System.Drawing.Size(50, 25);
             this.lblMesAtualDataReceiver.TabIndex = 11;
             this.lblMesAtualDataReceiver.Text = "Mês";
             // 
@@ -151,7 +176,7 @@
             this.lblTotalItens.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblTotalItens.Location = new System.Drawing.Point(1097, 152);
             this.lblTotalItens.Name = "lblTotalItens";
-            this.lblTotalItens.Size = new System.Drawing.Size(18, 20);
+            this.lblTotalItens.Size = new System.Drawing.Size(23, 25);
             this.lblTotalItens.TabIndex = 8;
             this.lblTotalItens.Text = "0";
             // 
@@ -180,10 +205,10 @@
             // tbpgDashboadMensal
             // 
             this.tbpgDashboadMensal.Controls.Add(this.chartDoacaoMensal);
-            this.tbpgDashboadMensal.Location = new System.Drawing.Point(4, 29);
+            this.tbpgDashboadMensal.Location = new System.Drawing.Point(4, 34);
             this.tbpgDashboadMensal.Name = "tbpgDashboadMensal";
             this.tbpgDashboadMensal.Padding = new System.Windows.Forms.Padding(3);
-            this.tbpgDashboadMensal.Size = new System.Drawing.Size(1616, 680);
+            this.tbpgDashboadMensal.Size = new System.Drawing.Size(1616, 675);
             this.tbpgDashboadMensal.TabIndex = 1;
             this.tbpgDashboadMensal.Text = "Mensais";
             this.tbpgDashboadMensal.UseVisualStyleBackColor = true;
@@ -213,10 +238,10 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.chartAnual);
-            this.tabPage1.Location = new System.Drawing.Point(4, 29);
+            this.tabPage1.Location = new System.Drawing.Point(4, 34);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1616, 680);
+            this.tabPage1.Size = new System.Drawing.Size(1616, 675);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Anuais";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -284,53 +309,49 @@
             this.lblTitleDashboard.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.lblTitleDashboard.Location = new System.Drawing.Point(12, 9);
             this.lblTitleDashboard.Name = "lblTitleDashboard";
-            this.lblTitleDashboard.Size = new System.Drawing.Size(97, 20);
+            this.lblTitleDashboard.Size = new System.Drawing.Size(117, 25);
             this.lblTitleDashboard.TabIndex = 12;
             this.lblTitleDashboard.Text = "Dashboard";
             // 
-            // textBox1
+            // txtCompativoMes
             // 
-            this.textBox1.Location = new System.Drawing.Point(885, 248);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(166, 26);
-            this.textBox1.TabIndex = 18;
-            this.textBox1.Text = "Tipo de Produtos:";
+            this.txtCompativoMes.Location = new System.Drawing.Point(885, 251);
+            this.txtCompativoMes.Name = "txtCompativoMes";
+            this.txtCompativoMes.Size = new System.Drawing.Size(366, 30);
+            this.txtCompativoMes.TabIndex = 24;
+            this.txtCompativoMes.Text = "Comparativo em relação ao Mês anterior:";
             // 
-            // textBox2
+            // lblComparativoMes
             // 
-            this.textBox2.Location = new System.Drawing.Point(884, 216);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(166, 26);
-            this.textBox2.TabIndex = 19;
-            this.textBox2.Text = "Total de Peso:";
+            this.lblComparativoMes.AutoSize = true;
+            this.lblComparativoMes.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblComparativoMes.Location = new System.Drawing.Point(1300, 254);
+            this.lblComparativoMes.Name = "lblComparativoMes";
+            this.lblComparativoMes.Size = new System.Drawing.Size(23, 25);
+            this.lblComparativoMes.TabIndex = 25;
+            this.lblComparativoMes.Text = "0";
             // 
-            // textBox3
+            // txtCompativoAno
             // 
-            this.textBox3.Location = new System.Drawing.Point(885, 184);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(166, 26);
-            this.textBox3.TabIndex = 20;
-            this.textBox3.Text = "Total de Quantidade:";
+            this.txtCompativoAno.Location = new System.Drawing.Point(885, 287);
+            this.txtCompativoAno.Name = "txtCompativoAno";
+            this.txtCompativoAno.Size = new System.Drawing.Size(402, 30);
+            this.txtCompativoAno.TabIndex = 26;
+            this.txtCompativoAno.Text = "Comparativo em relação ao Ano anterior:";
             // 
-            // textBox5
+            // lblComparativoAno
             // 
-            this.textBox5.Location = new System.Drawing.Point(885, 152);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(166, 26);
-            this.textBox5.TabIndex = 22;
-            this.textBox5.Text = "Total de itens:";
-            // 
-            // textBox6
-            // 
-            this.textBox6.Location = new System.Drawing.Point(884, 64);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(166, 26);
-            this.textBox6.TabIndex = 23;
-            this.textBox6.Text = "Mês atual:";
+            this.lblComparativoAno.AutoSize = true;
+            this.lblComparativoAno.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblComparativoAno.Location = new System.Drawing.Point(1300, 288);
+            this.lblComparativoAno.Name = "lblComparativoAno";
+            this.lblComparativoAno.Size = new System.Drawing.Size(23, 25);
+            this.lblComparativoAno.TabIndex = 27;
+            this.lblComparativoAno.Text = "0";
             // 
             // frmDashboard
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
             this.ClientSize = new System.Drawing.Size(1647, 770);
@@ -372,16 +393,18 @@
         private System.Windows.Forms.Label lblMesAtualDataReceiver;
         private System.Windows.Forms.Label lblTotalItens;
         private System.Windows.Forms.Label lblTotalQuantidade;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblPeso;
         private System.Windows.Forms.Button btnCadastrar;
         private System.Windows.Forms.Button btnMenu;
-        private System.Windows.Forms.Label lblTotalProdutos;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartAnual;
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox lbTotalPeso;
         private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox txtCompativoMes;
+        private System.Windows.Forms.Label lblComparativoMes;
+        private System.Windows.Forms.Label lblComparativoAno;
+        private System.Windows.Forms.TextBox txtCompativoAno;
     }
 }
