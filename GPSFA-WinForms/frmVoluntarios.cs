@@ -1728,6 +1728,14 @@ namespace GPSFA_WinForms
                                     MessageBox.Show("Dados do voluntário apagados com sucesso e usuário desativado!", "Mensagem do sistema",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Information);
+
+                                    limparCamposVoluntario();
+                                    limparCamposUsuario();
+                                    desabilitarCamposVoluntario();
+                                    desabilitarCamposUsuario();
+                                    desativarBotoes();
+                                    btnNovo.Enabled = true;
+                                    btnNovo.Focus();
                                 }
                                 else
                                 {
@@ -1739,6 +1747,14 @@ namespace GPSFA_WinForms
                                             MessageBoxButtons.OK,
                                             MessageBoxIcon.Information);
 
+                                        limparCamposVoluntario();
+                                        limparCamposUsuario();
+                                        desabilitarCamposVoluntario();
+                                        desabilitarCamposUsuario();
+                                        desativarBotoes();
+                                        btnNovo.Enabled = true;
+                                        btnNovo.Focus();
+
                                         if (codVolSelected == codUsuLogado)
                                         {
                                             Application.Exit();
@@ -1746,8 +1762,8 @@ namespace GPSFA_WinForms
                                         else
                                         {
                                             limparCamposVoluntario();
-                                            desabilitarCamposVoluntario();
                                             limparCamposUsuario();
+                                            desabilitarCamposVoluntario();
                                             desabilitarCamposUsuario();
                                             desativarBotoes();
                                             btnNovo.Enabled = true;
@@ -1763,8 +1779,8 @@ namespace GPSFA_WinForms
                                             MessageBoxDefaultButton.Button1);
 
                                         limparCamposVoluntario();
-                                        desabilitarCamposVoluntario();
                                         limparCamposUsuario();
+                                        desabilitarCamposVoluntario();
                                         desabilitarCamposUsuario();
                                         desativarBotoes();
                                         btnNovo.Enabled = true;
@@ -1777,6 +1793,14 @@ namespace GPSFA_WinForms
                                 MessageBox.Show("Voluntário desativado e dados apagados!", "Mensagem do sistema",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
+
+                                limparCamposVoluntario();
+                                limparCamposUsuario();
+                                desabilitarCamposVoluntario();
+                                desabilitarCamposUsuario();
+                                desativarBotoes();
+                                btnNovo.Enabled = true;
+                                btnNovo.Focus();
                             }
                         }
                         else

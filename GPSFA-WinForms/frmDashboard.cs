@@ -363,16 +363,6 @@ namespace GPSFA_WinForms
                         lblTotalItens.Text = result != DBNull.Value ? Convert.ToInt64(result).ToString("N0") : "0";
                     }
 
-                    // ===== CONSULTA 2: Total em Quilos =====
-                    using (var cmd2 = new MySqlCommand(queryTotalKilos, conn))
-                    {
-                        // Executa a consulta que retorna o total de peso em quilos
-                        object result = cmd2.ExecuteScalar();
-
-                        // Se houver valor, converte para decimal e formata com 2 casas decimais
-                        // Adiciona "kg" ao final do texto exibido
-                        lblTotalEmQuilosDataReceiver.Text = result != DBNull.Value ? Convert.ToDecimal(result).ToString("N2") + " kg" : "0 kg";
-                    }
                 }
             }
             catch (Exception ex)
@@ -398,6 +388,11 @@ namespace GPSFA_WinForms
             frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
             abrir.Show();
             this.Hide();
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
 
         }
     }

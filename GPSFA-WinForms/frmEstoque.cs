@@ -87,7 +87,7 @@ namespace Projeto_Socorrista
             comm.CommandText = @"
         SELECT
             l.descricao AS descricao,
-            SUM(p.estoqueAtual) AS quantidade_total,
+            SUM(p.quantidade) AS quantidade_total,
             u.descricao AS unidade,
             l.peso AS peso,
             MIN(p.dataDeValidade) AS validade_minima,
