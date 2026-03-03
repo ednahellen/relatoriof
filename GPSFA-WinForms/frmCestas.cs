@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using MySql.Data.MySqlClient;
+using Mysqlx.Crud;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -236,7 +237,7 @@ namespace GPSFA_WinForms
                 qtdCestas = Convert.ToInt32(txtQtdCestas.Text);
             }
 
-            foreach(DataGridViewRow row in dgvItensDaCesta.Rows)
+            foreach (DataGridViewRow row in dgvItensDaCesta.Rows)
             {
                 if (row.IsNewRow) continue;
 
@@ -346,7 +347,7 @@ namespace GPSFA_WinForms
         // Aciona o método de buscar os itens de um determinado modelo de cesta
         private void cbbModeloDeCesta_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cbbModeloDeCesta.SelectedItem != null) 
+            if (cbbModeloDeCesta.SelectedItem != null)
             {
                 // Busca o código do modelo de cesta pela descrição do item selecionado
                 buscarCodModeloPorDescricao(cbbModeloDeCesta.SelectedItem.ToString());
@@ -359,7 +360,7 @@ namespace GPSFA_WinForms
                 return;
             }
         }
-        
+
         // Instancia do evento de clique do botão de voltar - OK
         private void btnVoltar_Click(object sender, EventArgs e)
         {
@@ -393,7 +394,6 @@ namespace GPSFA_WinForms
             }
         }
 
-
         // Instancia do evento de clique do botão de limpar - OK
         private void btnLimpar_Click(object sender, EventArgs e)
         {
@@ -419,7 +419,7 @@ namespace GPSFA_WinForms
         private void dgvItensDaCesta_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             if (dgvItensDaCesta.Columns[e.ColumnIndex].Name == "QtdePorCesta")
-            {   
+            {
                 calcularTotalNecessario();
             }
         }
