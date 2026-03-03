@@ -58,6 +58,7 @@
             this.btnExcluir = new System.Windows.Forms.Button();
             this.btnCadastrar = new System.Windows.Forms.Button();
             this.btnNovo = new System.Windows.Forms.Button();
+            this.lblDistribuicao = new System.Windows.Forms.Label();
             this.gpbCamposDoProduto.SuspendLayout();
             this.pnlCrud.SuspendLayout();
             this.SuspendLayout();
@@ -203,6 +204,7 @@
             // gpbCamposDoProduto
             // 
             this.gpbCamposDoProduto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
+            this.gpbCamposDoProduto.Controls.Add(this.lblDistribuicao);
             this.gpbCamposDoProduto.Controls.Add(this.dtpDiaDistribuicao);
             this.gpbCamposDoProduto.Controls.Add(this.btnDoacao);
             this.gpbCamposDoProduto.Controls.Add(this.lblOrigemDoacao);
@@ -233,7 +235,7 @@
             // 
             // dtpDiaDistribuicao
             // 
-            this.dtpDiaDistribuicao.Location = new System.Drawing.Point(779, 347);
+            this.dtpDiaDistribuicao.Location = new System.Drawing.Point(725, 347);
             this.dtpDiaDistribuicao.Name = "dtpDiaDistribuicao";
             this.dtpDiaDistribuicao.Size = new System.Drawing.Size(429, 34);
             this.dtpDiaDistribuicao.TabIndex = 64;
@@ -278,6 +280,7 @@
             // btnMedida
             // 
             this.btnMedida.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnMedida.Enabled = false;
             this.btnMedida.FlatAppearance.BorderSize = 0;
             this.btnMedida.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMedida.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -434,6 +437,17 @@
             this.btnNovo.UseVisualStyleBackColor = true;
             this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
             // 
+            // lblDistribuicao
+            // 
+            this.lblDistribuicao.AutoSize = true;
+            this.lblDistribuicao.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDistribuicao.ForeColor = System.Drawing.Color.Black;
+            this.lblDistribuicao.Location = new System.Drawing.Point(720, 315);
+            this.lblDistribuicao.Name = "lblDistribuicao";
+            this.lblDistribuicao.Size = new System.Drawing.Size(261, 29);
+            this.lblDistribuicao.TabIndex = 65;
+            this.lblDistribuicao.Text = "Previsão Distribuição";
+            // 
             // frmGerenciarProdutos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -485,5 +499,6 @@
         private System.Windows.Forms.Label lblOrigemDoacao;
         private System.Windows.Forms.ComboBox cbbOrigemDoacao;
         private System.Windows.Forms.DateTimePicker dtpDiaDistribuicao;
+        private System.Windows.Forms.Label lblDistribuicao;
     }
 }

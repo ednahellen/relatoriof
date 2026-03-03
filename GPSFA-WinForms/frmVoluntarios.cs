@@ -1,5 +1,4 @@
-﻿using CpfLibrary;
-using DocumentFormat.OpenXml.Drawing;
+﻿using DocumentFormat.OpenXml.Drawing;
 using GPSFA_WinForms.classes;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
