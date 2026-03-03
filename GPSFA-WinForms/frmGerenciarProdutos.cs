@@ -228,6 +228,92 @@ namespace GPSFA_WinForms
 
 
         //Botão ação cadastrar
+        //private void btnCadastrar_Click(object sender, EventArgs e)
+        //{
+        //    if (dtpDataValidade.Value.Date < DateTime.Today)
+        //    {
+        //        MessageBox.Show("Data de validade inválida.");
+        //        return;
+        //    }
+
+        //    if (VerificaFormatacaoDosCampos())
+        //    {
+        //        //MessageBox.Show("Um ou mais campos estão em brancos!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        return;
+        //    }
+
+        //    using (var conn = DataBaseConnection.OpenConnection())
+
+        //        //int resp = cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList);
+
+        //        if (dtpDataValidade.Value < DateTime.Today)
+        //        {
+        //            MessageBox.Show("A data de validade não pode ser anterior a data atual!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //            dtpDataValidade.Focus();
+        //            return;
+        //        }
+
+        //        else if (cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList).Equals(1))
+        //        {
+        //            // Verifica se já existe produto
+        //            string sqlVerifica = "SELECT codProd, estoqueAtual FROM tbProdutos WHERE codBar = @codBar";
+
+        //            using (var cmdVerifica = new MySqlCommand(sqlVerifica, conn))
+        //            {
+        //                cmdVerifica.Parameters.AddWithValue("@codBar", txtCodBarras.Text);
+
+        //                using (var reader = cmdVerifica.ExecuteReader())
+        //                {
+        //                    if (reader.Read())
+        //                    {
+        //                        int codProd = reader.GetInt32("codProd");
+        //                        int qtdAtual = reader.GetInt32("estoqueAtual");
+        //                        reader.Close();
+
+        //                        // Atualiza estoque
+        //                        string sqlUpdate = "UPDATE tbProdutos SET estoqueAtual = @novaQtd WHERE codProd = @codProd";
+
+        //                        using (var cmdUpdate = new MySqlCommand(sqlUpdate, conn))
+        //                        {
+        //                            cmdUpdate.Parameters.AddWithValue("@novaQtd",
+        //                                qtdAtual + Convert.ToInt32(txtQuantidade.Text));
+        //                            cmdUpdate.Parameters.AddWithValue("@codProd", codProd);
+        //                            cmdUpdate.ExecuteNonQuery();
+        //                        }
+
+        //                        MessageBox.Show("Quantidade atualizada no estoque.");
+        //                        return;
+        //                    }
+        //                }
+        //            }
+
+        //            // Se não existir, insere novo produto
+        //            string sqlInsert = @"INSERT INTO tbProdutos
+        //                     (descricao, quantidade, peso, unidade, codBar,
+        //                      dataDeEntrada, dataDeValidade, codUsu, codOri, codList)
+        //                     VALUES
+        //                     (@descricao, @qtd, @peso, @un, @codBar,
+        //                      @entrada, @validade, @codUsu, @codOri, @codList)";
+
+        //            using (var cmdInsert = new MySqlCommand(sqlInsert, conn))
+        //            {
+        //                cmdInsert.Parameters.AddWithValue("@descricao", cbbDescricao.Text);
+        //                cmdInsert.Parameters.AddWithValue("@qtd", Convert.ToInt32(txtQuantidade.Text));
+        //                cmdInsert.Parameters.AddWithValue("@peso", Convert.ToDecimal(txtPeso.Text));
+        //                cmdInsert.Parameters.AddWithValue("@un", cbbUnidadeMedida.Text);
+        //                cmdInsert.Parameters.AddWithValue("@codBar", txtCodBarras.Text);
+        //                cmdInsert.Parameters.AddWithValue("@entrada", DateTime.Now);
+        //                cmdInsert.Parameters.AddWithValue("@validade", dtpDataValidade.Value);
+        //                cmdInsert.Parameters.AddWithValue("@codUsu", codUsuLogado);
+        //                cmdInsert.Parameters.AddWithValue("@codOri", 1);
+        //                cmdInsert.Parameters.AddWithValue("@codList", 1);
+
+        //                cmdInsert.ExecuteNonQuery();
+        //            }
+
+        //            MessageBox.Show("Produto cadastrado com sucesso.");
+        //        }
+        //}
         private void btnCadastrar_Click(object sender, EventArgs e)
         {
 
@@ -284,12 +370,8 @@ namespace GPSFA_WinForms
                     }
 
                     // Se não existir, insere novo produto
-                    string sqlInsert = @"INSERT INTO tbProdutos
-                             (descricao, quantidade, peso, unidade, codBar,
-                              dataDeEntrada, dataDeValidade, codUsu, codOri, codList)
-                             VALUES
-                             (@descricao, @qtd, @peso, @un, @codBar,
-                              @entrada, @validade, @codUsu, @codOri, @codList)";
+                    string sqlInsert = @"INSERT INTO tbProdutos(descricao, quantidade, peso, unidade, codBar,dataDeEntrada, dataDeValidade, codUsu, codOri, codList)
+                                            VALUES (@descricao, @qtd, @peso, @un, @codBar,@entrada, @validade, @codUsu, @codOri, @codList)";
 
                     using (var cmdInsert = new MySqlCommand(sqlInsert, conn))
                     {

@@ -40,6 +40,7 @@
             this.lblNome = new System.Windows.Forms.Label();
             this.btnModeloDeCesta = new System.Windows.Forms.Button();
             this.cbbModeloDeCesta = new System.Windows.Forms.ComboBox();
+            this.CodList = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Produto = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.QtdePorCesta = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.EstoqueAtual = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -64,7 +65,7 @@
             this.gpbGerirCestas.Controls.Add(this.cbbModeloDeCesta);
             this.gpbGerirCestas.Location = new System.Drawing.Point(12, 12);
             this.gpbGerirCestas.Name = "gpbGerirCestas";
-            this.gpbGerirCestas.Size = new System.Drawing.Size(1044, 556);
+            this.gpbGerirCestas.Size = new System.Drawing.Size(1284, 556);
             this.gpbGerirCestas.TabIndex = 0;
             this.gpbGerirCestas.TabStop = false;
             // 
@@ -73,7 +74,7 @@
             this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnVoltar.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
-            this.btnVoltar.Location = new System.Drawing.Point(834, 472);
+            this.btnVoltar.Location = new System.Drawing.Point(1077, 472);
             this.btnVoltar.Name = "btnVoltar";
             this.btnVoltar.Size = new System.Drawing.Size(190, 63);
             this.btnVoltar.TabIndex = 7;
@@ -87,6 +88,7 @@
             // 
             this.dgvItensDaCesta.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvItensDaCesta.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.CodList,
             this.Produto,
             this.QtdePorCesta,
             this.EstoqueAtual,
@@ -95,7 +97,7 @@
             this.QuantoFalta});
             this.dgvItensDaCesta.Location = new System.Drawing.Point(18, 118);
             this.dgvItensDaCesta.Name = "dgvItensDaCesta";
-            this.dgvItensDaCesta.Size = new System.Drawing.Size(1006, 332);
+            this.dgvItensDaCesta.Size = new System.Drawing.Size(1249, 332);
             this.dgvItensDaCesta.TabIndex = 3;
             this.dgvItensDaCesta.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvItensDaCesta_CellContentClick);
             this.dgvItensDaCesta.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvItensDaCesta_CellEndEdit);
@@ -206,6 +208,12 @@
             this.cbbModeloDeCesta.TabIndex = 0;
             this.cbbModeloDeCesta.SelectedIndexChanged += new System.EventHandler(this.cbbModeloDeCesta_SelectedIndexChanged);
             // 
+            // CodList
+            // 
+            this.CodList.HeaderText = "Codigo";
+            this.CodList.Name = "CodList";
+            this.CodList.ReadOnly = true;
+            // 
             // Produto
             // 
             this.Produto.HeaderText = "Produto";
@@ -248,6 +256,7 @@
             // QuantoFalta
             // 
             this.QuantoFalta.HeaderText = "Quanto falta";
+            this.QuantoFalta.MaxInputLength = 10;
             this.QuantoFalta.Name = "QuantoFalta";
             this.QuantoFalta.ReadOnly = true;
             // 
@@ -256,7 +265,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
-            this.ClientSize = new System.Drawing.Size(1068, 580);
+            this.ClientSize = new System.Drawing.Size(1308, 580);
             this.Controls.Add(this.gpbGerirCestas);
             this.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -285,6 +294,7 @@
         private System.Windows.Forms.Button btnAdicionarItem;
         private System.Windows.Forms.Button btnMontar;
         private System.Windows.Forms.Button btnVoltar;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CodList;
         private System.Windows.Forms.DataGridViewTextBoxColumn Produto;
         private System.Windows.Forms.DataGridViewTextBoxColumn QtdePorCesta;
         private System.Windows.Forms.DataGridViewTextBoxColumn EstoqueAtual;

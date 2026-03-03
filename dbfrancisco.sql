@@ -175,7 +175,7 @@ CREATE TABLE tbItensDoModeloCesta(
 -- CRIANDO A TABELA DE CESTAS
 CREATE TABLE tbCestas(
   codCes INT NOT NULL AUTO_INCREMENT,
-  dataDeSaida DATE NOT NULL,
+  dataDeSaida DATETIME DEFAULT CURRENT_TIMESTAMP,
   codUsu INT NOT NULL,
   codCli INT NULL,
   PRIMARY KEY(codCes),
@@ -189,8 +189,6 @@ CREATE TABLE tbItensCesta(
   codCes INT NOT NULL,
   codList INT NOT NULL,
   quantidade INT NOT NULL,
-  tipoMovimentacao VARCHAR(20) DEFAULT 'SAIDA',
-  -- dataDeMontagem DATETIME DEFAULT CURRENT TIMESTAMP,
   PRIMARY KEY (codCes, codList),
   FOREIGN KEY (codCes) REFERENCES tbCestas(codCes),
   FOREIGN KEY (codList) REFERENCES tbLista(codList)
@@ -204,6 +202,18 @@ create table tbEstoqueItens(
   PRIMARY KEY (codList),
   FOREIGN KEY (codList) REFERENCES tbLista(codList)
 );
+
+DELIMITER $$
+
+CREATE TRIGGER trg_CriarRegistroEstoque
+AFTER INSERT ON tbLista
+FOR EACH ROW
+BEGIN
+    INSERT INTO tbEstoqueItens (codList, quantidade)
+    VALUES (NEW.codList, 0);
+END$$
+
+DELIMITER ;
 
 DELIMITER $$
 
@@ -231,14 +241,24 @@ END$$
 
 DELIMITER ;
 
+
 DELIMITER $$
 
-CREATE TRIGGER trg_CriarRegistroEstoque
-AFTER INSERT ON tbLista
+CREATE TRIGGER trg_ValidarEstoque_Saida
+BEFORE INSERT ON tbItensCesta
 FOR EACH ROW
 BEGIN
-    INSERT INTO tbEstoqueItens (codList, quantidade)
-    VALUES (NEW.codList, 0);
+    DECLARE estoqueAtual INT;
+
+    SELECT quantidade
+    INTO estoqueAtual
+    FROM tbEstoqueItens
+    WHERE codList = NEW.codList;
+
+    IF estoqueAtual < NEW.quantidade THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Estoque insuficiente para realizar saida do produto';
+    END IF;
 END$$
 
 DELIMITER ;
@@ -278,7 +298,7 @@ INSERT INTO tbUnidades(codUni, descricao)VALUES(3,'LITROS (L)');
 INSERT INTO tbUnidades(codUni, descricao)VALUES(4,'MILILITROS (ML)');
 INSERT INTO tbUnidades(codUni, descricao)VALUES(5,'UNIDADES (UN)');
 
--- INSERINDO DADOS TBFORNECEDORE
+-- INSERINDO DADOS TBFORNECEDORES
 INSERT INTO tbOrigemDoacao(codOri, nome)VALUES(1,'ROTARY');
 
 -- INSERT INTO tbLista(descricao, peso, unidade, codUni)
@@ -326,8 +346,12 @@ INSERT INTO tbOrigemDoacao(codOri, nome)VALUES(1,'ROTARY');
 
 -- SELECT l.descricao, imc.quantidadeMinima FROM tbItensDoModeloCesta AS imc INNER JOIN tbLista AS l ON l.codList = imc.codList WHERE imc.codModelo = 1;
 
--- SELECT l.descricao, imc.quantidadeMinima, IFNULL(SUM(p.quantidade),0) AS estoqueAtual FROM tbItensDoModeloCesta imc INNER JOIN tbLista l ON l.codList = imc.codList LEFT JOIN tbProdutos p ON p.codList = l.codList WHERE imc.codModelo = 1 GROUP BY imc.codModelo, imc.codList, l.descricao, l.unidade, imc.quantidadeMinima;
+-- Busca a quantidade atual de itens em estoque
+-- SELECT l.descricao, imc.quantidadeMinima, IFNULL(SUM(p.quantidade),0) AS estoqueAtual FROM tbItensDoModeloCesta imc INNER JOIN tbLista l ON l.codList = imc.codList LEFT JOIN tbEstoqueItens p ON p.codList = l.codList WHERE imc.codModelo = 1 GROUP BY imc.codModelo, imc.codList, l.descricao, l.unidade, imc.quantidadeMinima;
 
 -- SELECT L.codList, L.descricao, E.quantidade AS quantidadeEmEstoque, E.dataMovimentacao FROM tbLista L INNER JOIN tbEstoqueItens E ON L.codList = E.codList WHERE E.dataMovimentacao = '2026-03-02' ORDER BY L.descricao;
 
 -- SELECT L.codList, L.descricao, E.quantidade AS quantidadeEmEstoque, E.dataMovimentacao, E.horaMovimentacao FROM tbLista L INNER JOIN tbEstoqueItens E ON L.codList = E.codList ORDER BY L.descricao;
+
+-- Bsusca os itens exatos que foram incluidos em uma cesta
+-- SELECT ipc.codCes, ipc.codList, l.descricao, ipc.quantidade, c.dataDeSaida, c.codUsu, c.codCli FROM tbItensCesta AS ipc INNER JOIN tbCestas AS c ON ipc.codCes = c.codCes INNER JOIN tbLista AS l ON ipc.codList = l.codList WHERE ipc.codCes = 1;
