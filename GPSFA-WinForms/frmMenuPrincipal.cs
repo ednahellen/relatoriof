@@ -159,8 +159,7 @@ namespace GPSFA_WinForms
         }
 
         private void btnGerenciarProdutos_Click(object sender, EventArgs e)
-        {
-            //frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
+        {        
             frmTipoDeArrecadacao abrir = new frmTipoDeArrecadacao(codUsuLogado);
             abrir.Show();
             this.Hide();

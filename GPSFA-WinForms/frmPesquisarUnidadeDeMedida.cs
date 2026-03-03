@@ -119,12 +119,23 @@ namespace GPSFA_WinForms
         }    
 
         private void ltbPesquisarUnidades_SelectedIndexChanged(object sender, EventArgs e)
-        {          
-            string descricao = ltbPesquisarUnidades.SelectedItem.ToString();          
-           
-            frmUnidadeMedida abrir = new frmUnidadeMedida(descricao, codUsuLogado);
-            abrir.Show();
-            this.Hide();
+        {
+            if (ltbPesquisarUnidades.SelectedItem == null)
+            {
+                MessageBox.Show("Favor selecionar um item da lista!",
+                    "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+            }
+            else
+            {
+                string descricao = ltbPesquisarUnidades.SelectedItem.ToString();
+
+                frmUnidadeMedida abrir = new frmUnidadeMedida(descricao, codUsuLogado);
+                abrir.Show();
+                this.Hide();
+            }
         }
 
         private void btnVoltar_Click_1(object sender, EventArgs e)
