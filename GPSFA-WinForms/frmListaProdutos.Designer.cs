@@ -161,6 +161,7 @@
             this.btnNovo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnNovo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnNovo.UseVisualStyleBackColor = true;
+            this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
             // 
             // lblDescricao
             // 
@@ -197,9 +198,9 @@
             this.btnMedida.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMedida.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnMedida.Image = ((System.Drawing.Image)(resources.GetObject("btnMedida.Image")));
-            this.btnMedida.Location = new System.Drawing.Point(298, 173);
+            this.btnMedida.Location = new System.Drawing.Point(349, 173);
             this.btnMedida.Name = "btnMedida";
-            this.btnMedida.Size = new System.Drawing.Size(48, 36);
+            this.btnMedida.Size = new System.Drawing.Size(48, 39);
             this.btnMedida.TabIndex = 63;
             this.btnMedida.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnMedida.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -223,7 +224,7 @@
             this.cbbUnidadeMedida.FormattingEnabled = true;
             this.cbbUnidadeMedida.Location = new System.Drawing.Point(56, 173);
             this.cbbUnidadeMedida.Name = "cbbUnidadeMedida";
-            this.cbbUnidadeMedida.Size = new System.Drawing.Size(236, 39);
+            this.cbbUnidadeMedida.Size = new System.Drawing.Size(287, 39);
             this.cbbUnidadeMedida.TabIndex = 2;
             this.cbbUnidadeMedida.SelectedIndexChanged += new System.EventHandler(this.cbbUnidadeMedida_SelectedIndexChanged);
             // 
@@ -241,7 +242,7 @@
             // 
             this.txtPeso.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtPeso.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPeso.Location = new System.Drawing.Point(390, 173);
+            this.txtPeso.Location = new System.Drawing.Point(428, 173);
             this.txtPeso.MaxLength = 10;
             this.txtPeso.Name = "txtPeso";
             this.txtPeso.Size = new System.Drawing.Size(134, 39);
@@ -253,7 +254,7 @@
             this.lblPeso.AutoSize = true;
             this.lblPeso.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPeso.ForeColor = System.Drawing.Color.Black;
-            this.lblPeso.Location = new System.Drawing.Point(385, 141);
+            this.lblPeso.Location = new System.Drawing.Point(423, 141);
             this.lblPeso.Name = "lblPeso";
             this.lblPeso.Size = new System.Drawing.Size(73, 29);
             this.lblPeso.TabIndex = 7;

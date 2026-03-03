@@ -233,7 +233,7 @@
             // 
             // dtpDiaDistribuicao
             // 
-            this.dtpDiaDistribuicao.Location = new System.Drawing.Point(642, 364);
+            this.dtpDiaDistribuicao.Location = new System.Drawing.Point(779, 347);
             this.dtpDiaDistribuicao.Name = "dtpDiaDistribuicao";
             this.dtpDiaDistribuicao.Size = new System.Drawing.Size(429, 34);
             this.dtpDiaDistribuicao.TabIndex = 64;
@@ -278,7 +278,6 @@
             // btnMedida
             // 
             this.btnMedida.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnMedida.Enabled = false;
             this.btnMedida.FlatAppearance.BorderSize = 0;
             this.btnMedida.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMedida.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -433,6 +432,7 @@
             this.btnNovo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnNovo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnNovo.UseVisualStyleBackColor = true;
+            this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
             // 
             // frmGerenciarProdutos
             // 

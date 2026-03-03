@@ -227,6 +227,43 @@ namespace GPSFA_WinForms
         }
 
 
+        // Desabilitar botões do crud
+        private void desabilitarBotoes()
+        {
+            btnCadastrar.Enabled = false;
+            btnAlterar.Enabled = false;
+            btnLimpar.Enabled = false;
+            btnExcluir.Enabled = false;
+            btnPesquisar.Enabled = false;
+        }
+        private void habilitarBotoesNovo()
+        {
+            btnNovo.Enabled = false;
+            btnCadastrar.Enabled = true;
+            btnAlterar.Enabled = true;
+            btnLimpar.Enabled = true;
+            btnExcluir.Enabled = true;
+            btnPesquisar.Enabled = true;
+        }
+
+        private void desabilitarCampos()
+        {
+            btnLista.Enabled = false;
+            btnDoacao.Enabled = false;
+            btnMedida.Enabled = false;
+            txtCodBarras.Enabled = false;
+            cbbOrigemDoacao.Enabled = false;
+            cbbDescricao.Enabled = false;
+            cbbUnidadeMedida.Enabled = false;
+            txtQuantidade.Enabled = false;
+            txtPeso.Enabled = false;
+            dtpDataEntrada.Enabled = false;
+            dtpDataValidade.Enabled = false;
+            dtpDiaDistribuicao.Enabled = false;
+        }
+
+
+
         //Botão ação cadastrar
         //private void btnCadastrar_Click(object sender, EventArgs e)
         //{
@@ -335,7 +372,6 @@ namespace GPSFA_WinForms
                     return;
                 }
                 else if (cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList).Equals(1))
-
                 {
                     // Verifica se já existe produto
                     string sqlVerifica = "SELECT codProd, quantidade FROM tbProdutos WHERE codBar = @codBar";
@@ -546,24 +582,24 @@ namespace GPSFA_WinForms
 
         //}
 
-        //private void btnAtualizarDados_Click(object sender, EventArgs e)
-        //{
-        //    //dgvRegistro.Rows.Clear();
-        //    //CarregarListaProdutos();
-        //    limparCamposDeCadastro();
-        //    //carregaProdutosNaLista();
-        //}
+        private void btnAtualizarDados_Click(object sender, EventArgs e)
+        {
+            //dgvRegistro.Rows.Clear();
+            //CarregarListaProdutos();
+            limparCamposDeCadastro();
+            //carregaProdutosNaLista();
+        }
 
-        //public void limparCamposDeCadastro()
-        //{
+        public void limparCamposDeCadastro()
+        {
 
-        //    txtQuantidade.Clear();
-        //    dtpDataValidade.Value = DateTime.Now;
-        //    DateTime dataRecebimento = Convert.ToDateTime(dtpDataEntrada.Text);
-        //    dtpDataValidade.Value = DateTime.Now;
-        //    //cbbUnidadeMedida.SelectedIndex = 0;
-        //    txtPeso.Clear();
-        //}   
+            txtQuantidade.Clear();
+            dtpDataValidade.Value = DateTime.Now;
+            DateTime dataRecebimento = Convert.ToDateTime(dtpDataEntrada.Text);
+            dtpDataValidade.Value = DateTime.Now;
+            //cbbUnidadeMedida.SelectedIndex = 0;
+            txtPeso.Clear();
+        }
 
 
         // Criada instância das janelas com o código do usuário imbutido
@@ -668,6 +704,10 @@ namespace GPSFA_WinForms
             }
         }
 
+        private void btnNovo_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }

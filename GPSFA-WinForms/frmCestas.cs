@@ -170,7 +170,7 @@ namespace GPSFA_WinForms
             catch (Exception error)
             {
                 var errorMessage = error.Message;
-                if ()
+                if (errorMessage == "")
 
                 MessageBox.Show($"Erro ao montar cestas! Erro:\n\n{error}", "Mensagem do sistema");
             }
@@ -445,6 +445,9 @@ namespace GPSFA_WinForms
         // Abre o modal para configurar modelos de cesta
         private void btnModeloDeCesta_Click(object sender, EventArgs e)
         {
+            frmModelosDeCestas abrir = new frmModelosDeCestas(codUsuLogado, 1);
+            abrir.Show();
+            this.Close();
         }
 
         // Parte crírica fluxo de montagem de cestas

@@ -27,6 +27,7 @@ namespace GPSFA_WinForms
         {
             codUsuLogado = codUsu;
             InitializeComponent();
+            desabilitarBotoes();
             carregarUnidadesCbb();
         }
 
@@ -43,9 +44,42 @@ namespace GPSFA_WinForms
         private void limparCampos()
         {
             codListSelecionado = 0;
+            codUniSelecionado = 0;
             cbbUnidadeMedida.SelectedItem = null;
             txtPeso.Clear();
             txtDescricao.Clear();
+        }
+
+        private void desabilitarBotoes()
+        {
+            btnCadastrar.Enabled = false;
+            btnAlterar.Enabled = false;
+            btnLimpar.Enabled = false;
+            btnExcluir.Enabled = false;
+        }
+
+        private void desabilitarCampos()
+        {
+            txtDescricao.Enabled = false;
+            cbbUnidadeMedida.Enabled = false;
+            txtPeso.Enabled = false;
+            btnMedida.Enabled = false;
+        }
+        private void habilitarCampos()
+        {
+            txtDescricao.Enabled = true;
+            cbbUnidadeMedida.Enabled = true;
+            txtPeso.Enabled = true;
+            btnMedida.Enabled = true;
+        }
+
+        private void habilitarBotoesNovo()
+        {
+            btnNovo.Enabled = false;
+            btnCadastrar.Enabled = true;
+            btnAlterar.Enabled = true;
+            btnLimpar.Enabled = true;
+            btnExcluir.Enabled = true;
         }
 
         //  ----  Métodos para realizar queries no banco de dados
@@ -67,16 +101,17 @@ namespace GPSFA_WinForms
             DataBaseConnection.CloseConnection();
         }
 
-        public int atualizarProduto(int codList, string descricao, int peso, string unidade)
+        public int atualizarProduto(int codList, string descricao, double peso, string unidade, int codUni)
         {
             MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "INSERT INTO tbLista(descricao, peso, unidade, codUni)VALUES(@descricao, @peso, @unidade, @codList);";
+            comm.CommandText = "UPDATE tbLista SET descricao = @descricao, peso = @peso, unidade = @unidade, codUni = @codUni WHERE codList = @codList";
             comm.CommandType = CommandType.Text;
 
             comm.Parameters.Clear();
             comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = descricao;
             comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
             comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 20).Value = unidade;
+            comm.Parameters.Add("@codUni", MySqlDbType.Int32).Value = codUni;
             comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codList;
 
             comm.Connection = DataBaseConnection.OpenConnection();
@@ -89,13 +124,14 @@ namespace GPSFA_WinForms
 
                 return resp;
             }
-            catch (Exception)
+            catch (Exception error)
             {
-                MessageBox.Show("Este registro já existe!", "Mensagem do sistema");
-
-                DataBaseConnection.CloseConnection();
-                return 0;
+                MessageBox.Show($"Erro ao editar dados do produto! Erro:\n\n{error}", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
             }
+            return 0;
         }
 
         public int cadastrarProdutos(string descricao, double peso, string unidade, int codUni)
@@ -184,6 +220,7 @@ namespace GPSFA_WinForms
 
                         txtDescricao.Text = DR.GetString("descricao");
                         txtPeso.Text = DR.GetInt32("peso").ToString();
+                        codListSelecionado = DR.GetInt32("codList");
                         SelecionarUnidadeDoProduto(DR.GetString("unidade"));
                     }
                 }
@@ -289,7 +326,45 @@ namespace GPSFA_WinForms
 
         private void btnAlterar_Click(object sender, EventArgs e)
         {
+            if (txtDescricao.Text.Equals(""))
+            {
+                MessageBox.Show("Favor inserir valores!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
+                txtDescricao.Focus();
+            }
+            else
+            {
 
+                //Regex utilizado para remover espaços extras entre as palavras.
+                double peso = Double.Parse(txtPeso.Text);
+                int resp = atualizarProduto(codListSelecionado, Regex.Replace(txtDescricao.Text, @"\s+", " ").Trim().ToUpper(), peso, cbbUnidadeMedida.SelectedItem.ToString(), codUniSelecionado);
+
+                if (resp.Equals(1))
+                {
+                    MessageBox.Show("Alterado com sucesso!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
+                    limparCampos();
+                    txtDescricao.Enabled = false;
+                    btnNovo.Enabled = true;
+                    btnNovo.Focus();
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao alterar!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error,
+                    MessageBoxDefaultButton.Button1);
+
+                    limparCampos();
+                    desabilitarBotoes();
+                    desabilitarCampos();
+
+                }
+            }
         }
 
         private void txtPeso_KeyPress(object sender, KeyPressEventArgs e)
@@ -300,9 +375,17 @@ namespace GPSFA_WinForms
             }
         }
 
+        private void btnNovo_Click(object sender, EventArgs e)
+        {
+            habilitarBotoesNovo();
+            habilitarCampos();
+        }
+
         private void btnLimpar_Click(object sender, EventArgs e)
         {
             limparCampos();
+            desabilitarBotoes();
+            desabilitarCampos();
         }
 
         // faz a busca do código da unidade de medida ao selecionar algo da combobox
