@@ -214,7 +214,7 @@ namespace GPSFA_WinForms
             comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
             comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 20).Value = unidade;
             comm.Parameters.Add("@codBar", MySqlDbType.VarChar, 13).Value = codBar;
-            comm.Parameters.Add("@dataDeEntrada", MySqlDbType.Date).Value = dataDeEntrada;
+            comm.Parameters.Add("@dataDeEntrada", MySqlDbType.DateTime).Value = dataDeEntrada;
             comm.Parameters.Add("@dataDeValidade", MySqlDbType.Date).Value = dataDeValidade;
             comm.Parameters.Add("@dataLimiteDeSaida", MySqlDbType.Date).Value = dataLimiteDeSaida;
             comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
@@ -233,7 +233,7 @@ namespace GPSFA_WinForms
             }
             catch (Exception)
             {
-                MessageBox.Show("Este registro já existe!", "Mensagem do sistema",
+                MessageBox.Show("Erro ao registrar doação!", "Mensagem do sistema",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error,
                     MessageBoxDefaultButton.Button1);
