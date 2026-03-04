@@ -47,20 +47,20 @@ namespace GPSFA_WinForms
         public int acessaUsuario(string usuario, string senha)
         {
             int resp;
-            MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "SELECT codUsu, ativo, tipo FROM tbUsuarios where usuario=@usuario and senha=@senha;";
-            comm.CommandType = CommandType.Text;
-            comm.Parameters.Clear();
-            comm.Parameters.Add("@usuario", MySqlDbType.VarChar, 100).Value = usuario;
-            comm.Parameters.Add("@senha", MySqlDbType.VarChar, 100).Value = senha;
-
-            comm.Connection = DataBaseConnection.OpenConnection();
-
-            using (MySqlDataReader DR = comm.ExecuteReader())
+            try 
             {
-                if (DR.Read())
+                MySqlCommand comm = new MySqlCommand();
+                comm.CommandText = "SELECT codUsu, ativo, tipo FROM tbUsuarios where usuario=@usuario and senha=@senha;";
+                comm.CommandType = CommandType.Text;
+                comm.Parameters.Clear();
+                comm.Parameters.Add("@usuario", MySqlDbType.VarChar, 100).Value = usuario;
+                comm.Parameters.Add("@senha", MySqlDbType.VarChar, 100).Value = senha;
+
+                comm.Connection = DataBaseConnection.OpenConnection();
+
+                using (MySqlDataReader DR = comm.ExecuteReader())
                 {
-                    try
+                    if (DR.Read())
                     {
                         codUsuLogado = DR.GetInt32(0);
                         usuarioAtivo = DR.GetBoolean(1);
@@ -70,18 +70,24 @@ namespace GPSFA_WinForms
 
                         return resp = 1;
                     }
-                    catch (Exception error)
+                    else 
                     {
-                        MessageBox.Show($"Erro ao autenticar usuário. Erro:\n\n{error}", "Mensagem do sistema",
+                        MessageBox.Show($"Erro ao autenticar usuário.", "Mensagem do sistema",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error,
                         MessageBoxDefaultButton.Button1);
+
                         DataBaseConnection.CloseConnection();
+                        return resp = 0;
                     }
                 }
             }
-            return resp = 0;
-        }                
+            catch (Exception)
+            {
+                DataBaseConnection.CloseConnection();
+                return resp = 0;
+            }
+        }
 
         private void btnEntrar_Click(object sender, EventArgs e)
         {
