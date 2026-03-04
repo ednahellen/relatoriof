@@ -61,9 +61,26 @@ namespace GPSFA_WinForms
             DataBaseConnection.CloseConnection();
         }
 
+        // Evento de pressionar teclas na caixa de texto de quantidade - limita a entrada de dados a números
+        private void txtQtdCestas_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private bool QuantidadeValida()
+        {
+            if (!int.TryParse(txtQuantidade.Text, out int quantidade))
+                return false;
+
+            return quantidade > 0;
+        }
+
         private void btnAdicionarItem_Click(object sender, EventArgs e)
         {
-            if (cbbProdutos.SelectedItem == null || txtQuantidade.Text.Equals(""))
+            if (cbbProdutos.SelectedItem == null || txtQuantidade.Text.Equals("") || !QuantidadeValida())
             {
                 MessageBox.Show("Selecione um produto e defina sua quantidade por cesta para continuar", "Mensagm do sistema",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);

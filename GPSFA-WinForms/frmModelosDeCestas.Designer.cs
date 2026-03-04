@@ -32,12 +32,12 @@
             this.gpbGerirCestas = new System.Windows.Forms.GroupBox();
             this.btnVoltar = new System.Windows.Forms.Button();
             this.dgvItensDaCesta = new System.Windows.Forms.DataGridView();
-            this.CodList = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Produto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.QtdePorCesta = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnMontar = new System.Windows.Forms.Button();
             this.btnAdicionarItem = new System.Windows.Forms.Button();
             this.lblNome = new System.Windows.Forms.Label();
+            this.CodList = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Produto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.QtdePorCesta = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gpbGerirCestas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItensDaCesta)).BeginInit();
             this.SuspendLayout();
@@ -60,9 +60,9 @@
             this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnVoltar.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
-            this.btnVoltar.Location = new System.Drawing.Point(633, 19);
+            this.btnVoltar.Location = new System.Drawing.Point(546, 389);
             this.btnVoltar.Name = "btnVoltar";
-            this.btnVoltar.Size = new System.Drawing.Size(112, 40);
+            this.btnVoltar.Size = new System.Drawing.Size(190, 63);
             this.btnVoltar.TabIndex = 7;
             this.btnVoltar.Text = "&Voltar";
             this.btnVoltar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -79,29 +79,9 @@
             this.QtdePorCesta});
             this.dgvItensDaCesta.Location = new System.Drawing.Point(13, 73);
             this.dgvItensDaCesta.Name = "dgvItensDaCesta";
-            this.dgvItensDaCesta.Size = new System.Drawing.Size(598, 300);
+            this.dgvItensDaCesta.Size = new System.Drawing.Size(732, 300);
             this.dgvItensDaCesta.TabIndex = 3;
-            // 
-            // CodList
-            // 
-            this.CodList.HeaderText = "Codigo";
-            this.CodList.Name = "CodList";
-            this.CodList.ReadOnly = true;
-            // 
-            // Produto
-            // 
-            this.Produto.HeaderText = "Produto";
-            this.Produto.MaxInputLength = 100;
-            this.Produto.Name = "Produto";
-            this.Produto.ReadOnly = true;
-            this.Produto.Width = 115;
-            // 
-            // QtdePorCesta
-            // 
-            this.QtdePorCesta.HeaderText = "Qtde por cesta";
-            this.QtdePorCesta.MaxInputLength = 10;
-            this.QtdePorCesta.Name = "QtdePorCesta";
-            this.QtdePorCesta.Width = 178;
+            this.dgvItensDaCesta.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvItensDaCesta_CellContentClick);
             // 
             // btnMontar
             // 
@@ -144,6 +124,28 @@
             this.lblNome.TabIndex = 65;
             this.lblNome.Text = "Editar modelo de cesta";
             // 
+            // CodList
+            // 
+            this.CodList.HeaderText = "Codigo";
+            this.CodList.MaxInputLength = 10;
+            this.CodList.Name = "CodList";
+            this.CodList.ReadOnly = true;
+            // 
+            // Produto
+            // 
+            this.Produto.HeaderText = "Produto";
+            this.Produto.MaxInputLength = 100;
+            this.Produto.Name = "Produto";
+            this.Produto.ReadOnly = true;
+            this.Produto.Width = 115;
+            // 
+            // QtdePorCesta
+            // 
+            this.QtdePorCesta.HeaderText = "Qtde por cesta";
+            this.QtdePorCesta.MaxInputLength = 10;
+            this.QtdePorCesta.Name = "QtdePorCesta";
+            this.QtdePorCesta.Width = 178;
+            // 
             // frmModelosDeCestas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 27F);
@@ -170,11 +172,11 @@
         private System.Windows.Forms.GroupBox gpbGerirCestas;
         private System.Windows.Forms.Button btnVoltar;
         private System.Windows.Forms.DataGridView dgvItensDaCesta;
-        private System.Windows.Forms.DataGridViewTextBoxColumn CodList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Produto;
-        private System.Windows.Forms.DataGridViewTextBoxColumn QtdePorCesta;
         private System.Windows.Forms.Button btnMontar;
         private System.Windows.Forms.Button btnAdicionarItem;
         private System.Windows.Forms.Label lblNome;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CodList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Produto;
+        private System.Windows.Forms.DataGridViewTextBoxColumn QtdePorCesta;
     }
 }

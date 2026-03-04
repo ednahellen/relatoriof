@@ -28,6 +28,7 @@ namespace GPSFA_WinForms
             codUsuLogado = codUsu;
             InitializeComponent();
             desabilitarBotoes();
+            desabilitarCampos();
             carregarUnidadesCbb();
         }
 
@@ -37,6 +38,7 @@ namespace GPSFA_WinForms
             codListSelecionado = codList;
             InitializeComponent();
             carregarUnidadesCbb();
+            habilitarBotoesNovo();
             buscarProdutoPorCodList(codList);
             buscarCodUniPorUnidadeSelecionada(cbbUnidadeMedida.SelectedItem.ToString());
         }
@@ -383,6 +385,7 @@ namespace GPSFA_WinForms
 
         private void btnLimpar_Click(object sender, EventArgs e)
         {
+            btnNovo.Enabled = true;
             limparCampos();
             desabilitarBotoes();
             desabilitarCampos();

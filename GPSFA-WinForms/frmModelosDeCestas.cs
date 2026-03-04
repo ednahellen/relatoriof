@@ -184,7 +184,7 @@ namespace GPSFA_WinForms
 
                     transaction.Commit();
                 }
-                catch
+                catch (Exception error)
                 {
                     transaction.Rollback();
                     throw;
@@ -211,6 +211,14 @@ namespace GPSFA_WinForms
             frmCestas abrir = new frmCestas(codUsuLogado);
             abrir.Show();
             this.Close();
+        }
+
+        private void dgvItensDaCesta_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex == dgvItensDaCesta.Columns["RemoverProduto"].Index)
+            {
+                dgvItensDaCesta.Rows.RemoveAt(e.RowIndex);
+            }
         }
 
         private void btnMontar_Click(object sender, EventArgs e)

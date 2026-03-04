@@ -328,6 +328,11 @@ namespace GPSFA_WinForms
                 {
                     while (DR.Read())
                     {
+                        if (ProdutoJaExisteNoDgv(DR.GetInt32("codList")))
+                        {
+                            MessageBox.Show("Produto já está na lista.");
+                            return;
+                        }
                         dgvItensDaCesta.Rows.Add(
                             DR["codList"].ToString(),
                             nomeProduto,
@@ -337,6 +342,7 @@ namespace GPSFA_WinForms
                     }
 
                     DataBaseConnection.CloseConnection();
+
                 }
             }
 
@@ -468,13 +474,38 @@ namespace GPSFA_WinForms
             return false;
         }
 
+
+        private bool ProdutoJaExisteNoDgv(int codProduto)
+        {
+            foreach (DataGridViewRow row in dgvItensDaCesta.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                int codigoExistente = Convert.ToInt32(row.Cells["codList"].Value);
+
+                if (codigoExistente == codProduto)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private bool QuantidadeValida()
+        {
+            if (!int.TryParse(txtQtdCestas.Text, out int quantidade))
+                return false;
+
+            return quantidade > 0;
+        }
+
         // Realiza o registro de montagem de cestas - A FAZER
         private void btnMontar_Click(object sender, EventArgs e)
         {   
             // Valida se o DGV ou txtQtdCestas está vazio
-            if (dgvItensDaCesta.Rows.Count < 5 || txtQtdCestas.Text.Equals(""))
+            if (dgvItensDaCesta.Rows.Count < 5 || txtQtdCestas.Text.Equals("") || !QuantidadeValida())
             {
-                MessageBox.Show("A cesta deve conter pelo menos 5 itens e a quantidade não pode estar vazia", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("A cesta deve conter pelo menos 5 itens e a quantidade precisa ser maior que 0", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
             else
             {
