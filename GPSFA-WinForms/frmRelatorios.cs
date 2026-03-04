@@ -228,7 +228,7 @@ namespace GPSFA_WinForms
                     INNER JOIN tbVoluntarios v ON u.codVol = v.codVol
                     LEFT JOIN tbItensCesta ic ON ic.codList = l.codList
                     LEFT JOIN tbCestas c ON c.codCes = ic.codCes
-                    WHERE p.dataDeEntrada BETWEEN @dataInicial AND @dataFinal;";
+                    WHERE p.dataDeEntrada BETWEEN @dataInicial AND @dataFinal";
 
                 // Adicionar filtros conforme selecionados
                 if (cbxProduto != null && cbxProduto.SelectedIndex > 0 && cbxProduto.Text != "TODOS")
@@ -242,7 +242,7 @@ namespace GPSFA_WinForms
                 }
 
                 // Ordenar por data de entrada (mais recente primeiro)
-                sql += " ORDER BY p.dataDeEntrada DESC";
+                sql += " ORDER BY p.dataDeEntrada DESC;";
 
                 int contador = 0;
                 int totalQuantidade = 0;
