@@ -32,6 +32,13 @@
             this.gpbGerirCestas = new System.Windows.Forms.GroupBox();
             this.btnVoltar = new System.Windows.Forms.Button();
             this.dgvItensDaCesta = new System.Windows.Forms.DataGridView();
+            this.CodList = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Produto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.QtdePorCesta = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.EstoqueAtual = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TotalNecessario = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.QuantoFalta = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnMontar = new System.Windows.Forms.Button();
             this.btnLimpar = new System.Windows.Forms.Button();
             this.btnAdicionarItem = new System.Windows.Forms.Button();
@@ -40,13 +47,6 @@
             this.lblNome = new System.Windows.Forms.Label();
             this.btnModeloDeCesta = new System.Windows.Forms.Button();
             this.cbbModeloDeCesta = new System.Windows.Forms.ComboBox();
-            this.CodList = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Produto = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.QtdePorCesta = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.EstoqueAtual = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TotalNecessario = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.QuantoFalta = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gpbGerirCestas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItensDaCesta)).BeginInit();
             this.SuspendLayout();
@@ -65,7 +65,7 @@
             this.gpbGerirCestas.Controls.Add(this.cbbModeloDeCesta);
             this.gpbGerirCestas.Location = new System.Drawing.Point(12, 12);
             this.gpbGerirCestas.Name = "gpbGerirCestas";
-            this.gpbGerirCestas.Size = new System.Drawing.Size(1284, 556);
+            this.gpbGerirCestas.Size = new System.Drawing.Size(1135, 556);
             this.gpbGerirCestas.TabIndex = 0;
             this.gpbGerirCestas.TabStop = false;
             // 
@@ -74,7 +74,7 @@
             this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnVoltar.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnVoltar.Image = ((System.Drawing.Image)(resources.GetObject("btnVoltar.Image")));
-            this.btnVoltar.Location = new System.Drawing.Point(1077, 472);
+            this.btnVoltar.Location = new System.Drawing.Point(925, 472);
             this.btnVoltar.Name = "btnVoltar";
             this.btnVoltar.Size = new System.Drawing.Size(190, 63);
             this.btnVoltar.TabIndex = 7;
@@ -97,11 +97,63 @@
             this.QuantoFalta});
             this.dgvItensDaCesta.Location = new System.Drawing.Point(18, 118);
             this.dgvItensDaCesta.Name = "dgvItensDaCesta";
-            this.dgvItensDaCesta.Size = new System.Drawing.Size(1249, 332);
+            this.dgvItensDaCesta.Size = new System.Drawing.Size(1097, 332);
             this.dgvItensDaCesta.TabIndex = 3;
             this.dgvItensDaCesta.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvItensDaCesta_CellContentClick);
             this.dgvItensDaCesta.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvItensDaCesta_CellEndEdit);
             this.dgvItensDaCesta.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvItensDaCesta_EditingControlShowing);
+            // 
+            // CodList
+            // 
+            this.CodList.HeaderText = "Codigo";
+            this.CodList.Name = "CodList";
+            this.CodList.ReadOnly = true;
+            // 
+            // Produto
+            // 
+            this.Produto.HeaderText = "Produto";
+            this.Produto.MaxInputLength = 100;
+            this.Produto.Name = "Produto";
+            this.Produto.ReadOnly = true;
+            this.Produto.Width = 115;
+            // 
+            // QtdePorCesta
+            // 
+            this.QtdePorCesta.HeaderText = "Qtde por cesta";
+            this.QtdePorCesta.MaxInputLength = 10;
+            this.QtdePorCesta.Name = "QtdePorCesta";
+            this.QtdePorCesta.Width = 178;
+            // 
+            // EstoqueAtual
+            // 
+            this.EstoqueAtual.HeaderText = "Estoque atual";
+            this.EstoqueAtual.MaxInputLength = 10;
+            this.EstoqueAtual.Name = "EstoqueAtual";
+            this.EstoqueAtual.ReadOnly = true;
+            this.EstoqueAtual.Width = 153;
+            // 
+            // TotalNecessario
+            // 
+            this.TotalNecessario.HeaderText = "Total necessário";
+            this.TotalNecessario.MaxInputLength = 10;
+            this.TotalNecessario.Name = "TotalNecessario";
+            this.TotalNecessario.ReadOnly = true;
+            this.TotalNecessario.Width = 176;
+            // 
+            // Status
+            // 
+            this.Status.HeaderText = "Status";
+            this.Status.MaxInputLength = 20;
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
+            this.Status.Width = 95;
+            // 
+            // QuantoFalta
+            // 
+            this.QuantoFalta.HeaderText = "Quanto falta";
+            this.QuantoFalta.MaxInputLength = 10;
+            this.QuantoFalta.Name = "QuantoFalta";
+            this.QuantoFalta.ReadOnly = true;
             // 
             // btnMontar
             // 
@@ -208,64 +260,12 @@
             this.cbbModeloDeCesta.TabIndex = 0;
             this.cbbModeloDeCesta.SelectedIndexChanged += new System.EventHandler(this.cbbModeloDeCesta_SelectedIndexChanged);
             // 
-            // CodList
-            // 
-            this.CodList.HeaderText = "Codigo";
-            this.CodList.Name = "CodList";
-            this.CodList.ReadOnly = true;
-            // 
-            // Produto
-            // 
-            this.Produto.HeaderText = "Produto";
-            this.Produto.MaxInputLength = 100;
-            this.Produto.Name = "Produto";
-            this.Produto.ReadOnly = true;
-            this.Produto.Width = 115;
-            // 
-            // QtdePorCesta
-            // 
-            this.QtdePorCesta.HeaderText = "Qtde por cesta";
-            this.QtdePorCesta.MaxInputLength = 10;
-            this.QtdePorCesta.Name = "QtdePorCesta";
-            this.QtdePorCesta.Width = 178;
-            // 
-            // EstoqueAtual
-            // 
-            this.EstoqueAtual.HeaderText = "Estoque atual";
-            this.EstoqueAtual.MaxInputLength = 10;
-            this.EstoqueAtual.Name = "EstoqueAtual";
-            this.EstoqueAtual.ReadOnly = true;
-            this.EstoqueAtual.Width = 153;
-            // 
-            // TotalNecessario
-            // 
-            this.TotalNecessario.HeaderText = "Total necessário";
-            this.TotalNecessario.MaxInputLength = 10;
-            this.TotalNecessario.Name = "TotalNecessario";
-            this.TotalNecessario.ReadOnly = true;
-            this.TotalNecessario.Width = 176;
-            // 
-            // Status
-            // 
-            this.Status.HeaderText = "Status";
-            this.Status.MaxInputLength = 20;
-            this.Status.Name = "Status";
-            this.Status.ReadOnly = true;
-            this.Status.Width = 95;
-            // 
-            // QuantoFalta
-            // 
-            this.QuantoFalta.HeaderText = "Quanto falta";
-            this.QuantoFalta.MaxInputLength = 10;
-            this.QuantoFalta.Name = "QuantoFalta";
-            this.QuantoFalta.ReadOnly = true;
-            // 
             // frmCestas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
-            this.ClientSize = new System.Drawing.Size(1308, 580);
+            this.ClientSize = new System.Drawing.Size(1158, 580);
             this.Controls.Add(this.gpbGerirCestas);
             this.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
