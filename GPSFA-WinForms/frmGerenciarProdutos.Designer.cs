@@ -43,6 +43,7 @@
             this.dtpDataEntrada = new System.Windows.Forms.DateTimePicker();
             this.lblDescricao = new System.Windows.Forms.Label();
             this.gpbCamposDoProduto = new System.Windows.Forms.GroupBox();
+            this.lblDistribuicao = new System.Windows.Forms.Label();
             this.dtpDiaDistribuicao = new System.Windows.Forms.DateTimePicker();
             this.btnDoacao = new System.Windows.Forms.Button();
             this.lblOrigemDoacao = new System.Windows.Forms.Label();
@@ -58,7 +59,6 @@
             this.btnExcluir = new System.Windows.Forms.Button();
             this.btnCadastrar = new System.Windows.Forms.Button();
             this.btnNovo = new System.Windows.Forms.Button();
-            this.lblDistribuicao = new System.Windows.Forms.Label();
             this.gpbCamposDoProduto.SuspendLayout();
             this.pnlCrud.SuspendLayout();
             this.SuspendLayout();
@@ -233,6 +233,17 @@
             this.gpbCamposDoProduto.TabStop = false;
             this.gpbCamposDoProduto.Enter += new System.EventHandler(this.gpbCamposDoProduto_Enter);
             // 
+            // lblDistribuicao
+            // 
+            this.lblDistribuicao.AutoSize = true;
+            this.lblDistribuicao.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDistribuicao.ForeColor = System.Drawing.Color.Black;
+            this.lblDistribuicao.Location = new System.Drawing.Point(720, 315);
+            this.lblDistribuicao.Name = "lblDistribuicao";
+            this.lblDistribuicao.Size = new System.Drawing.Size(261, 29);
+            this.lblDistribuicao.TabIndex = 65;
+            this.lblDistribuicao.Text = "Previsão Distribuição";
+            // 
             // dtpDiaDistribuicao
             // 
             this.dtpDiaDistribuicao.Location = new System.Drawing.Point(725, 347);
@@ -364,6 +375,7 @@
             this.btnLimpar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnLimpar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnLimpar.UseVisualStyleBackColor = true;
+            this.btnLimpar.Click += new System.EventHandler(this.btnLimpar_Click);
             // 
             // btnPesquisar
             // 
@@ -436,17 +448,6 @@
             this.btnNovo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnNovo.UseVisualStyleBackColor = true;
             this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
-            // 
-            // lblDistribuicao
-            // 
-            this.lblDistribuicao.AutoSize = true;
-            this.lblDistribuicao.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDistribuicao.ForeColor = System.Drawing.Color.Black;
-            this.lblDistribuicao.Location = new System.Drawing.Point(720, 315);
-            this.lblDistribuicao.Name = "lblDistribuicao";
-            this.lblDistribuicao.Size = new System.Drawing.Size(261, 29);
-            this.lblDistribuicao.TabIndex = 65;
-            this.lblDistribuicao.Text = "Previsão Distribuição";
             // 
             // frmGerenciarProdutos
             // 
