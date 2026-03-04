@@ -49,7 +49,7 @@
             this.gpbAdicionarItemNaCesta.Controls.Add(this.cbbProdutos);
             this.gpbAdicionarItemNaCesta.Location = new System.Drawing.Point(12, 12);
             this.gpbAdicionarItemNaCesta.Name = "gpbAdicionarItemNaCesta";
-            this.gpbAdicionarItemNaCesta.Size = new System.Drawing.Size(629, 230);
+            this.gpbAdicionarItemNaCesta.Size = new System.Drawing.Size(481, 317);
             this.gpbAdicionarItemNaCesta.TabIndex = 0;
             this.gpbAdicionarItemNaCesta.TabStop = false;
             // 
@@ -58,7 +58,7 @@
             this.btnCancelar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnCancelar.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancelar.Image = ((System.Drawing.Image)(resources.GetObject("btnCancelar.Image")));
-            this.btnCancelar.Location = new System.Drawing.Point(409, 152);
+            this.btnCancelar.Location = new System.Drawing.Point(253, 233);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(190, 47);
             this.btnCancelar.TabIndex = 84;
@@ -72,7 +72,7 @@
             // 
             this.txtQuantidade.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtQuantidade.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtQuantidade.Location = new System.Drawing.Point(479, 76);
+            this.txtQuantidade.Location = new System.Drawing.Point(32, 168);
             this.txtQuantidade.MaxLength = 100;
             this.txtQuantidade.Name = "txtQuantidade";
             this.txtQuantidade.Size = new System.Drawing.Size(119, 39);
@@ -84,18 +84,18 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Black;
-            this.label1.Location = new System.Drawing.Point(474, 44);
+            this.label1.Location = new System.Drawing.Point(27, 136);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(148, 29);
+            this.label1.Size = new System.Drawing.Size(263, 29);
             this.label1.TabIndex = 82;
-            this.label1.Text = "Quantidade";
+            this.label1.Text = "Quantidade por cesta";
             // 
             // btnAdicionarItem
             // 
             this.btnAdicionarItem.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnAdicionarItem.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAdicionarItem.Image = ((System.Drawing.Image)(resources.GetObject("btnAdicionarItem.Image")));
-            this.btnAdicionarItem.Location = new System.Drawing.Point(32, 152);
+            this.btnAdicionarItem.Location = new System.Drawing.Point(32, 233);
             this.btnAdicionarItem.Name = "btnAdicionarItem";
             this.btnAdicionarItem.Size = new System.Drawing.Size(190, 47);
             this.btnAdicionarItem.TabIndex = 81;
@@ -130,7 +130,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
-            this.ClientSize = new System.Drawing.Size(652, 252);
+            this.ClientSize = new System.Drawing.Size(504, 341);
             this.Controls.Add(this.gpbAdicionarItemNaCesta);
             this.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
