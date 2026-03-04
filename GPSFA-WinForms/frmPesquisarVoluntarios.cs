@@ -57,7 +57,8 @@ namespace GPSFA_WinForms
         }
 
         private void ConfigDgvVoluntarios()
-        { // Ajustar para ocupar toda a largura
+        { 
+            // Ajustar para ocupar toda a largura
             dgvVoluntarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             // Alternar cores das linhas
             dgvVoluntarios.RowsDefaultCellStyle.BackColor = Color.LightGray;
@@ -74,7 +75,7 @@ namespace GPSFA_WinForms
             dgvVoluntarios.MultiSelect = false; 
             
             DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
-            buttonColumn.HeaderText = "Action";
+            buttonColumn.HeaderText = "Editar Dados";
             buttonColumn.Name = "EditarDados"; // Name for programmatic reference
             buttonColumn.Text = "Editar"; // The text displayed on the button
             buttonColumn.UseColumnTextForButtonValue = true; // Use the Text property value for all buttons

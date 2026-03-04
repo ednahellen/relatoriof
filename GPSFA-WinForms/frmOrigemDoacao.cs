@@ -11,7 +11,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
-using ViaCep;
+using ViaCep; // API BUSCA CEP
+using CpfCnpjLibrary; //API VALIDA CNPJ | CPF
+
 namespace GPSFA_WinForms
 {
     public partial class frmOrigemDoacao : Form
@@ -61,6 +63,8 @@ namespace GPSFA_WinForms
             txtReferencia.Text = referencia;
             mskCnpj.Enabled = false;
             mskCpf.Enabled = false;
+            cbbCidade.Enabled = false;
+            cbbEstado.Enabled = false;
         }
         // Método Construtor Base da Janela com parâmetro do NOME para preenchimento dos campos da janela.
         public frmOrigemDoacao(string nome)
@@ -74,10 +78,10 @@ namespace GPSFA_WinForms
             btnAlterar.Enabled = true;
             btnLimpar.Enabled = true;
             btnExcluir.Enabled = true;
+            cbbEstado.Enabled = false;
+            cbbCidade.Enabled = false;
         }
-
         //Métodos de manipulação de campos e botões da janela
-
         public void desativarBotoes()
         {
             btnAlterar.Enabled = false;
@@ -114,8 +118,8 @@ namespace GPSFA_WinForms
             mskTelefone.Enabled = true;
             mskCpf.Enabled = false;
             mskCnpj.Enabled = false;
-            cbbEstado.Enabled = true;
-            cbbCidade.Enabled = true;
+            cbbEstado.Enabled = false;
+            cbbCidade.Enabled = false;
             rdbCpf.Enabled = true;
             rdbCnpj.Enabled = true;
         }
@@ -524,8 +528,18 @@ namespace GPSFA_WinForms
                     mskCpf.Focus();
                     return;
                 }
+                else if (Cpf.Validar(mskCpf.Text).Equals("False"))
+                {
+                    MessageBox.Show("Inserir um CPF válido!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
+                    mskCpf.Focus();
+                    return;
+                }               
+               
+                    int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), mskCpf.Text, cnpj, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
 
-                int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), mskCpf.Text, cnpj, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
 
                 if (resp.Equals(1))
                 {
@@ -536,6 +550,7 @@ namespace GPSFA_WinForms
                     desativarBotoes();
                     limparCamposNovo();
                     desativarCampos();
+                    rdbCpf.Checked = false;
                     btnNovo.Enabled = true;
                     btnNovo.Focus();
                 }
@@ -565,6 +580,15 @@ namespace GPSFA_WinForms
                     mskCnpj.Focus();
                     return;
                 }
+                else if (Cnpj.Validar(mskCnpj.Text).Equals("False"))
+                {
+                    MessageBox.Show("Inserir um CNPJ válido!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
+                    mskCpf.Focus();
+                    return;
+                }
 
                 //Regex utilizado para remover espaços extras entre as palavras.
                 int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), cpf, mskCnpj.Text, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
@@ -578,6 +602,7 @@ namespace GPSFA_WinForms
                     desativarBotoes();
                     limparCamposNovo();
                     desativarCampos();
+                    rdbCnpj.Checked = false;
                     btnNovo.Enabled = true;
                     btnNovo.Focus();
                 }
@@ -793,6 +818,7 @@ namespace GPSFA_WinForms
                 }
             }
         }
+
         public void BuscaCidade()
         {
             try

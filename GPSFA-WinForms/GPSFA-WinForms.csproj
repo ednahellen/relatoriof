@@ -58,10 +58,16 @@
     <ManifestKeyFile>GPSFA-WinForms_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ARSoft.Tools.Net, Version=2.2.2.0, Culture=neutral, PublicKeyToken=1940454cd762ec57, processorArchitecture=MSIL">
@@ -78,9 +84,6 @@
     </Reference>
     <Reference Include="ClosedXML.Parser, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1d5f7376574c51ec, processorArchitecture=MSIL">
       <HintPath>..\packages\ClosedXML.Parser.2.0.0\lib\netstandard2.0\ClosedXML.Parser.dll</HintPath>
-    </Reference>
-    <Reference Include="Cpf, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cpf.2.1.0\lib\Cpf.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.3.1.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
@@ -112,6 +115,9 @@
     <Reference Include="K4os.Hash.xxHash, Version=1.0.8.0, Culture=neutral, PublicKeyToken=32cd54395057cec3, processorArchitecture=MSIL">
       <HintPath>..\packages\K4os.Hash.xxHash.1.0.8\lib\net462\K4os.Hash.xxHash.dll</HintPath>
     </Reference>
+    <Reference Include="Library, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cpf.Cnpj.1.0.2\lib\netstandard2.0\Library.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -139,7 +145,9 @@
     <Reference Include="SixLabors.Fonts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d998eea7b14cab13, processorArchitecture=MSIL">
       <HintPath>..\packages\SixLabors.Fonts.1.0.0\lib\netstandard2.0\SixLabors.Fonts.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
@@ -193,6 +201,18 @@
     <Compile Include="classes\ViaCepResponse.cs" />
     <Compile Include="data.dbfransisco\DataBaseConnection.cs" />
     <Compile Include="classes\FiltroDeBuscaBD.cs" />
+    <Compile Include="frmAdicionarItemNaCesta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmAdicionarItemNaCesta.Designer.cs">
+      <DependentUpon>frmAdicionarItemNaCesta.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCestas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCestas.Designer.cs">
+      <DependentUpon>frmCestas.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmDiaArrecadacao.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -222,6 +242,12 @@
     </Compile>
     <Compile Include="frmListaProdutos.Designer.cs">
       <DependentUpon>frmListaProdutos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmModelosDeCestas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmModelosDeCestas.Designer.cs">
+      <DependentUpon>frmModelosDeCestas.cs</DependentUpon>
     </Compile>
     <Compile Include="frmPesquisarProdutosLista.cs">
       <SubType>Form</SubType>
@@ -271,12 +297,6 @@
     <Compile Include="frmRelatorios.Designer.cs">
       <DependentUpon>frmRelatorios.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSplash.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmSplash.Designer.cs">
-      <DependentUpon>frmSplash.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmUnidadeMedida.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -292,6 +312,12 @@
     <Compile Include="ProductRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmAdicionarItemNaCesta.resx">
+      <DependentUpon>frmAdicionarItemNaCesta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCestas.resx">
+      <DependentUpon>frmCestas.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmDiaArrecadacao.resx">
       <DependentUpon>frmDiaArrecadacao.cs</DependentUpon>
     </EmbeddedResource>
@@ -306,6 +332,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmListaProdutos.resx">
       <DependentUpon>frmListaProdutos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmModelosDeCestas.resx">
+      <DependentUpon>frmModelosDeCestas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmPesquisarProdutosLista.resx">
       <DependentUpon>frmPesquisarProdutosLista.cs</DependentUpon>
@@ -331,9 +360,6 @@
     <EmbeddedResource Include="frmRelatorios.resx">
       <DependentUpon>frmRelatorios.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSplash.resx">
-      <DependentUpon>frmSplash.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="frmUnidadeMedida.resx">
       <DependentUpon>frmUnidadeMedida.cs</DependentUpon>
     </EmbeddedResource>
@@ -352,6 +378,7 @@
     </Compile>
     <None Include="GPSFA-WinForms_TemporaryKey.pfx" />
     <None Include="packages.config" />
+    <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMenuPrincipal));
             this.pnlForm = new System.Windows.Forms.Panel();
+            this.btnCestas = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.btnGerenciarProdutos = new System.Windows.Forms.Button();
             this.btnVoluntarios = new System.Windows.Forms.Button();
@@ -43,6 +44,7 @@
             // pnlForm
             // 
             this.pnlForm.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
+            this.pnlForm.Controls.Add(this.btnCestas);
             this.pnlForm.Controls.Add(this.button1);
             this.pnlForm.Controls.Add(this.btnGerenciarProdutos);
             this.pnlForm.Controls.Add(this.btnVoluntarios);
@@ -53,8 +55,27 @@
             this.pnlForm.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlForm.Location = new System.Drawing.Point(0, 0);
             this.pnlForm.Name = "pnlForm";
-            this.pnlForm.Size = new System.Drawing.Size(943, 507);
+            this.pnlForm.Size = new System.Drawing.Size(854, 497);
             this.pnlForm.TabIndex = 1;
+            // 
+            // btnCestas
+            // 
+            this.btnCestas.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
+            this.btnCestas.FlatAppearance.BorderSize = 0;
+            this.btnCestas.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCestas.Font = new System.Drawing.Font("Microsoft YaHei", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCestas.ForeColor = System.Drawing.Color.White;
+            this.btnCestas.Image = ((System.Drawing.Image)(resources.GetObject("btnCestas.Image")));
+            this.btnCestas.Location = new System.Drawing.Point(13, 279);
+            this.btnCestas.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnCestas.Name = "btnCestas";
+            this.btnCestas.Size = new System.Drawing.Size(220, 200);
+            this.btnCestas.TabIndex = 3;
+            this.btnCestas.Text = "Cestas";
+            this.btnCestas.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnCestas.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btnCestas.UseVisualStyleBackColor = false;
+            this.btnCestas.Click += new System.EventHandler(this.btnCestas_Click);
             // 
             // button1
             // 
@@ -62,10 +83,10 @@
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button1.Location = new System.Drawing.Point(783, 449);
+            this.button1.Location = new System.Drawing.Point(696, 69);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(148, 46);
-            this.button1.TabIndex = 11;
+            this.button1.TabIndex = 6;
             this.button1.Text = "&Sair";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.btnSair_Click);
@@ -78,11 +99,11 @@
             this.btnGerenciarProdutos.Font = new System.Drawing.Font("Microsoft YaHei", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnGerenciarProdutos.ForeColor = System.Drawing.Color.White;
             this.btnGerenciarProdutos.Image = ((System.Drawing.Image)(resources.GetObject("btnGerenciarProdutos.Image")));
-            this.btnGerenciarProdutos.Location = new System.Drawing.Point(252, 69);
+            this.btnGerenciarProdutos.Location = new System.Drawing.Point(13, 69);
             this.btnGerenciarProdutos.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnGerenciarProdutos.Name = "btnGerenciarProdutos";
             this.btnGerenciarProdutos.Size = new System.Drawing.Size(220, 200);
-            this.btnGerenciarProdutos.TabIndex = 9;
+            this.btnGerenciarProdutos.TabIndex = 0;
             this.btnGerenciarProdutos.Text = "Gerenciar  Produtos";
             this.btnGerenciarProdutos.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnGerenciarProdutos.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -97,11 +118,11 @@
             this.btnVoluntarios.Font = new System.Drawing.Font("Microsoft YaHei", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnVoluntarios.ForeColor = System.Drawing.Color.White;
             this.btnVoluntarios.Image = ((System.Drawing.Image)(resources.GetObject("btnVoluntarios.Image")));
-            this.btnVoluntarios.Location = new System.Drawing.Point(480, 69);
+            this.btnVoluntarios.Location = new System.Drawing.Point(469, 279);
             this.btnVoluntarios.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnVoluntarios.Name = "btnVoluntarios";
             this.btnVoluntarios.Size = new System.Drawing.Size(220, 200);
-            this.btnVoluntarios.TabIndex = 2;
+            this.btnVoluntarios.TabIndex = 5;
             this.btnVoluntarios.Text = "Voluntários";
             this.btnVoluntarios.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnVoluntarios.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -116,11 +137,11 @@
             this.btnRelatorios.Font = new System.Drawing.Font("Microsoft YaHei", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRelatorios.ForeColor = System.Drawing.Color.White;
             this.btnRelatorios.Image = ((System.Drawing.Image)(resources.GetObject("btnRelatorios.Image")));
-            this.btnRelatorios.Location = new System.Drawing.Point(252, 279);
+            this.btnRelatorios.Location = new System.Drawing.Point(241, 279);
             this.btnRelatorios.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnRelatorios.Name = "btnRelatorios";
             this.btnRelatorios.Size = new System.Drawing.Size(220, 200);
-            this.btnRelatorios.TabIndex = 3;
+            this.btnRelatorios.TabIndex = 4;
             this.btnRelatorios.Text = "Relatórios";
             this.btnRelatorios.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnRelatorios.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -135,11 +156,11 @@
             this.btnAlimentos.Font = new System.Drawing.Font("Microsoft YaHei", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAlimentos.ForeColor = System.Drawing.Color.White;
             this.btnAlimentos.Image = ((System.Drawing.Image)(resources.GetObject("btnAlimentos.Image")));
-            this.btnAlimentos.Location = new System.Drawing.Point(24, 69);
+            this.btnAlimentos.Location = new System.Drawing.Point(241, 69);
             this.btnAlimentos.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnAlimentos.Name = "btnAlimentos";
             this.btnAlimentos.Size = new System.Drawing.Size(220, 200);
-            this.btnAlimentos.TabIndex = 8;
+            this.btnAlimentos.TabIndex = 1;
             this.btnAlimentos.Text = "Estoque";
             this.btnAlimentos.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnAlimentos.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -153,7 +174,7 @@
             this.pnlDadosProdutos.Location = new System.Drawing.Point(0, 0);
             this.pnlDadosProdutos.Name = "pnlDadosProdutos";
             this.pnlDadosProdutos.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
-            this.pnlDadosProdutos.Size = new System.Drawing.Size(943, 48);
+            this.pnlDadosProdutos.Size = new System.Drawing.Size(854, 48);
             this.pnlDadosProdutos.TabIndex = 2;
             // 
             // btnDashboard
@@ -164,11 +185,11 @@
             this.btnDashboard.Font = new System.Drawing.Font("Microsoft YaHei", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDashboard.ForeColor = System.Drawing.Color.White;
             this.btnDashboard.Image = ((System.Drawing.Image)(resources.GetObject("btnDashboard.Image")));
-            this.btnDashboard.Location = new System.Drawing.Point(24, 279);
+            this.btnDashboard.Location = new System.Drawing.Point(469, 69);
             this.btnDashboard.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnDashboard.Name = "btnDashboard";
             this.btnDashboard.Size = new System.Drawing.Size(220, 200);
-            this.btnDashboard.TabIndex = 0;
+            this.btnDashboard.TabIndex = 2;
             this.btnDashboard.Text = "Dashboard";
             this.btnDashboard.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnDashboard.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -180,7 +201,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
-            this.ClientSize = new System.Drawing.Size(943, 507);
+            this.ClientSize = new System.Drawing.Size(854, 497);
             this.Controls.Add(this.pnlForm);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -204,5 +225,6 @@
         private System.Windows.Forms.Button btnDashboard;
         private System.Windows.Forms.Panel pnlDadosProdutos;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnCestas;
     }
 }

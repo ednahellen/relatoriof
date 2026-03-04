@@ -33,6 +33,8 @@ namespace GPSFA_WinForms
             carregarOrigemCbb();
             carregarUnidadesCbb();
             carregarProdutosCbb();
+            desativaBotoes();
+            desativaCampos();
         }
 
         public frmGerenciarProdutos(int codUsu)
@@ -42,6 +44,8 @@ namespace GPSFA_WinForms
             carregarOrigemCbb();
             carregarUnidadesCbb();
             carregarProdutosCbb();
+            desativaBotoes();
+            desativaCampos();
             dtpDiaDistribuicao.Value = diaDeDistribuicao;
         }
 
@@ -53,7 +57,11 @@ namespace GPSFA_WinForms
             carregarOrigemCbb();
             carregarUnidadesCbb();
             carregarProdutosCbb();
-            cbbOrigemDoacao.Text = nomeOrigem;            
+
+            desativaBotoes();
+            desativaCampos();
+
+            cbbOrigemDoacao.Text = nomeOrigem;
             dtpDiaDistribuicao.Value = diaDeDistribuicao;
         }
 
@@ -141,18 +149,18 @@ namespace GPSFA_WinForms
         }
 
         //Método para validar DataLimite de Saída
-        
-            int diaDeArrecadacao = DateTime.Now.Day;
 
-            DateTime diaDeDistribuicao = DateTime.Now.AddDays(7);          
+        int diaDeArrecadacao = DateTime.Now.Day;
+
+        DateTime diaDeDistribuicao = DateTime.Now.AddDays(7);
 
         private void validaSaida()
         {
             int dataValidade = Convert.ToInt32(dtpDataValidade.Value.Day);
 
-            int calculoData = Convert.ToInt32(dtpDiaDistribuicao.Value.Day);        
-        }          
-        
+            int calculoData = Convert.ToInt32(dtpDiaDistribuicao.Value.Day);
+        }
+
         //Método para verificar Formatação de Campos
 
         private bool VerificaFormatacaoDosCampos()
@@ -181,30 +189,28 @@ namespace GPSFA_WinForms
                 txtQuantidade.Focus();
                 return false;
             }
-
-
             return true;
         }
 
         //Método para cadastrar Produtos na TBPRODUTOS
 
-        private int cadastrarProdutos(string descricao, int estoqueAtual, decimal peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
+        private int cadastrarProdutos(string descricao, int quantidade, decimal peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
         {
 
             MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "INSERT INTO tbprodutos(descricao, estoqueAtual, peso, unidade, codBar, dataDeEntrada, dataDeValidade, dataLimiteDeSaida, codUsu, codOri, codList)VALUES(@descricao, @estoqueAtual, @peso, @unidade, @codBar, @dataDeEntrada, @dataDeValidade, @dataLimiteDeSaida, @codUsu, @codOri, @codList);";
+            comm.CommandText = "INSERT INTO tbprodutos(descricao, quantidade, peso, unidade, codBar, dataDeEntrada, dataDeValidade, dataLimiteDeSaida, codUsu, codOri, codList)VALUES(@descricao, @quantidade, @peso, @unidade, @codBar, @dataDeEntrada, @dataDeValidade, @dataLimiteDeSaida, @codUsu, @codOri, @codList);";
             comm.CommandType = CommandType.Text;
 
             comm.Parameters.Clear();
             comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = descricao;
-            comm.Parameters.Add("@estoqueAtual", MySqlDbType.Int32).Value = estoqueAtual;
+            comm.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidade;
             comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
             comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 20).Value = unidade;
             comm.Parameters.Add("@codBar", MySqlDbType.VarChar, 13).Value = codBar;
             comm.Parameters.Add("@dataDeEntrada", MySqlDbType.Date).Value = dataDeEntrada;
             comm.Parameters.Add("@dataDeValidade", MySqlDbType.Date).Value = dataDeValidade;
             comm.Parameters.Add("@dataLimiteDeSaida", MySqlDbType.Date).Value = dataLimiteDeSaida;
-            comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = 1;
+            comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
             comm.Parameters.Add("@codOri", MySqlDbType.Int32).Value = codOri;
             comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codList;
 
@@ -229,47 +235,28 @@ namespace GPSFA_WinForms
         }
 
 
-        //Botão ação cadastrar
         private void btnCadastrar_Click(object sender, EventArgs e)
         {
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
             if (dtpDataValidade.Value.Date < DateTime.Today)
             {
                 MessageBox.Show("Data de validade inválida.");
                 return;
             }
 
-            if (VerificaFormatacaoDosCampos()) {
-                //MessageBox.Show("Um ou mais campos estão em brancos!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             using (var conn = DataBaseConnection.OpenConnection())
-<<<<<<< Updated upstream
 
-           
-            //int resp = cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList);
-=======
->>>>>>> Stashed changes
-           
             if (dtpDataValidade.Value < DateTime.Today)
             {
-                MessageBox.Show("A data de validade não pode ser anterior a data atual!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);                
-                dtpDataValidade.Focus();                
+                MessageBox.Show("A data de validade não pode ser anterior a data atual!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                dtpDataValidade.Focus();
                 return;
             }
 
-            else if (cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList).Equals(1))
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
+            else if (cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToDecimal(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList).Equals(1))
             {
                 // Verifica se já existe produto
-                string sqlVerifica = "SELECT codProd, estoqueAtual FROM tbProdutos WHERE codBar = @codBar";
+                string sqlVerifica = "SELECT codProd, quantidade FROM tbProdutos WHERE codBar = @codBar";
 
                 using (var cmdVerifica = new MySqlCommand(sqlVerifica, conn))
                 {
@@ -280,11 +267,11 @@ namespace GPSFA_WinForms
                         if (reader.Read())
                         {
                             int codProd = reader.GetInt32("codProd");
-                            int qtdAtual = reader.GetInt32("estoqueAtual");
+                            int qtdAtual = reader.GetInt32("quantidade");
                             reader.Close();
 
                             // Atualiza estoque
-                            string sqlUpdate = "UPDATE tbProdutos SET estoqueAtual = @novaQtd WHERE codProd = @codProd";
+                            string sqlUpdate = "UPDATE tbProdutos SET quantidade = @novaQtd WHERE codProd = @codProd";
 
                             using (var cmdUpdate = new MySqlCommand(sqlUpdate, conn))
                             {
@@ -295,18 +282,17 @@ namespace GPSFA_WinForms
                             }
 
                             MessageBox.Show("Quantidade atualizada no estoque.");
+
+                            limparCampos();
+
                             return;
                         }
                     }
                 }
 
                 // Se não existir, insere novo produto
-                string sqlInsert = @"INSERT INTO tbProdutos
-                             (descricao, quantidade, peso, unidade, codBar,
-                              dataDeEntrada, dataDeValidade, codUsu, codOri, codList)
-                             VALUES
-                             (@descricao, @qtd, @peso, @un, @codBar,
-                              @entrada, @validade, @codUsu, @codOri, @codList)";
+                string sqlInsert = @"INSERT INTO tbProdutos(descricao, quantidade, peso, unidade, codBar, dataDeEntrada, dataDeValidade, codUsu, codOri, codList)
+                            VALUES(@descricao, @qtd, @peso, @un, @codBar, @entrada, @validade, @codUsu, @codOri, @codList)";
 
                 using (var cmdInsert = new MySqlCommand(sqlInsert, conn))
                 {
@@ -325,180 +311,13 @@ namespace GPSFA_WinForms
                 }
 
                 MessageBox.Show("Produto cadastrado com sucesso.");
+
+                limparCampos();
+                desativaCampos();
+                desativaBotoes();
             }
         }
 
-
-        //Botão ação cadastrar
-
-        //private void btnCadastrar_Click(object sender, EventArgs e)
-        //{
-        //    int resp = cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToInt32(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList);
-
-        //    if (dtpDataValidade.Value < DateTime.Today)
-        //    {
-        //        MessageBox.Show("A data de validade não pode ser anterior a data atual!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //        dtpDataValidade.Focus();
-        //        return;
-        //    }
-        //    else if (resp.Equals(1))
-        //    {
-        //        MessageBox.Show("Cadastrado com sucesso!", "Mensagem do sistema",
-        //        MessageBoxButtons.OK,
-        //        MessageBoxIcon.Information,
-        //        MessageBoxDefaultButton.Button1);
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Erro ao Cadastrar!", "Mensagem do sistema",
-        //        MessageBoxButtons.OK,
-        //        MessageBoxIcon.Error,
-        //        MessageBoxDefaultButton.Button1);
-        //    }
-        //}
-
-
-        ///Exemplos para serem utilizados no futuro para validação de campos
-
-        //    if (Regex.IsMatch(txtQuantidade.Text, @"[a-zA-Z]") || Convert.ToInt32(txtQuantidade.Text) == 0)
-        //    {
-        //        MessageBox.Show("Quantidade inválida", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //        txtQuantidade.Focus();
-        //        return false;
-        //    }
-
-        //    return true;
-        //}     
-
-        //if (cbbDescricao.Text.Equals("") || txtQuantidade.Text.Equals(""))
-        //{
-        //    MessageBox.Show("Um ou mais campos não foram preenchidos corretamente", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //    return;
-        //}
-
-        //if (!VerificaFormatacaoDosCampos())
-        //{
-        //    return;
-        //}
-        //string nomeItem = cbbDescricao.Text;
-        //int quantidade = Convert.ToInt32(txtQuantidade.Text);
-        //int peso = Convert.ToInt32(txtPeso.Text);
-        //string tipoUnidade = SimplificarUnidade(cbbUnidadeMedida.Text);
-        //string codBar = txtCodBarras.Text;
-        //DateTime dataRecebimento = Convert.ToDateTime(dtpDataEntrada.Text);
-        //DateTime dataValidade = Convert.ToDateTime(dtpDataValidade.Text);
-        //DateTime dataLimiteDeSaida = dataValidade.AddDays(21);
-        //int codUsu = 1;
-
-        //if (enviarDoacoes(nomeItem, quantidade, peso, tipoUnidade, codBar, dataRecebimento, dataValidade, dataLimiteDeSaida, codUsu) == 1)
-        //{
-        //    MessageBox.Show("Doação cadastrada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //    //dgvProdutos.Columns.Clear();
-        //    //CarregarListaProdutos();
-        //}
-        //else
-        //{
-        //    MessageBox.Show("Erro ao cadastrar doação!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    limparCamposDeCadastro();
-        //}
-
-        //    if (cbbDescricao.Text.Equals("") || txtQuantidade.Text.Equals(""))
-        //    {
-        //        MessageBox.Show("Um ou mais campos não foram preenchidos corretamente", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //        return;
-        //    }
-
-        //    //if (!VerificaFormatacaoDosCampos())
-        //    //{
-        //    //    return;
-        //    //}
-        //    //string nomeItem = cbbDescricao.Text;
-        //    //int quantidade = Convert.ToInt32(txtQuantidade.Text);
-        //    //int peso = Convert.ToInt32(txtPeso.Text);
-        //    //string tipoUnidade = SimplificarUnidade(cbbUnidadeMedida.Text);
-        //    //string codBar = txtCodBarras.Text;
-        //    //DateTime dataRecebimento = Convert.ToDateTime(dtpDataEntrada.Text);
-        //    //DateTime dataValidade = Convert.ToDateTime(dtpDataValidade.Text);
-        //    //DateTime dataLimiteDeSaida = dataValidade.AddDays(21);
-        //    //int codUsu = 1;
-        //    //var (codOrigem, codLista) = BuscaCodigoDeListEOrigem(cbbOrigemDoacao.Text, cbbDescricao.Text);
-
-        //    //if (dtpDataValidade.Value < DateTime.Today){
-        //    //    MessageBox.Show("A data de validade não pode ser anterior a data atual!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //    //    dtpDataValidade.Focus();
-        //    //    return;
-        //    //}
-
-        //    //if (enviarDoacoes(nomeItem, quantidade, peso, tipoUnidade, codBar, dataRecebimento, dataValidade, dataLimiteDeSaida, codUsu, codOrigem, codLista) == 1)
-        //    //{
-        //    //    MessageBox.Show("Doação cadastrada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //    //    //dgvProdutos.Columns.Clear();
-        //    //    //CarregarListaProdutos();
-        //    //}
-        //    //else
-        //    //{
-        //    //    MessageBox.Show("Erro ao cadastrar doação!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    //    limparCamposDeCadastro();
-        //    //}
-
-        //    ////dgvProdutos.Columns.Clear();
-        //    ////CarregarListaProdutos();
-        //    ///
-
-        //    //cadastrarProdutos(cbbDescricao.SelectedItem.ToString(), Convert.ToInt32(txtQuantidade.Text), peso, cbbUnidadeMedida.Text, codBar.ToString() ,dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataValidade.Value, 1, 1, 1);
-
-        //    if (dtpDataValidade.Value < DateTime.Today)
-        //    {
-        //        MessageBox.Show("A data de validade não pode ser anterior a data atual!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        //        dtpDataValidade.Focus();
-        //        return;
-        //    }
-
-        //    int quantidadeMinimaParaCadastroDeProduto = 1;
-        //    while (quantidadeMinimaParaCadastroDeProduto <= quantidade)
-        //    {
-        //        if (enviarDoacoes(nomeItem, 1, peso, tipoUnidade, codBar, dataRecebimento, dataValidade, dataLimiteDeSaida, codUsu, codOrigem, codLista) == 1)
-        //        {
-        //            quantidadeMinimaParaCadastroDeProduto++;
-        //            //dgvProdutos.Columns.Clear();
-        //            //CarregarListaProdutos();
-        //            if (quantidadeMinimaParaCadastroDeProduto == quantidade)
-        //            {
-        //                MessageBox.Show("Doação cadastrada com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //                limparCamposDeCadastro();
-        //            }
-        //        }
-        //        else
-        //        {
-        //            MessageBox.Show("Erro ao cadastrar doação!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //            limparCamposDeCadastro();
-        //        }
-
-        //    }
-
-        //    //dgvProdutos.Columns.Clear();
-        //    //CarregarListaProdutos();
-
-        //}
-
-        //private void btnAtualizarDados_Click(object sender, EventArgs e)
-        //{
-        //    //dgvRegistro.Rows.Clear();
-        //    //CarregarListaProdutos();
-        //    limparCamposDeCadastro();
-        //    //carregaProdutosNaLista();
-        //}
-
-        //public void limparCamposDeCadastro()
-        //{
-
-        //    txtQuantidade.Clear();
-        //    dtpDataValidade.Value = DateTime.Now;
-        //    DateTime dataRecebimento = Convert.ToDateTime(dtpDataEntrada.Text);
-        //    dtpDataValidade.Value = DateTime.Now;
-        //    //cbbUnidadeMedida.SelectedIndex = 0;
-        //    txtPeso.Clear();
-        //}   
 
 
         // Criada instância das janelas com o código do usuário imbutido
@@ -541,10 +360,10 @@ namespace GPSFA_WinForms
 
             string nomeSelecionado = cbbDescricao.SelectedItem.ToString();
 
-            cbbUnidadeMedida.Items.Clear();
+            //cbbUnidadeMedida.Items.Clear();
             MySqlCommand comm = new MySqlCommand();
             comm.CommandText = "SELECT codList, peso, unidade FROM tbLista WHERE descricao = @descricao;";
-            comm.CommandType = CommandType.Text;           
+            comm.CommandType = CommandType.Text;
             comm.Parameters.AddWithValue("@descricao", nomeSelecionado);
 
             comm.Connection = DataBaseConnection.OpenConnection();
@@ -569,7 +388,7 @@ namespace GPSFA_WinForms
 
             string origemSelecionada = cbbOrigemDoacao.SelectedItem.ToString();
 
-            cbbUnidadeMedida.Items.Clear();
+            //cbbUnidadeMedida.Items.Clear();
             MySqlCommand comm = new MySqlCommand();
             comm.CommandText = "SELECT codOri FROM tborigemdoacao WHERE nome = @nome;";
             comm.CommandType = CommandType.Text;
@@ -581,12 +400,107 @@ namespace GPSFA_WinForms
 
             if (DR.Read())
             {
-                codOri = DR.GetInt32(0);                
+                codOri = DR.GetInt32(0);
             }
 
             DataBaseConnection.CloseConnection();
         }
-     
-    }        
-}
 
+        private void txtQuantidade_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+        public void desativaBotoes()
+        {
+            btnAlterar.Enabled = false;
+            btnExcluir.Enabled = false;
+            btnPesquisar.Enabled = false;
+            btnCadastrar.Enabled = false;
+            btnLimpar.Enabled = false;
+        }
+
+
+        public void ativarBotoes()
+        {
+            btnAlterar.Enabled = true;
+            btnExcluir.Enabled = true;
+            btnPesquisar.Enabled = true;
+            btnCadastrar.Enabled = true;
+            btnLimpar.Enabled = true;
+        }
+
+        public void desativaCampos()
+        {
+            txtCodBarras.Enabled = false;
+            cbbOrigemDoacao.Enabled = false;
+            cbbDescricao.Enabled = false;
+            btnLista.Enabled = false;
+            btnDoacao.Enabled = false;
+            btnMedida.Enabled = false;
+            txtPeso.Enabled = false;
+            txtPeso.Enabled = false;
+            cbbUnidadeMedida.Enabled = false;
+            dtpDiaDistribuicao.Enabled = false;
+            dtpDataEntrada.Enabled = false;
+            dtpDataValidade.Enabled = false;
+            txtQuantidade.Enabled = false;
+        }
+
+        public void habilitaCampos()
+        {
+            txtCodBarras.Enabled = false;
+            cbbOrigemDoacao.Enabled = true;
+            cbbDescricao.Enabled = true;
+            btnLista.Enabled = true;
+            btnDoacao.Enabled = true;
+            btnMedida.Enabled = true;
+            txtPeso.Enabled = true;
+            cbbUnidadeMedida.Enabled = true;
+            dtpDiaDistribuicao.Enabled = true;
+            dtpDataEntrada.Enabled = true;
+            dtpDataValidade.Enabled = true;
+            txtQuantidade.Enabled = true;
+        }
+
+        public void limparCampos()
+        {
+            txtCodBarras.Clear();
+            cbbDescricao.SelectedItem = null;
+            cbbUnidadeMedida.SelectedItem = null;
+            txtPeso.Clear();
+            txtQuantidade.Clear();
+            btnNovo.Enabled = true;
+            dtpDataEntrada.Value = DateTime.Now;
+            dtpDataValidade.Value = DateTime.Now;
+            dtpDiaDistribuicao.Value = DateTime.Now.AddDays(7);
+        }
+
+        private void txtPeso_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+
+        private void btnNovo_Click(object sender, EventArgs e)
+        {
+            habilitaCampos();
+            btnLimpar.Enabled = true;
+            btnCadastrar.Enabled = true;
+            btnNovo.Enabled = false;
+        }
+
+        private void btnLimpar_Click(object sender, EventArgs e)
+        {
+            limparCampos();
+            desativaBotoes();
+            desativaCampos();
+        }
+    }
+
+}

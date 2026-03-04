@@ -70,11 +70,8 @@
             this.btnExcluir = new System.Windows.Forms.Button();
             this.btnCadastrar = new System.Windows.Forms.Button();
             this.btnNovo = new System.Windows.Forms.Button();
-            this.pnlDadosProdutos = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
             this.gpbCamposDoProduto.SuspendLayout();
             this.pnlCrud.SuspendLayout();
-            this.pnlDadosProdutos.SuspendLayout();
             this.SuspendLayout();
             // 
             // gpbCamposDoProduto
@@ -113,7 +110,7 @@
             this.gpbCamposDoProduto.Controls.Add(this.lblNome);
             this.gpbCamposDoProduto.Controls.Add(this.txtNomeVoluntario);
             this.gpbCamposDoProduto.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gpbCamposDoProduto.Location = new System.Drawing.Point(12, 59);
+            this.gpbCamposDoProduto.Location = new System.Drawing.Point(12, 12);
             this.gpbCamposDoProduto.Name = "gpbCamposDoProduto";
             this.gpbCamposDoProduto.Size = new System.Drawing.Size(1214, 453);
             this.gpbCamposDoProduto.TabIndex = 0;
@@ -270,6 +267,7 @@
             this.mskTelefone.Size = new System.Drawing.Size(207, 39);
             this.mskTelefone.TabIndex = 2;
             this.mskTelefone.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
+            this.mskTelefone.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.mskTelefone_KeyPress);
             // 
             // mskCep
             // 
@@ -281,6 +279,7 @@
             this.mskCep.TabIndex = 4;
             this.mskCep.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
             this.mskCep.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mskCep_KeyDown);
+            this.mskCep.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.mskCep_KeyPress);
             // 
             // mskCpf
             // 
@@ -291,6 +290,7 @@
             this.mskCpf.Size = new System.Drawing.Size(199, 39);
             this.mskCpf.TabIndex = 3;
             this.mskCpf.TextMaskFormat = System.Windows.Forms.MaskFormat.ExcludePromptAndLiterals;
+            this.mskCpf.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.mskCpf_KeyPress);
             // 
             // lblTelefone
             // 
@@ -413,6 +413,7 @@
             this.txtNumero.Name = "txtNumero";
             this.txtNumero.Size = new System.Drawing.Size(119, 39);
             this.txtNumero.TabIndex = 6;
+            this.txtNumero.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNumero_KeyPress);
             // 
             // lblRua
             // 
@@ -499,7 +500,7 @@
             this.pnlCrud.Controls.Add(this.btnExcluir);
             this.pnlCrud.Controls.Add(this.btnCadastrar);
             this.pnlCrud.Controls.Add(this.btnNovo);
-            this.pnlCrud.Location = new System.Drawing.Point(12, 518);
+            this.pnlCrud.Location = new System.Drawing.Point(12, 471);
             this.pnlCrud.Name = "pnlCrud";
             this.pnlCrud.Size = new System.Drawing.Size(1214, 76);
             this.pnlCrud.TabIndex = 14;
@@ -609,35 +610,12 @@
             this.btnNovo.UseVisualStyleBackColor = true;
             this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
             // 
-            // pnlDadosProdutos
-            // 
-            this.pnlDadosProdutos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
-            this.pnlDadosProdutos.Controls.Add(this.label2);
-            this.pnlDadosProdutos.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlDadosProdutos.Location = new System.Drawing.Point(0, 0);
-            this.pnlDadosProdutos.Name = "pnlDadosProdutos";
-            this.pnlDadosProdutos.Padding = new System.Windows.Forms.Padding(0, 0, 0, 10);
-            this.pnlDadosProdutos.Size = new System.Drawing.Size(1238, 53);
-            this.pnlDadosProdutos.TabIndex = 15;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.Transparent;
-            this.label2.Location = new System.Drawing.Point(12, 14);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(253, 29);
-            this.label2.TabIndex = 90;
-            this.label2.Text = "Gerenciar Voluntário";
-            // 
             // frmVoluntarios
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
-            this.ClientSize = new System.Drawing.Size(1238, 606);
-            this.Controls.Add(this.pnlDadosProdutos);
+            this.ClientSize = new System.Drawing.Size(1238, 560);
             this.Controls.Add(this.pnlCrud);
             this.Controls.Add(this.gpbCamposDoProduto);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -648,8 +626,6 @@
             this.gpbCamposDoProduto.ResumeLayout(false);
             this.gpbCamposDoProduto.PerformLayout();
             this.pnlCrud.ResumeLayout(false);
-            this.pnlDadosProdutos.ResumeLayout(false);
-            this.pnlDadosProdutos.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -684,8 +660,6 @@
         private System.Windows.Forms.Button btnCadastrar;
         private System.Windows.Forms.Button btnNovo;
         private System.Windows.Forms.TextBox txtCidade;
-        private System.Windows.Forms.Panel pnlDadosProdutos;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox ckbEditarUsuario;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtUsuario;

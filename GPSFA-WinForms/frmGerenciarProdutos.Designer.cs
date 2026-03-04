@@ -43,14 +43,15 @@
             this.dtpDataEntrada = new System.Windows.Forms.DateTimePicker();
             this.lblDescricao = new System.Windows.Forms.Label();
             this.gpbCamposDoProduto = new System.Windows.Forms.GroupBox();
+            this.lblDistribuicao = new System.Windows.Forms.Label();
             this.dtpDiaDistribuicao = new System.Windows.Forms.DateTimePicker();
+            this.btnDoacao = new System.Windows.Forms.Button();
             this.lblOrigemDoacao = new System.Windows.Forms.Label();
             this.cbbOrigemDoacao = new System.Windows.Forms.ComboBox();
-            this.cbbDescricao = new System.Windows.Forms.ComboBox();
-            this.pnlCrud = new System.Windows.Forms.Panel();
-            this.btnDoacao = new System.Windows.Forms.Button();
             this.btnMedida = new System.Windows.Forms.Button();
             this.btnLista = new System.Windows.Forms.Button();
+            this.cbbDescricao = new System.Windows.Forms.ComboBox();
+            this.pnlCrud = new System.Windows.Forms.Panel();
             this.btnVoltar = new System.Windows.Forms.Button();
             this.btnLimpar = new System.Windows.Forms.Button();
             this.btnPesquisar = new System.Windows.Forms.Button();
@@ -112,6 +113,7 @@
             this.txtPeso.Name = "txtPeso";
             this.txtPeso.Size = new System.Drawing.Size(98, 39);
             this.txtPeso.TabIndex = 4;
+            this.txtPeso.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPeso_KeyPress);
             // 
             // lblPeso
             // 
@@ -133,6 +135,7 @@
             this.txtQuantidade.Name = "txtQuantidade";
             this.txtQuantidade.Size = new System.Drawing.Size(137, 39);
             this.txtQuantidade.TabIndex = 3;
+            this.txtQuantidade.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtQuantidade_KeyPress_1);
             // 
             // lblQuantidade
             // 
@@ -201,6 +204,7 @@
             // gpbCamposDoProduto
             // 
             this.gpbCamposDoProduto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
+            this.gpbCamposDoProduto.Controls.Add(this.lblDistribuicao);
             this.gpbCamposDoProduto.Controls.Add(this.dtpDiaDistribuicao);
             this.gpbCamposDoProduto.Controls.Add(this.btnDoacao);
             this.gpbCamposDoProduto.Controls.Add(this.lblOrigemDoacao);
@@ -229,12 +233,39 @@
             this.gpbCamposDoProduto.TabStop = false;
             this.gpbCamposDoProduto.Enter += new System.EventHandler(this.gpbCamposDoProduto_Enter);
             // 
+            // lblDistribuicao
+            // 
+            this.lblDistribuicao.AutoSize = true;
+            this.lblDistribuicao.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDistribuicao.ForeColor = System.Drawing.Color.Black;
+            this.lblDistribuicao.Location = new System.Drawing.Point(720, 315);
+            this.lblDistribuicao.Name = "lblDistribuicao";
+            this.lblDistribuicao.Size = new System.Drawing.Size(261, 29);
+            this.lblDistribuicao.TabIndex = 65;
+            this.lblDistribuicao.Text = "Previsão Distribuição";
+            // 
             // dtpDiaDistribuicao
             // 
-            this.dtpDiaDistribuicao.Location = new System.Drawing.Point(642, 364);
+            this.dtpDiaDistribuicao.Location = new System.Drawing.Point(725, 347);
             this.dtpDiaDistribuicao.Name = "dtpDiaDistribuicao";
             this.dtpDiaDistribuicao.Size = new System.Drawing.Size(429, 34);
             this.dtpDiaDistribuicao.TabIndex = 64;
+            // 
+            // btnDoacao
+            // 
+            this.btnDoacao.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDoacao.FlatAppearance.BorderSize = 0;
+            this.btnDoacao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDoacao.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDoacao.Image = ((System.Drawing.Image)(resources.GetObject("btnDoacao.Image")));
+            this.btnDoacao.Location = new System.Drawing.Point(709, 111);
+            this.btnDoacao.Name = "btnDoacao";
+            this.btnDoacao.Size = new System.Drawing.Size(48, 36);
+            this.btnDoacao.TabIndex = 63;
+            this.btnDoacao.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnDoacao.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnDoacao.UseVisualStyleBackColor = true;
+            this.btnDoacao.Click += new System.EventHandler(this.btnDoacao_Click);
             // 
             // lblOrigemDoacao
             // 
@@ -256,48 +287,6 @@
             this.cbbOrigemDoacao.Size = new System.Drawing.Size(236, 39);
             this.cbbOrigemDoacao.TabIndex = 61;
             this.cbbOrigemDoacao.SelectedIndexChanged += new System.EventHandler(this.cbbOrigemDoacao_SelectedIndexChanged);
-            // 
-            // cbbDescricao
-            // 
-            this.cbbDescricao.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbbDescricao.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbbDescricao.FormattingEnabled = true;
-            this.cbbDescricao.Location = new System.Drawing.Point(35, 223);
-            this.cbbDescricao.Name = "cbbDescricao";
-            this.cbbDescricao.Size = new System.Drawing.Size(477, 39);
-            this.cbbDescricao.TabIndex = 58;
-            this.cbbDescricao.SelectedIndexChanged += new System.EventHandler(this.cbbDescricao_SelectedIndexChanged);
-            // 
-            // pnlCrud
-            // 
-            this.pnlCrud.BackColor = System.Drawing.Color.White;
-            this.pnlCrud.Controls.Add(this.btnVoltar);
-            this.pnlCrud.Controls.Add(this.btnLimpar);
-            this.pnlCrud.Controls.Add(this.btnPesquisar);
-            this.pnlCrud.Controls.Add(this.btnAlterar);
-            this.pnlCrud.Controls.Add(this.btnExcluir);
-            this.pnlCrud.Controls.Add(this.btnCadastrar);
-            this.pnlCrud.Controls.Add(this.btnNovo);
-            this.pnlCrud.Location = new System.Drawing.Point(12, 494);
-            this.pnlCrud.Name = "pnlCrud";
-            this.pnlCrud.Size = new System.Drawing.Size(1214, 94);
-            this.pnlCrud.TabIndex = 11;
-            // 
-            // btnDoacao
-            // 
-            this.btnDoacao.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnDoacao.FlatAppearance.BorderSize = 0;
-            this.btnDoacao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDoacao.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDoacao.Image = ((System.Drawing.Image)(resources.GetObject("btnDoacao.Image")));
-            this.btnDoacao.Location = new System.Drawing.Point(709, 111);
-            this.btnDoacao.Name = "btnDoacao";
-            this.btnDoacao.Size = new System.Drawing.Size(48, 36);
-            this.btnDoacao.TabIndex = 63;
-            this.btnDoacao.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnDoacao.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnDoacao.UseVisualStyleBackColor = true;
-            this.btnDoacao.Click += new System.EventHandler(this.btnDoacao_Click);
             // 
             // btnMedida
             // 
@@ -332,6 +321,32 @@
             this.btnLista.UseVisualStyleBackColor = true;
             this.btnLista.Click += new System.EventHandler(this.btnLista_Click);
             // 
+            // cbbDescricao
+            // 
+            this.cbbDescricao.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbbDescricao.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbbDescricao.FormattingEnabled = true;
+            this.cbbDescricao.Location = new System.Drawing.Point(35, 223);
+            this.cbbDescricao.Name = "cbbDescricao";
+            this.cbbDescricao.Size = new System.Drawing.Size(477, 39);
+            this.cbbDescricao.TabIndex = 58;
+            this.cbbDescricao.SelectedIndexChanged += new System.EventHandler(this.cbbDescricao_SelectedIndexChanged);
+            // 
+            // pnlCrud
+            // 
+            this.pnlCrud.BackColor = System.Drawing.Color.White;
+            this.pnlCrud.Controls.Add(this.btnVoltar);
+            this.pnlCrud.Controls.Add(this.btnLimpar);
+            this.pnlCrud.Controls.Add(this.btnPesquisar);
+            this.pnlCrud.Controls.Add(this.btnAlterar);
+            this.pnlCrud.Controls.Add(this.btnExcluir);
+            this.pnlCrud.Controls.Add(this.btnCadastrar);
+            this.pnlCrud.Controls.Add(this.btnNovo);
+            this.pnlCrud.Location = new System.Drawing.Point(12, 494);
+            this.pnlCrud.Name = "pnlCrud";
+            this.pnlCrud.Size = new System.Drawing.Size(1214, 94);
+            this.pnlCrud.TabIndex = 11;
+            // 
             // btnVoltar
             // 
             this.btnVoltar.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -360,6 +375,7 @@
             this.btnLimpar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnLimpar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnLimpar.UseVisualStyleBackColor = true;
+            this.btnLimpar.Click += new System.EventHandler(this.btnLimpar_Click);
             // 
             // btnPesquisar
             // 
@@ -431,6 +447,7 @@
             this.btnNovo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnNovo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnNovo.UseVisualStyleBackColor = true;
+            this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click);
             // 
             // frmGerenciarProdutos
             // 
@@ -483,5 +500,6 @@
         private System.Windows.Forms.Label lblOrigemDoacao;
         private System.Windows.Forms.ComboBox cbbOrigemDoacao;
         private System.Windows.Forms.DateTimePicker dtpDiaDistribuicao;
+        private System.Windows.Forms.Label lblDistribuicao;
     }
 }

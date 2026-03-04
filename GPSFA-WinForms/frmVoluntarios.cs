@@ -1,5 +1,4 @@
-﻿using CpfLibrary;
-using DocumentFormat.OpenXml.Drawing;
+﻿using DocumentFormat.OpenXml.Drawing;
 using GPSFA_WinForms.classes;
 using MySql.Data.MySqlClient;
 using Mysqlx.Crud;
@@ -1729,6 +1728,14 @@ namespace GPSFA_WinForms
                                     MessageBox.Show("Dados do voluntário apagados com sucesso e usuário desativado!", "Mensagem do sistema",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Information);
+
+                                    limparCamposVoluntario();
+                                    limparCamposUsuario();
+                                    desabilitarCamposVoluntario();
+                                    desabilitarCamposUsuario();
+                                    desativarBotoes();
+                                    btnNovo.Enabled = true;
+                                    btnNovo.Focus();
                                 }
                                 else
                                 {
@@ -1740,6 +1747,14 @@ namespace GPSFA_WinForms
                                             MessageBoxButtons.OK,
                                             MessageBoxIcon.Information);
 
+                                        limparCamposVoluntario();
+                                        limparCamposUsuario();
+                                        desabilitarCamposVoluntario();
+                                        desabilitarCamposUsuario();
+                                        desativarBotoes();
+                                        btnNovo.Enabled = true;
+                                        btnNovo.Focus();
+
                                         if (codVolSelected == codUsuLogado)
                                         {
                                             Application.Exit();
@@ -1747,8 +1762,8 @@ namespace GPSFA_WinForms
                                         else
                                         {
                                             limparCamposVoluntario();
-                                            desabilitarCamposVoluntario();
                                             limparCamposUsuario();
+                                            desabilitarCamposVoluntario();
                                             desabilitarCamposUsuario();
                                             desativarBotoes();
                                             btnNovo.Enabled = true;
@@ -1764,8 +1779,8 @@ namespace GPSFA_WinForms
                                             MessageBoxDefaultButton.Button1);
 
                                         limparCamposVoluntario();
-                                        desabilitarCamposVoluntario();
                                         limparCamposUsuario();
+                                        desabilitarCamposVoluntario();
                                         desabilitarCamposUsuario();
                                         desativarBotoes();
                                         btnNovo.Enabled = true;
@@ -1778,6 +1793,14 @@ namespace GPSFA_WinForms
                                 MessageBox.Show("Voluntário desativado e dados apagados!", "Mensagem do sistema",
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
+
+                                limparCamposVoluntario();
+                                limparCamposUsuario();
+                                desabilitarCamposVoluntario();
+                                desabilitarCamposUsuario();
+                                desativarBotoes();
+                                btnNovo.Enabled = true;
+                                btnNovo.Focus();
                             }
                         }
                         else
@@ -1845,6 +1868,38 @@ namespace GPSFA_WinForms
                 {
                     buscarEnderecoPorCep();
                 }
+            }
+        }
+
+        private void mskCep_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void mskTelefone_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void mskCpf_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtNumero_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
             }
         }
 
