@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using ViaCep;
-
 namespace GPSFA_WinForms
 {
     public partial class frmOrigemDoacao : Form
@@ -793,7 +792,28 @@ namespace GPSFA_WinForms
                     limparCamposNovo();
                 }
             }
-        }        
-       
+        }
+        public void BuscaCidade()
+        {
+            try
+            {
+              
+
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("CEP não encontrado!", "Mensagem do sistema",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information,
+                    MessageBoxDefaultButton.Button1);
+                mskCep.Clear();
+                mskCep.Focus();
+            }
+        }
+
+        private void cbbEstado_SelectedIndexChanged(object sender, EventArgs e)
+        {
+           
+        }
     }
 }

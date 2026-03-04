@@ -225,10 +225,13 @@
             // 
             this.cbbEstado.Font = new System.Drawing.Font("Microsoft YaHei", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbbEstado.FormattingEnabled = true;
+            this.cbbEstado.Items.AddRange(new object[] {
+            "SP"});
             this.cbbEstado.Location = new System.Drawing.Point(533, 309);
             this.cbbEstado.Name = "cbbEstado";
             this.cbbEstado.Size = new System.Drawing.Size(303, 39);
             this.cbbEstado.TabIndex = 12;
+            this.cbbEstado.SelectedIndexChanged += new System.EventHandler(this.cbbEstado_SelectedIndexChanged);
             // 
             // lblBairro
             // 
