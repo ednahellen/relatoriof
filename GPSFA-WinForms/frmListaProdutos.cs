@@ -37,8 +37,13 @@ namespace GPSFA_WinForms
             codUsuLogado = codUsu;
             codListSelecionado = codList;
             InitializeComponent();
+
+            btnNovo.Enabled = false;
+            btnCadastrar.Enabled = false;
+            btnAlterar.Enabled = true;
+            btnLimpar.Enabled = true;
+            btnExcluir.Enabled = true;
             carregarUnidadesCbb();
-            habilitarBotoesNovo();
             buscarProdutoPorCodList(codList);
             buscarCodUniPorUnidadeSelecionada(cbbUnidadeMedida.SelectedItem.ToString());
         }
@@ -350,6 +355,8 @@ namespace GPSFA_WinForms
                     MessageBoxIcon.Information,
                     MessageBoxDefaultButton.Button1);
                     limparCampos();
+                    desabilitarBotoes();
+                    desabilitarCampos();
                     txtDescricao.Enabled = false;
                     btnNovo.Enabled = true;
                     btnNovo.Focus();
@@ -364,7 +371,6 @@ namespace GPSFA_WinForms
                     limparCampos();
                     desabilitarBotoes();
                     desabilitarCampos();
-
                 }
             }
         }
