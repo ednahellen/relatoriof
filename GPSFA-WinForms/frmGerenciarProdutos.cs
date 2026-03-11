@@ -92,18 +92,27 @@ namespace GPSFA_WinForms
 
         private void carregarOrigemCbb()
         {
-            MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "SELECT nome FROM TBOrigemDoacao ORDER BY nome ASC;";
-            comm.CommandType = CommandType.Text;
-            comm.Connection = DataBaseConnection.OpenConnection();
-
-            MySqlDataReader DR = comm.ExecuteReader();
-
-            while (DR.Read())
+            try
             {
-                cbbOrigemDoacao.Items.Add(DR.GetString(0));
-            }
+                using (var conn = DataBaseConnection.OpenConnection())
 
+                {
+                    const string sql = "SELECT nome FROM TBOrigemDoacao ORDER BY nome ASC";
+                    using (var  cmd= new MySqlCommand(sql, conn))
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        cbbOrigemDoacao.Items.Clear();
+                        while (reader.Read())
+                        {
+                            cbbOrigemDoacao.Items.Add(reader.GetString(0));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show($"Erro ao carregar origens: {ex.Message}");
+            }
             DataBaseConnection.CloseConnection();
         }
 
@@ -143,7 +152,10 @@ namespace GPSFA_WinForms
             while (DR.Read())
             {
                 cbbDescricao.Items.Add(DR.GetString(0));
+                cbbDescricao.DropDownHeight = 300;
+                cbbDescricao.IntegralHeight = false;
             }
+            
 
             DataBaseConnection.CloseConnection();
         }
@@ -201,73 +213,186 @@ namespace GPSFA_WinForms
 
         //Método para cadastrar Produtos na TBPRODUTOS
 
-        private int cadastrarProdutos(string descricao, int quantidade, decimal peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
+        //private int cadastrarProdutos(string descricao, int quantidade, decimal peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
+        //{
+
+        //    MySqlCommand comm = new MySqlCommand();
+        //    comm.CommandText = "INSERT INTO tbprodutos(descricao, quantidade, peso, unidade, codBar, dataDeEntrada, dataDeValidade, dataLimiteDeSaida, codUsu, codOri, codList)VALUES(@descricao, @quantidade, @peso, @unidade, @codBar, @dataDeEntrada, @dataDeValidade, @dataLimiteDeSaida, @codUsu, @codOri, @codList);";
+        //    comm.CommandType = CommandType.Text;
+
+        //    comm.Parameters.Clear();
+        //    comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = descricao;
+        //    comm.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidade;
+        //    comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
+        //    comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 20).Value = unidade;
+        //    comm.Parameters.Add("@codBar", MySqlDbType.VarChar, 13).Value = codBar;
+        //    comm.Parameters.Add("@dataDeEntrada", MySqlDbType.DateTime).Value = dataDeEntrada;
+        //    comm.Parameters.Add("@dataDeValidade", MySqlDbType.Date).Value = dataDeValidade;
+        //    comm.Parameters.Add("@dataLimiteDeSaida", MySqlDbType.Date).Value = dataLimiteDeSaida;
+        //    comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
+        //    comm.Parameters.Add("@codOri", MySqlDbType.Int32).Value = codOri;
+        //    comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codList;
+
+        //    comm.Connection = DataBaseConnection.OpenConnection();
+
+        //    try
+        //    {
+        //        int resp = comm.ExecuteNonQuery();
+
+        //        DataBaseConnection.CloseConnection();
+
+        //        return resp;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        MessageBox.Show("Erro ao registrar doação!", "Mensagem do sistema",
+        //            MessageBoxButtons.OK,
+        //            MessageBoxIcon.Error,
+        //            MessageBoxDefaultButton.Button1);
+        //    }
+        //    return 0;
+        //}
+
+        private int cadastrarProdutos(string descricao, int quantidade, decimal peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade,DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
         {
+            // VALIDAÇÃO DOS IDs
+            if (codOri <= 0)
+            {
+                MessageBox.Show("Selecione uma origem válida!", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 0;
+            }
 
-            MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "INSERT INTO tbprodutos(descricao, quantidade, peso, unidade, codBar, dataDeEntrada, dataDeValidade, dataLimiteDeSaida, codUsu, codOri, codList)VALUES(@descricao, @quantidade, @peso, @unidade, @codBar, @dataDeEntrada, @dataDeValidade, @dataLimiteDeSaida, @codUsu, @codOri, @codList);";
-            comm.CommandType = CommandType.Text;
-
-            comm.Parameters.Clear();
-            comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 100).Value = descricao;
-            comm.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidade;
-            comm.Parameters.Add("@peso", MySqlDbType.Int32).Value = peso;
-            comm.Parameters.Add("@unidade", MySqlDbType.VarChar, 20).Value = unidade;
-            comm.Parameters.Add("@codBar", MySqlDbType.VarChar, 13).Value = codBar;
-            comm.Parameters.Add("@dataDeEntrada", MySqlDbType.DateTime).Value = dataDeEntrada;
-            comm.Parameters.Add("@dataDeValidade", MySqlDbType.Date).Value = dataDeValidade;
-            comm.Parameters.Add("@dataLimiteDeSaida", MySqlDbType.Date).Value = dataLimiteDeSaida;
-            comm.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
-            comm.Parameters.Add("@codOri", MySqlDbType.Int32).Value = codOri;
-            comm.Parameters.Add("@codList", MySqlDbType.Int32).Value = codList;
-
-            comm.Connection = DataBaseConnection.OpenConnection();
+            if (codList <= 0)
+            {
+                MessageBox.Show("Selecione um produto da lista!", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 0;
+            }
 
             try
             {
-                int resp = comm.ExecuteNonQuery();
+                using (var conn = DataBaseConnection.OpenConnection())
+                {
+                    const string sql = @"
+            INSERT INTO tbprodutos 
+            (descricao, quantidade, peso, unidade, codBar, dataDeEntrada, 
+             dataDeValidade, dataLimiteDeSaida, codUsu, codOri, codList) 
+            VALUES 
+            (@descricao, @quantidade, @peso, @unidade, @codBar, @dataDeEntrada, 
+             @dataDeValidade, @dataLimiteDeSaida, @codUsu, @codOri, @codList)";
 
-                DataBaseConnection.CloseConnection();
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@descricao", descricao);
+                        cmd.Parameters.AddWithValue("@quantidade", quantidade);
+                        cmd.Parameters.AddWithValue("@peso", peso); // Decimal agora
+                        cmd.Parameters.AddWithValue("@unidade", unidade);
+                        cmd.Parameters.AddWithValue("@codBar", string.IsNullOrEmpty(codBar) ? DBNull.Value : (object)codBar);
+                        cmd.Parameters.AddWithValue("@dataDeEntrada", dataDeEntrada);
+                        cmd.Parameters.AddWithValue("@dataDeValidade", dataDeValidade.Date);
+                        cmd.Parameters.AddWithValue("@dataLimiteDeSaida", dataLimiteDeSaida.Date);
+                        cmd.Parameters.AddWithValue("@codUsu", codUsu);
+                        cmd.Parameters.AddWithValue("@codOri", codOri);
+                        cmd.Parameters.AddWithValue("@codList", codList);
 
-                return resp;
+                        return cmd.ExecuteNonQuery();
+                    }
+                }
             }
-            catch (Exception)
+            catch (MySqlException ex)
             {
-                MessageBox.Show("Erro ao registrar doação!", "Mensagem do sistema",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1);
+                string erro = ex.Number == 1452 ? "Origem ou produto inválido!" : ex.Message;
+                MessageBox.Show($"Erro: {erro}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return 0;
             }
-            return 0;
         }
 
+
+        //private void btnCadastrar_Click(object sender, EventArgs e)
+        //{
+        //    if (!VerificaFormatacaoDosCampos())
+        //    {
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        if (cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToDecimal(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList).Equals(1))
+        //        {
+        //            MessageBox.Show("Produto cadastrado com sucesso", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        //            limparCampos();
+        //            desativaCampos();
+        //            desativaBotoes();
+        //        }
+        //        else
+        //        {
+        //            MessageBox.Show("Erro ao cadastrar produto", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //            limparCampos();
+        //            desativaCampos();
+        //            desativaBotoes();
+        //            return;
+        //        }
+        //    }
+        //}
 
         private void btnCadastrar_Click(object sender, EventArgs e)
         {
-            if (!VerificaFormatacaoDosCampos())
+            if (!VerificaFormatacaoDosCampos()) return;
+
+            // VALIDAÇÃO DOS IDs (silenciosa - sem mensagens)
+            if (codOri <= 0)
             {
+                MessageBox.Show("Selecione uma origem válida!", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cbbOrigemDoacao.Focus();
                 return;
+            }
+
+            if (codList <= 0)
+            {
+                MessageBox.Show("Selecione um produto válido!", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cbbDescricao.Focus();
+                return;
+            }
+
+            string produtoSelecionado = cbbDescricao.Text;
+            int quantidade = Convert.ToInt32(txtQuantidade.Text);
+
+            int resp = cadastrarProdutos(
+                produtoSelecionado,
+                quantidade,
+                Convert.ToDecimal(txtPeso.Text),
+                cbbUnidadeMedida.Text,
+                txtCodBarras.Text,
+                dtpDataEntrada.Value,
+                dtpDataValidade.Value,
+                dtpDiaDistribuicao.Value,
+                codUsuLogado,
+                codOri,
+                codList
+            );
+
+            if (resp == 1)
+            {
+                // MENSAGEM SIMPLES com produto e quantidade
+                MessageBox.Show($"✅ Produto cadastrado com sucesso!\n\n" +
+                               $"📦 Produto: {produtoSelecionado}\n" +
+                               $"📊 Quantidade: {quantidade}",
+                    "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                limparCampos();
+                desativaCampos();
+                desativaBotoes();
             }
             else
             {
-                if (cadastrarProdutos(cbbDescricao.Text, Convert.ToInt32(txtQuantidade.Text), Convert.ToDecimal(txtPeso.Text), cbbUnidadeMedida.Text, txtCodBarras.Text, dtpDataEntrada.Value, dtpDataValidade.Value, dtpDataEntrada.Value, codUsuLogado, codOri, codList).Equals(1))
-                {
-                    MessageBox.Show("Produto cadastrado com sucesso", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    limparCampos();
-                    desativaCampos();
-                    desativaBotoes();
-                }
-                else
-                {
-                    MessageBox.Show("Erro ao cadastrar produto", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    limparCampos();
-                    desativaCampos();
-                    desativaBotoes();
-                    return;
-                }
+                MessageBox.Show("❌ Erro ao cadastrar produto!", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
 
 
@@ -305,39 +430,84 @@ namespace GPSFA_WinForms
             this.Close();
         }
 
+        //private void cbbDescricao_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        if (cbbDescricao.SelectedItem == null) return;
+
+        //        string nomeSelecionado = cbbDescricao.SelectedItem.ToString();
+
+        //        //cbbUnidadeMedida.Items.Clear();
+        //        MySqlCommand comm = new MySqlCommand();
+        //        comm.CommandText = "SELECT codList, peso, unidade FROM tbLista WHERE descricao = @descricao;";
+        //        comm.CommandType = CommandType.Text;
+        //        comm.Parameters.AddWithValue("@descricao", nomeSelecionado);
+
+        //        comm.Connection = DataBaseConnection.OpenConnection();
+
+        //        MySqlDataReader DR = comm.ExecuteReader();
+
+        //        if (DR.Read())
+        //        {
+        //            codList = DR.GetInt32(0);
+        //            txtPeso.Text = DR.GetInt32(1).ToString();
+        //            cbbUnidadeMedida.Text = DR.GetString(2);
+        //            cbbUnidadeMedida.Enabled = false;
+        //            txtPeso.Enabled = false;
+        //        }
+        //    }
+        //    catch (Exception error)
+        //    {
+        //        return;
+        //    }
+
+        //    DataBaseConnection.CloseConnection();
+        //}
+
         private void cbbDescricao_SelectedIndexChanged(object sender, EventArgs e)
         {
-            try
+            if (cbbDescricao.SelectedItem == null)
             {
-                if (cbbDescricao.SelectedItem == null) return;
-
-                string nomeSelecionado = cbbDescricao.SelectedItem.ToString();
-
-                //cbbUnidadeMedida.Items.Clear();
-                MySqlCommand comm = new MySqlCommand();
-                comm.CommandText = "SELECT codList, peso, unidade FROM tbLista WHERE descricao = @descricao;";
-                comm.CommandType = CommandType.Text;
-                comm.Parameters.AddWithValue("@descricao", nomeSelecionado);
-
-                comm.Connection = DataBaseConnection.OpenConnection();
-
-                MySqlDataReader DR = comm.ExecuteReader();
-
-                if (DR.Read())
-                {
-                    codList = DR.GetInt32(0);
-                    txtPeso.Text = DR.GetInt32(1).ToString();
-                    cbbUnidadeMedida.Text = DR.GetString(2);
-                    cbbUnidadeMedida.Enabled = false;
-                    txtPeso.Enabled = false;
-                }
-            }
-            catch (Exception error)
-            {
+                codList = 0;
                 return;
             }
 
-            DataBaseConnection.CloseConnection();
+            try
+            {
+                using (var conn = DataBaseConnection.OpenConnection())
+                {
+                    const string sql = "SELECT codList, peso, unidade FROM tbLista WHERE descricao = @descricao";
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@descricao", cbbDescricao.SelectedItem.ToString());
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                codList = reader.GetInt32(0);
+                                txtPeso.Text = reader.GetInt32(1).ToString();
+                                cbbUnidadeMedida.Text = reader.GetString(2);
+                                cbbUnidadeMedida.Enabled = false;
+                                txtPeso.Enabled = false;
+
+                                
+                            }
+                            else
+                            {
+                                codList = 0;
+                                MessageBox.Show("Produto não encontrado no banco de dados!", "Erro",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro: {ex.Message}");
+                codList = 0;
+            }
         }
 
         private void cbbOrigemDoacao_SelectedIndexChanged(object sender, EventArgs e)

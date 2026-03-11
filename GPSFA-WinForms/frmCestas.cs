@@ -498,11 +498,16 @@ namespace GPSFA_WinForms
             return quantidade > 0;
         }
 
+        private void frmCestas_Load(object sender, EventArgs e)
+        {
+
+        }
+
         // Realiza o registro de montagem de cestas - A FAZER
         private void btnMontar_Click(object sender, EventArgs e)
         {   
             // Valida se o DGV ou txtQtdCestas está vazio
-            if (dgvItensDaCesta.Rows.Count < 5 || txtQtdCestas.Text.Equals("") || !QuantidadeValida())
+            if (dgvItensDaCesta.Rows.Count > 1 || txtQtdCestas.Text.Equals("") || !QuantidadeValida())
             {
                 MessageBox.Show("A cesta deve conter pelo menos 5 itens e a quantidade precisa ser maior que 0", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

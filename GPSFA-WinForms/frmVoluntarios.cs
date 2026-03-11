@@ -565,14 +565,6 @@ namespace GPSFA_WinForms
                     MessageBoxDefaultButton.Button1);
                 return resp = 0;
             }
-            else if ((txtSenha.Text.Length < 8 && txtConfirmaSenha.Text.Length < 8) || (txtSenha.Text.Length < 8 || txtConfirmaSenha.Text.Length < 8))
-            {
-                MessageBox.Show("A senha deve ter no mínimo 8 caracteres!", "Mensagem do sistema",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1);
-                return resp = 0;
-            }
             else
             {
                 return resp = 1;

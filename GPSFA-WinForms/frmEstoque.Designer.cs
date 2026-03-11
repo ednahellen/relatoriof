@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmEstoque));
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnProdutosPrincipais = new System.Windows.Forms.Button();
             this.btnLimparFiltros = new System.Windows.Forms.Button();
             this.btnAplicarModo = new System.Windows.Forms.Button();
             this.lblTitleEstoque = new System.Windows.Forms.Label();
@@ -61,7 +62,7 @@
             this.Validade = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Cadastrado = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlFiltrosDeBusca = new System.Windows.Forms.Panel();
-            this.btnProdutosPrincipais = new System.Windows.Forms.Button();
+            this.btnDarBaixa = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.gpbFiltrosDoRelatorio.SuspendLayout();
@@ -86,6 +87,7 @@
             // 
             this.panel1.AutoSize = true;
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
+            this.panel1.Controls.Add(this.btnDarBaixa);
             this.panel1.Controls.Add(this.btnProdutosPrincipais);
             this.panel1.Controls.Add(this.btnLimparFiltros);
             this.panel1.Controls.Add(this.btnAplicarModo);
@@ -100,6 +102,16 @@
             this.panel1.Size = new System.Drawing.Size(1323, 146);
             this.panel1.TabIndex = 18;
             // 
+            // btnProdutosPrincipais
+            // 
+            this.btnProdutosPrincipais.Location = new System.Drawing.Point(793, 12);
+            this.btnProdutosPrincipais.Name = "btnProdutosPrincipais";
+            this.btnProdutosPrincipais.Size = new System.Drawing.Size(164, 33);
+            this.btnProdutosPrincipais.TabIndex = 21;
+            this.btnProdutosPrincipais.Text = "Produtos Principais";
+            this.btnProdutosPrincipais.UseVisualStyleBackColor = true;
+            this.btnProdutosPrincipais.Click += new System.EventHandler(this.btnProdutosPrincipais_Click);
+            // 
             // btnLimparFiltros
             // 
             this.btnLimparFiltros.Location = new System.Drawing.Point(963, 12);
@@ -108,11 +120,10 @@
             this.btnLimparFiltros.TabIndex = 20;
             this.btnLimparFiltros.Text = "Limpar Filtros";
             this.btnLimparFiltros.UseVisualStyleBackColor = true;
-            this.btnLimparFiltros.Click += new System.EventHandler(this.btnLimparFiltros_Click_1);
             // 
             // btnAplicarModo
             // 
-            this.btnAplicarModo.Location = new System.Drawing.Point(433, 13);
+            this.btnAplicarModo.Location = new System.Drawing.Point(450, 12);
             this.btnAplicarModo.Name = "btnAplicarModo";
             this.btnAplicarModo.Size = new System.Drawing.Size(164, 33);
             this.btnAplicarModo.TabIndex = 19;
@@ -128,7 +139,7 @@
             this.lblTitleEstoque.Location = new System.Drawing.Point(8, 12);
             this.lblTitleEstoque.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblTitleEstoque.Name = "lblTitleEstoque";
-            this.lblTitleEstoque.Size = new System.Drawing.Size(186, 20);
+            this.lblTitleEstoque.Size = new System.Drawing.Size(225, 25);
             this.lblTitleEstoque.TabIndex = 11;
             this.lblTitleEstoque.Text = "Controle de Alimentos";
             // 
@@ -166,18 +177,17 @@
             // 
             // btnAplicarFiltros
             // 
-            this.btnAplicarFiltros.Location = new System.Drawing.Point(907, 23);
+            this.btnAplicarFiltros.Location = new System.Drawing.Point(928, 23);
             this.btnAplicarFiltros.Name = "btnAplicarFiltros";
             this.btnAplicarFiltros.Size = new System.Drawing.Size(164, 33);
             this.btnAplicarFiltros.TabIndex = 79;
             this.btnAplicarFiltros.Text = "Aplicar Filtros";
             this.btnAplicarFiltros.UseVisualStyleBackColor = true;
-            this.btnAplicarFiltros.Click += new System.EventHandler(this.btnAplicarFiltros_Click_1);
             // 
             // btnMenu
             // 
             this.btnMenu.FlatAppearance.BorderSize = 2;
-            this.btnMenu.Location = new System.Drawing.Point(1077, 21);
+            this.btnMenu.Location = new System.Drawing.Point(1121, 23);
             this.btnMenu.Name = "btnMenu";
             this.btnMenu.Size = new System.Drawing.Size(164, 33);
             this.btnMenu.TabIndex = 10;
@@ -212,7 +222,7 @@
             this.cbxCategoria.Location = new System.Drawing.Point(389, 27);
             this.cbxCategoria.Margin = new System.Windows.Forms.Padding(5);
             this.cbxCategoria.Name = "cbxCategoria";
-            this.cbxCategoria.Size = new System.Drawing.Size(186, 29);
+            this.cbxCategoria.Size = new System.Drawing.Size(186, 35);
             this.cbxCategoria.TabIndex = 7;
             // 
             // lblCategoria
@@ -223,7 +233,7 @@
             this.lblCategoria.Location = new System.Drawing.Point(291, 36);
             this.lblCategoria.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblCategoria.Name = "lblCategoria";
-            this.lblCategoria.Size = new System.Drawing.Size(88, 21);
+            this.lblCategoria.Size = new System.Drawing.Size(109, 27);
             this.lblCategoria.TabIndex = 5;
             this.lblCategoria.Text = "Categoria:";
             // 
@@ -231,10 +241,10 @@
             // 
             this.dtpDataValidade.Font = new System.Drawing.Font("Microsoft YaHei", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpDataValidade.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpDataValidade.Location = new System.Drawing.Point(695, 27);
+            this.dtpDataValidade.Location = new System.Drawing.Point(734, 23);
             this.dtpDataValidade.Margin = new System.Windows.Forms.Padding(5);
             this.dtpDataValidade.Name = "dtpDataValidade";
-            this.dtpDataValidade.Size = new System.Drawing.Size(186, 29);
+            this.dtpDataValidade.Size = new System.Drawing.Size(186, 34);
             this.dtpDataValidade.TabIndex = 8;
             // 
             // lblValidadeAte
@@ -245,7 +255,7 @@
             this.lblValidadeAte.Location = new System.Drawing.Point(585, 33);
             this.lblValidadeAte.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblValidadeAte.Name = "lblValidadeAte";
-            this.lblValidadeAte.Size = new System.Drawing.Size(109, 21);
+            this.lblValidadeAte.Size = new System.Drawing.Size(135, 27);
             this.lblValidadeAte.TabIndex = 7;
             this.lblValidadeAte.Text = "Validade até:";
             // 
@@ -257,7 +267,7 @@
             this.lblStatus.Location = new System.Drawing.Point(21, 39);
             this.lblStatus.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(61, 21);
+            this.lblStatus.Size = new System.Drawing.Size(75, 27);
             this.lblStatus.TabIndex = 6;
             this.lblStatus.Text = "Status:";
             // 
@@ -278,7 +288,7 @@
             this.cbxStatus.Location = new System.Drawing.Point(95, 33);
             this.cbxStatus.Margin = new System.Windows.Forms.Padding(5);
             this.cbxStatus.Name = "cbxStatus";
-            this.cbxStatus.Size = new System.Drawing.Size(186, 29);
+            this.cbxStatus.Size = new System.Drawing.Size(186, 35);
             this.cbxStatus.TabIndex = 6;
             // 
             // cbxModoExibicao
@@ -290,10 +300,10 @@
             "Selecione...",
             "Modo agrupado",
             "Modo detalhado"});
-            this.cbxModoExibicao.Location = new System.Drawing.Point(220, 16);
+            this.cbxModoExibicao.Location = new System.Drawing.Point(243, 12);
             this.cbxModoExibicao.Margin = new System.Windows.Forms.Padding(5);
             this.cbxModoExibicao.Name = "cbxModoExibicao";
-            this.cbxModoExibicao.Size = new System.Drawing.Size(186, 29);
+            this.cbxModoExibicao.Size = new System.Drawing.Size(186, 35);
             this.cbxModoExibicao.TabIndex = 1;
             // 
             // panel4
@@ -347,7 +357,7 @@
             this.lblCodOrNome.Location = new System.Drawing.Point(24, 1);
             this.lblCodOrNome.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblCodOrNome.Name = "lblCodOrNome";
-            this.lblCodOrNome.Size = new System.Drawing.Size(146, 21);
+            this.lblCodOrNome.Size = new System.Drawing.Size(183, 27);
             this.lblCodOrNome.TabIndex = 2;
             this.lblCodOrNome.Text = "Código ou Nome:";
             // 
@@ -384,6 +394,7 @@
             this.dgvEstoque.Margin = new System.Windows.Forms.Padding(5);
             this.dgvEstoque.Name = "dgvEstoque";
             this.dgvEstoque.ReadOnly = true;
+            this.dgvEstoque.RowHeadersWidth = 51;
             this.dgvEstoque.Size = new System.Drawing.Size(1309, 431);
             this.dgvEstoque.TabIndex = 5;
             this.dgvEstoque.Paint += new System.Windows.Forms.PaintEventHandler(this.dgvEstoque_Paint);
@@ -391,38 +402,50 @@
             // Data
             // 
             this.Data.HeaderText = "Data Entrada";
+            this.Data.MinimumWidth = 6;
             this.Data.Name = "Data";
             this.Data.ReadOnly = true;
+            this.Data.Width = 125;
             // 
             // Saída
             // 
             this.Saída.HeaderText = "Data Saída";
+            this.Saída.MinimumWidth = 6;
             this.Saída.Name = "Saída";
             this.Saída.ReadOnly = true;
+            this.Saída.Width = 125;
             // 
             // Quantidade
             // 
             this.Quantidade.HeaderText = "Quantidade";
+            this.Quantidade.MinimumWidth = 6;
             this.Quantidade.Name = "Quantidade";
             this.Quantidade.ReadOnly = true;
+            this.Quantidade.Width = 125;
             // 
             // Peso
             // 
             this.Peso.HeaderText = "Peso";
+            this.Peso.MinimumWidth = 6;
             this.Peso.Name = "Peso";
             this.Peso.ReadOnly = true;
+            this.Peso.Width = 125;
             // 
             // Validade
             // 
             this.Validade.HeaderText = "Data Validade";
+            this.Validade.MinimumWidth = 6;
             this.Validade.Name = "Validade";
             this.Validade.ReadOnly = true;
+            this.Validade.Width = 125;
             // 
             // Cadastrado
             // 
             this.Cadastrado.HeaderText = "Cadastrado";
+            this.Cadastrado.MinimumWidth = 6;
             this.Cadastrado.Name = "Cadastrado";
             this.Cadastrado.ReadOnly = true;
+            this.Cadastrado.Width = 125;
             // 
             // pnlFiltrosDeBusca
             // 
@@ -437,19 +460,19 @@
             this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1337, 1435);
             this.pnlFiltrosDeBusca.TabIndex = 15;
             // 
-            // btnProdutosPrincipais
+            // btnDarBaixa
             // 
-            this.btnProdutosPrincipais.Location = new System.Drawing.Point(793, 12);
-            this.btnProdutosPrincipais.Name = "btnProdutosPrincipais";
-            this.btnProdutosPrincipais.Size = new System.Drawing.Size(164, 33);
-            this.btnProdutosPrincipais.TabIndex = 21;
-            this.btnProdutosPrincipais.Text = "Produtos Principais";
-            this.btnProdutosPrincipais.UseVisualStyleBackColor = true;
-            this.btnProdutosPrincipais.Click += new System.EventHandler(this.btnProdutosPrincipais_Click);
+            this.btnDarBaixa.Location = new System.Drawing.Point(621, 13);
+            this.btnDarBaixa.Name = "btnDarBaixa";
+            this.btnDarBaixa.Size = new System.Drawing.Size(164, 33);
+            this.btnDarBaixa.TabIndex = 22;
+            this.btnDarBaixa.Text = "Dar Baixa";
+            this.btnDarBaixa.UseVisualStyleBackColor = true;
+            ;
             // 
             // frmEstoque
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(208)))), ((int)(((byte)(200)))));
             this.ClientSize = new System.Drawing.Size(1337, 712);
@@ -514,5 +537,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Validade;
         private System.Windows.Forms.DataGridViewTextBoxColumn Cadastrado;
         private System.Windows.Forms.Button btnProdutosPrincipais;
+        private System.Windows.Forms.Button btnDarBaixa;
     }
 }

@@ -97,6 +97,7 @@
             this.QuantoFalta});
             this.dgvItensDaCesta.Location = new System.Drawing.Point(18, 118);
             this.dgvItensDaCesta.Name = "dgvItensDaCesta";
+            this.dgvItensDaCesta.RowHeadersWidth = 51;
             this.dgvItensDaCesta.Size = new System.Drawing.Size(1097, 332);
             this.dgvItensDaCesta.TabIndex = 3;
             this.dgvItensDaCesta.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvItensDaCesta_CellContentClick);
@@ -106,13 +107,16 @@
             // CodList
             // 
             this.CodList.HeaderText = "Codigo";
+            this.CodList.MinimumWidth = 6;
             this.CodList.Name = "CodList";
             this.CodList.ReadOnly = true;
+            this.CodList.Width = 125;
             // 
             // Produto
             // 
             this.Produto.HeaderText = "Produto";
             this.Produto.MaxInputLength = 100;
+            this.Produto.MinimumWidth = 6;
             this.Produto.Name = "Produto";
             this.Produto.ReadOnly = true;
             this.Produto.Width = 115;
@@ -121,6 +125,7 @@
             // 
             this.QtdePorCesta.HeaderText = "Qtde por cesta";
             this.QtdePorCesta.MaxInputLength = 10;
+            this.QtdePorCesta.MinimumWidth = 6;
             this.QtdePorCesta.Name = "QtdePorCesta";
             this.QtdePorCesta.Width = 178;
             // 
@@ -128,6 +133,7 @@
             // 
             this.EstoqueAtual.HeaderText = "Estoque atual";
             this.EstoqueAtual.MaxInputLength = 10;
+            this.EstoqueAtual.MinimumWidth = 6;
             this.EstoqueAtual.Name = "EstoqueAtual";
             this.EstoqueAtual.ReadOnly = true;
             this.EstoqueAtual.Width = 153;
@@ -136,6 +142,7 @@
             // 
             this.TotalNecessario.HeaderText = "Total necessário";
             this.TotalNecessario.MaxInputLength = 10;
+            this.TotalNecessario.MinimumWidth = 6;
             this.TotalNecessario.Name = "TotalNecessario";
             this.TotalNecessario.ReadOnly = true;
             this.TotalNecessario.Width = 176;
@@ -144,6 +151,7 @@
             // 
             this.Status.HeaderText = "Status";
             this.Status.MaxInputLength = 20;
+            this.Status.MinimumWidth = 6;
             this.Status.Name = "Status";
             this.Status.ReadOnly = true;
             this.Status.Width = 95;
@@ -152,8 +160,10 @@
             // 
             this.QuantoFalta.HeaderText = "Quanto falta";
             this.QuantoFalta.MaxInputLength = 10;
+            this.QuantoFalta.MinimumWidth = 6;
             this.QuantoFalta.Name = "QuantoFalta";
             this.QuantoFalta.ReadOnly = true;
+            this.QuantoFalta.Width = 125;
             // 
             // btnMontar
             // 
@@ -207,7 +217,7 @@
             this.label1.ForeColor = System.Drawing.Color.Black;
             this.label1.Location = new System.Drawing.Point(491, 30);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(267, 29);
+            this.label1.Size = new System.Drawing.Size(322, 36);
             this.label1.TabIndex = 67;
             this.label1.Text = "Quantidade de cestas";
             // 
@@ -218,7 +228,7 @@
             this.txtQtdCestas.Location = new System.Drawing.Point(496, 63);
             this.txtQtdCestas.MaxLength = 5;
             this.txtQtdCestas.Name = "txtQtdCestas";
-            this.txtQtdCestas.Size = new System.Drawing.Size(103, 39);
+            this.txtQtdCestas.Size = new System.Drawing.Size(103, 47);
             this.txtQtdCestas.TabIndex = 2;
             this.txtQtdCestas.TextChanged += new System.EventHandler(this.txtQtdCestas_TextChanged);
             this.txtQtdCestas.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtQtdCestas_KeyPress);
@@ -230,7 +240,7 @@
             this.lblNome.ForeColor = System.Drawing.Color.Black;
             this.lblNome.Location = new System.Drawing.Point(13, 30);
             this.lblNome.Name = "lblNome";
-            this.lblNome.Size = new System.Drawing.Size(268, 29);
+            this.lblNome.Size = new System.Drawing.Size(322, 36);
             this.lblNome.TabIndex = 65;
             this.lblNome.Text = "Usar modelo de cesta";
             // 
@@ -256,13 +266,13 @@
             this.cbbModeloDeCesta.FormattingEnabled = true;
             this.cbbModeloDeCesta.Location = new System.Drawing.Point(18, 62);
             this.cbbModeloDeCesta.Name = "cbbModeloDeCesta";
-            this.cbbModeloDeCesta.Size = new System.Drawing.Size(385, 39);
+            this.cbbModeloDeCesta.Size = new System.Drawing.Size(385, 47);
             this.cbbModeloDeCesta.TabIndex = 0;
             this.cbbModeloDeCesta.SelectedIndexChanged += new System.EventHandler(this.cbbModeloDeCesta_SelectedIndexChanged);
             // 
             // frmCestas
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 27F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(15F, 32F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(237)))), ((int)(((byte)(228)))));
             this.ClientSize = new System.Drawing.Size(1158, 580);
@@ -274,6 +284,7 @@
             this.Name = "frmCestas";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Grupo Socorrista São Francisco de Assis - Gerenciar Cestas";
+            this.Load += new System.EventHandler(this.frmCestas_Load);
             this.gpbGerirCestas.ResumeLayout(false);
             this.gpbGerirCestas.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItensDaCesta)).EndInit();
