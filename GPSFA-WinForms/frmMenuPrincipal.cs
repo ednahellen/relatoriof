@@ -1,5 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using Projeto_Socorrista;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

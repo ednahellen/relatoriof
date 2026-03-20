@@ -133,6 +133,7 @@
     <Reference Include="Microsoft.Configuration.ConfigurationBuilders.UserSecrets, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Configuration.ConfigurationBuilders.UserSecrets.3.0.0\lib\Net471\Microsoft.Configuration.ConfigurationBuilders.UserSecrets.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MySql.Data, Version=9.5.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.9.5.0\lib\net462\MySql.Data.dll</HintPath>
     </Reference>
@@ -151,9 +152,6 @@
     <Reference Include="System">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
     </Reference>
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
-    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.ConfigurationManager, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -161,23 +159,15 @@
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Pipelines, Version=5.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Pipelines.5.0.2\lib\net461\System.IO.Pipelines.dll</HintPath>
     </Reference>
     <Reference Include="System.Management" />
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.6.0.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -418,6 +408,13 @@
     <Content Include="icon_image_transparent.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.7.1' Or $(TargetFrameworkVersion) == 'v4.7.2' Or $(TargetFrameworkVersion) == 'v4.8' Or $(TargetFrameworkVersion) == 'v4.8.1')">
+      <PropertyGroup>
+        <__paket__System_ValueTuple_targets>net471\System.ValueTuple</__paket__System_ValueTuple_targets>
+      </PropertyGroup>
+    </When>
+  </Choose>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Este projeto faz referência a pacotes do NuGet que não estão presentes neste computador. Use a Restauração de Pacotes do NuGet para baixá-los.  Para obter mais informações, consulte http://go.microsoft.com/fwlink/?LinkID=322105. O arquivo ausente é {0}.</ErrorText>
@@ -426,4 +423,247 @@
     <Error Condition="!Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.5.1\build\EntityFramework.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.5.1\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.5.1\build\EntityFramework.targets')" />
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7' Or $(TargetFrameworkVersion) == 'v4.7.1' Or $(TargetFrameworkVersion) == 'v4.7.2' Or $(TargetFrameworkVersion) == 'v4.8' Or $(TargetFrameworkVersion) == 'v4.8.1')">
+      <ItemGroup>
+        <Reference Include="ExcelDataReader">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\exceldatareader\3.8.0\lib\net462\ExcelDataReader.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v10.0' Or $(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v9.0' Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'macos') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'tvos') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'watchos') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0'))">
+      <ItemGroup>
+        <Reference Include="ExcelDataReader">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\exceldatareader\3.8.0\lib\net8.0\ExcelDataReader.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'MonoAndroid' And ($(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v8.1' Or $(TargetFrameworkVersion) == 'v9.0')) Or ($(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v2.0' Or $(TargetFrameworkVersion) == 'v2.1' Or $(TargetFrameworkVersion) == 'v2.2' Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'macos') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'macos') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'macos'))) Or ($(TargetFrameworkIdentifier) == '.NETStandard' And $(TargetFrameworkVersion) == 'v2.0') Or ($(TargetFrameworkIdentifier) == '.NETCore' And $(TargetFrameworkVersion) == 'v5.0') Or ($(TargetFrameworkIdentifier) == 'Xamarin.iOS') Or ($(TargetFrameworkIdentifier) == 'Xamarin.Mac')">
+      <ItemGroup>
+        <Reference Include="ExcelDataReader">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\exceldatareader\3.8.0\lib\netstandard2.0\ExcelDataReader.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'MonoAndroid' And ($(TargetFrameworkVersion) == 'v10.0' Or $(TargetFrameworkVersion) == 'v11.0' Or $(TargetFrameworkVersion) == 'v12.0')) Or ($(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v3.0' Or $(TargetFrameworkVersion) == 'v3.1' Or $(TargetFrameworkVersion) == 'v5.0' Or $(TargetFrameworkVersion) == 'v6.0' Or $(TargetFrameworkVersion) == 'v7.0' Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '8.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'tvos') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'watchos') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '8.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'tvos') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'watchos') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '8.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'tvos') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'watchos'))) Or ($(TargetFrameworkIdentifier) == '.NETStandard' And $(TargetFrameworkVersion) == 'v2.1')">
+      <ItemGroup>
+        <Reference Include="ExcelDataReader">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\exceldatareader\3.8.0\lib\netstandard2.1\ExcelDataReader.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7' Or $(TargetFrameworkVersion) == 'v4.7.1' Or $(TargetFrameworkVersion) == 'v4.7.2' Or $(TargetFrameworkVersion) == 'v4.8' Or $(TargetFrameworkVersion) == 'v4.8.1')">
+      <ItemGroup>
+        <Reference Include="ExcelDataReader.DataSet">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\exceldatareader.dataset\3.8.0\lib\net462\ExcelDataReader.DataSet.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v10.0' Or $(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v9.0' Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'macos') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'tvos') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'watchos') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0'))">
+      <ItemGroup>
+        <Reference Include="ExcelDataReader.DataSet">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\exceldatareader.dataset\3.8.0\lib\net8.0\ExcelDataReader.DataSet.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'MonoAndroid' And ($(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v8.1' Or $(TargetFrameworkVersion) == 'v9.0')) Or ($(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v2.0' Or $(TargetFrameworkVersion) == 'v2.1' Or $(TargetFrameworkVersion) == 'v2.2' Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'macos') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'macos') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'macos'))) Or ($(TargetFrameworkIdentifier) == '.NETStandard' And $(TargetFrameworkVersion) == 'v2.0') Or ($(TargetFrameworkIdentifier) == '.NETCore' And $(TargetFrameworkVersion) == 'v5.0') Or ($(TargetFrameworkIdentifier) == 'Xamarin.iOS') Or ($(TargetFrameworkIdentifier) == 'Xamarin.Mac')">
+      <ItemGroup>
+        <Reference Include="ExcelDataReader.DataSet">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\exceldatareader.dataset\3.8.0\lib\netstandard2.0\ExcelDataReader.DataSet.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'MonoAndroid' And ($(TargetFrameworkVersion) == 'v10.0' Or $(TargetFrameworkVersion) == 'v11.0' Or $(TargetFrameworkVersion) == 'v12.0')) Or ($(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v3.0' Or $(TargetFrameworkVersion) == 'v3.1' Or $(TargetFrameworkVersion) == 'v5.0' Or $(TargetFrameworkVersion) == 'v6.0' Or $(TargetFrameworkVersion) == 'v7.0' Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '8.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'tvos') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'watchos') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '8.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'tvos') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'watchos') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '8.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'tvos') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'watchos'))) Or ($(TargetFrameworkIdentifier) == '.NETStandard' And $(TargetFrameworkVersion) == 'v2.1')">
+      <ItemGroup>
+        <Reference Include="ExcelDataReader.DataSet">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\exceldatareader.dataset\3.8.0\lib\netstandard2.1\ExcelDataReader.DataSet.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7' Or $(TargetFrameworkVersion) == 'v4.7.1' Or $(TargetFrameworkVersion) == 'v4.7.2' Or $(TargetFrameworkVersion) == 'v4.8' Or $(TargetFrameworkVersion) == 'v4.8.1')">
+      <ItemGroup>
+        <Reference Include="System.Buffers">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.buffers\4.6.1\lib\net462\System.Buffers.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'MonoAndroid' And ($(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v8.1' Or $(TargetFrameworkVersion) == 'v9.0')) Or ($(TargetFrameworkIdentifier) == '.NETStandard' And $(TargetFrameworkVersion) == 'v2.0') Or ($(TargetFrameworkIdentifier) == '.NETCore' And $(TargetFrameworkVersion) == 'v5.0')">
+      <ItemGroup>
+        <Reference Include="System.Buffers">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.buffers\4.6.1\lib\netstandard2.0\System.Buffers.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7' Or $(TargetFrameworkVersion) == 'v4.7.1' Or $(TargetFrameworkVersion) == 'v4.7.2' Or $(TargetFrameworkVersion) == 'v4.8' Or $(TargetFrameworkVersion) == 'v4.8.1')">
+      <ItemGroup>
+        <Reference Include="System.Memory">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.memory\4.6.3\lib\net462\System.Memory.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'MonoAndroid' And ($(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v8.1' Or $(TargetFrameworkVersion) == 'v9.0')) Or ($(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v2.0' Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'macos') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'macos') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'macos'))) Or ($(TargetFrameworkIdentifier) == '.NETStandard' And $(TargetFrameworkVersion) == 'v2.0') Or ($(TargetFrameworkIdentifier) == '.NETCore' And $(TargetFrameworkVersion) == 'v5.0') Or ($(TargetFrameworkIdentifier) == 'Xamarin.iOS') Or ($(TargetFrameworkIdentifier) == 'Xamarin.Mac')">
+      <ItemGroup>
+        <Reference Include="System.Memory">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.memory\4.6.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7' Or $(TargetFrameworkVersion) == 'v4.7.1' Or $(TargetFrameworkVersion) == 'v4.7.2' Or $(TargetFrameworkVersion) == 'v4.8' Or $(TargetFrameworkVersion) == 'v4.8.1')">
+      <ItemGroup>
+        <Reference Include="System.Numerics.Vectors">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.numerics.vectors\4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'MonoAndroid' And ($(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v8.1' Or $(TargetFrameworkVersion) == 'v9.0')) Or ($(TargetFrameworkIdentifier) == '.NETStandard' And $(TargetFrameworkVersion) == 'v2.0') Or ($(TargetFrameworkIdentifier) == '.NETCore' And $(TargetFrameworkVersion) == 'v5.0')">
+      <ItemGroup>
+        <Reference Include="System.Numerics.Vectors">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.numerics.vectors\4.6.1\lib\netstandard2.0\System.Numerics.Vectors.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7' Or $(TargetFrameworkVersion) == 'v4.7.1' Or $(TargetFrameworkVersion) == 'v4.7.2' Or $(TargetFrameworkVersion) == 'v4.8' Or $(TargetFrameworkVersion) == 'v4.8.1')">
+      <ItemGroup>
+        <Reference Include="mscorlib">
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="System.Runtime.CompilerServices.Unsafe">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.runtime.compilerservices.unsafe\6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v6.0' Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '8.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'macos') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'tvos') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'watchos'))">
+      <ItemGroup>
+        <Reference Include="System.Runtime.CompilerServices.Unsafe">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.runtime.compilerservices.unsafe\6.1.2\lib\net6.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'MonoAndroid' And ($(TargetFrameworkVersion) == 'v10.0' Or $(TargetFrameworkVersion) == 'v11.0' Or $(TargetFrameworkVersion) == 'v12.0' Or $(TargetFrameworkVersion) == 'v8.0' Or $(TargetFrameworkVersion) == 'v8.1' Or $(TargetFrameworkVersion) == 'v9.0')) Or ($(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v2.0' Or $(TargetFrameworkVersion) == 'v2.1' Or $(TargetFrameworkVersion) == 'v2.2' Or $(TargetFrameworkVersion) == 'v3.0' Or $(TargetFrameworkVersion) == 'v3.1' Or $(TargetFrameworkVersion) == 'v5.0' Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '8.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'macos') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'tvos') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'watchos'))) Or ($(TargetFrameworkIdentifier) == '.NETStandard' And ($(TargetFrameworkVersion) == 'v2.0' Or $(TargetFrameworkVersion) == 'v2.1')) Or ($(TargetFrameworkIdentifier) == '.NETCore' And $(TargetFrameworkVersion) == 'v5.0') Or ($(TargetFrameworkIdentifier) == 'Xamarin.iOS') Or ($(TargetFrameworkIdentifier) == 'Xamarin.Mac')">
+      <ItemGroup>
+        <Reference Include="System.Runtime.CompilerServices.Unsafe">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.runtime.compilerservices.unsafe\6.1.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v10.0' Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v10.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0'))">
+      <ItemGroup>
+        <Reference Include="System.Text.Encoding.CodePages">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.text.encoding.codepages\10.0.5\lib\net10.0\System.Text.Encoding.CodePages.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3' Or $(TargetFrameworkVersion) == 'v4.7' Or $(TargetFrameworkVersion) == 'v4.7.1' Or $(TargetFrameworkVersion) == 'v4.7.2' Or $(TargetFrameworkVersion) == 'v4.8' Or $(TargetFrameworkVersion) == 'v4.8.1')">
+      <ItemGroup>
+        <Reference Include="System.Text.Encoding.CodePages">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.text.encoding.codepages\10.0.5\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v8.0' Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'ios') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'macos') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'tvos') Or ($(TargetFrameworkVersion) == 'v8.0' And '$(TargetPlatformIdentifier)' == 'watchos'))">
+      <ItemGroup>
+        <Reference Include="System.Text.Encoding.CodePages">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.text.encoding.codepages\10.0.5\lib\net8.0\System.Text.Encoding.CodePages.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v9.0' Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v9.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0'))">
+      <ItemGroup>
+        <Reference Include="System.Text.Encoding.CodePages">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.text.encoding.codepages\10.0.5\lib\net9.0\System.Text.Encoding.CodePages.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="($(TargetFrameworkIdentifier) == 'MonoAndroid' And ($(TargetFrameworkVersion) == 'v10.0' Or $(TargetFrameworkVersion) == 'v8.0')) Or ($(TargetFrameworkIdentifier) == '.NETCoreApp' And ($(TargetFrameworkVersion) == 'v2.0' Or $(TargetFrameworkVersion) == 'v2.1' Or $(TargetFrameworkVersion) == 'v2.2' Or $(TargetFrameworkVersion) == 'v3.0' Or $(TargetFrameworkVersion) == 'v3.1' Or $(TargetFrameworkVersion) == 'v5.0' Or $(TargetFrameworkVersion) == 'v6.0' Or $(TargetFrameworkVersion) == 'v7.0' Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '8.0') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'Windows') Or ($(TargetFrameworkVersion) == 'v5.0' And '$(TargetPlatformIdentifier)' == 'android') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.26100.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '8.0') Or ($(TargetFrameworkVersion) == 'v6.0' And '$(TargetPlatformIdentifier)' == 'Windows') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.17763.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.18362.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.19041.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.20348.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22000.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '10.0.22621.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows' And '$(TargetPlatformVersion)' == '8.0') Or ($(TargetFrameworkVersion) == 'v7.0' And '$(TargetPlatformIdentifier)' == 'Windows'))) Or ($(TargetFrameworkIdentifier) == '.NETStandard' And ($(TargetFrameworkVersion) == 'v2.0' Or $(TargetFrameworkVersion) == 'v2.1')) Or ($(TargetFrameworkIdentifier) == '.NETCore' And $(TargetFrameworkVersion) == 'v5.0')">
+      <ItemGroup>
+        <Reference Include="System.Text.Encoding.CodePages">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.text.encoding.codepages\10.0.5\lib\netstandard2.0\System.Text.Encoding.CodePages.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6.2' Or $(TargetFrameworkVersion) == 'v4.6.3')">
+      <ItemGroup>
+        <Reference Include="System.ValueTuple">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.valuetuple\4.6.2\lib\net462\System.ValueTuple.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7'">
+      <ItemGroup>
+        <Reference Include="System.ValueTuple">
+          <HintPath>..\..\..\..\..\..\.nuget\packages\system.valuetuple\4.6.2\lib\net47\System.ValueTuple.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.7.1' Or $(TargetFrameworkVersion) == 'v4.7.2' Or $(TargetFrameworkVersion) == 'v4.8' Or $(TargetFrameworkVersion) == 'v4.8.1')">
+      <ItemGroup>
+        <Reference Include="System.ValueTuple">
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="..\..\..\..\..\..\.nuget\packages\system.valuetuple\4.6.2\build\$(__paket__System_ValueTuple_targets).targets" Condition="Exists('..\..\..\..\..\..\.nuget\packages\system.valuetuple\4.6.2\build\$(__paket__System_ValueTuple_targets).targets')" Label="Paket" />
 </Project>

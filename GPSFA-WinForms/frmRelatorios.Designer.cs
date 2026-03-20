@@ -306,10 +306,10 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.pnlRegistroSaida);
-            this.tabPage2.Location = new System.Drawing.Point(4, 34);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1155, 422);
+            this.tabPage2.Size = new System.Drawing.Size(1155, 431);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "📝 Registrar Saída";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -329,7 +329,7 @@
             this.pnlRegistroSaida.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlRegistroSaida.Location = new System.Drawing.Point(3, 3);
             this.pnlRegistroSaida.Name = "pnlRegistroSaida";
-            this.pnlRegistroSaida.Size = new System.Drawing.Size(1149, 416);
+            this.pnlRegistroSaida.Size = new System.Drawing.Size(1149, 425);
             this.pnlRegistroSaida.TabIndex = 0;
             // 
             // btnRegistrarSaida
@@ -462,6 +462,7 @@
             this.Name = "frmRelatorios";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Grupo Socorrista São Francisco de Assis - Relatórios";
+            this.Load += new System.EventHandler(this.frmRelatorios_Load_1);
             this.pnlFiltrosDeBusca.ResumeLayout(false);
             this.pnlFiltrosDeBusca.PerformLayout();
             this.gpbFiltrosDoRelatorio.ResumeLayout(false);

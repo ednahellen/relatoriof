@@ -1,727 +1,1570 @@
-﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Office.Word;
-using GPSFA_WinForms;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
-using System.Linq;
+using System.Data;
+using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using ExcelDataReader;
 
-namespace Projeto_Socorrista
+namespace GPSFA_WinForms
 {
     public partial class frmEstoque : Form
     {
-        private string busca = "";
-        private string unidadeEscolhida = "";
-        private string status_validade = "";
-        private DateTime? dataValidade = null;
+        // ===== Variáveis =====
+        private string produtoSelecionado = "";
         private bool modoAgrupado = true;
+        private bool somentePrincipais = false;
         private int codUsuLogado;
-        private System.Windows.Forms.Button btDarBaixa;
+
+        private Label lblSaldoAtual;
+        private Label lblProdutoSelecionado;
+        private ComboBox cmbProdutoSaida;
+        private NumericUpDown numQuantidadeSaida;
+        private TextBox txtDestinoSaida;
+        private Button btnRegistrarSaida;
+
+        // ===== Controles para histórico de saídas =====
+        private DataGridView dgvHistoricoSaidas;
+
         public frmEstoque()
         {
             InitializeComponent();
+            this.Load += frmEstoque_Load;
         }
 
-        public frmEstoque(int codUsu)
+        public frmEstoque(int codUsu) : this()
         {
-            InitializeComponent();
             codUsuLogado = codUsu;
-            this.btnDarBaixa.Click += new System.EventHandler(this.btDarBaixa_Click);
         }
 
         private void frmEstoque_Load(object sender, EventArgs e)
         {
+            btnAplicarFiltros.Click += btnAplicarFiltro_Click;
+            btnLimparFiltros.Click += btnLimparFiltro_Click;
+            btnProdutosPrincipais.Click += btnPrincipaisProdutos_Click;
+            btnAplicarModo.Click += btnAlternarModo_Click;
+
+            // Usar o botão que já existe no Designer
+            btnImportar.Click += BtnImportar_Click;
+
             ConfigurarDataGridView(modoAgrupado);
-            CarregarUnidades();
-
-            if (cbxStatus.Items.Count == 0)
-            {
-                cbxStatus.Items.Add("Selecione...");
-                cbxStatus.Items.Add("Válido");
-                cbxStatus.Items.Add("Próximo do vencimento");
-                cbxStatus.Items.Add("Vencido");
-            }
-            cbxStatus.SelectedIndex = 0;
-
-            if (cbxModoExibicao.Items.Count == 0)
-            {
-                cbxModoExibicao.Items.Add("Agrupado");
-                cbxModoExibicao.Items.Add("Detalhado");
-            }
-            cbxModoExibicao.SelectedIndex = modoAgrupado ? 0 : 1;
-
-            dtpDataValidade.Value = DateTime.Today;
-            dtpDataValidade.Checked = false;
-
+            CarregarProdutos();
             CarregarDados();
+
+            ConfigurarAbaHistorico();
+            ConfigurarTabRegistrarSaida();
+            CarregarProdutosSaida();
+
+            VerificacaoSistema();
         }
 
-        private void ConfigurarDataGridView(bool modoAgrupado)
+        // ===== Importar dados do Excel =====
+        private void BtnImportar_Click(object sender, EventArgs e)
         {
-            dgvEstoque.SuspendLayout();
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+                Filter = "Arquivos Excel|*.xlsx;*.xls",
+                Title = "Selecione o arquivo Excel com as entradas de estoque"
+            };
+
+            if (ofd.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+                using (var stream = File.Open(ofd.FileName, FileMode.Open, FileAccess.Read))
+                {
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        var conf = new ExcelDataSetConfiguration
+                        {
+                            ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                            {
+                                UseHeaderRow = true
+                            }
+                        };
+
+                        var result = reader.AsDataSet(conf);
+                        DataTable dt = result.Tables[0];
+
+                        int registrosImportados = 0;
+                        int registrosErro = 0;
+                        int registrosIgnorados = 0;
+                        StringBuilder erros = new StringBuilder();
+                        HashSet<string> linhasProcessadas = new HashSet<string>();
+
+                        using (var conn = DataBaseConnection.OpenConnection())
+                        using (var trans = conn.BeginTransaction())
+                        {
+                            try
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Total de linhas no Excel: {dt.Rows.Count}");
+
+                                for (int i = 1; i < dt.Rows.Count; i++)
+                                {
+                                    DataRow row = dt.Rows[i];
+
+                                    try
+                                    {
+                                        if (row.ItemArray == null || row.ItemArray.Length < 5)
+                                        {
+                                            registrosIgnorados++;
+                                            continue;
+                                        }
+
+                                        bool linhaVazia = true;
+                                        for (int j = 0; j < 5; j++)
+                                        {
+                                            if (row[j] != null && !string.IsNullOrWhiteSpace(row[j]?.ToString()))
+                                            {
+                                                linhaVazia = false;
+                                                break;
+                                            }
+                                        }
+
+                                        if (linhaVazia)
+                                        {
+                                            registrosIgnorados++;
+                                            continue;
+                                        }
+
+                                        string dataEntradaStr = row[0]?.ToString()?.Trim();
+                                        string origem = row[1]?.ToString()?.Trim();
+                                        string produto = row[2]?.ToString()?.Trim();
+                                        string quantidadeStr = row[3]?.ToString()?.Trim();
+                                        string validadeStr = row[4]?.ToString()?.Trim();
+
+                                        string chaveLinha = $"{dataEntradaStr}|{origem}|{produto}|{quantidadeStr}|{validadeStr}";
+                                        if (linhasProcessadas.Contains(chaveLinha))
+                                        {
+                                            registrosIgnorados++;
+                                            erros.AppendLine($"Linha {i + 1}: Linha duplicada ignorada");
+                                            continue;
+                                        }
+                                        linhasProcessadas.Add(chaveLinha);
+
+                                        if (string.IsNullOrWhiteSpace(produto))
+                                        {
+                                            registrosErro++;
+                                            erros.AppendLine($"Linha {i + 1}: Produto não informado");
+                                            continue;
+                                        }
+
+                                        if (string.IsNullOrWhiteSpace(quantidadeStr))
+                                        {
+                                            registrosErro++;
+                                            erros.AppendLine($"Linha {i + 1}: Quantidade não informada para o produto {produto}");
+                                            continue;
+                                        }
+
+                                        DateTime dataEntrada;
+                                        if (!DateTime.TryParse(dataEntradaStr, out dataEntrada))
+                                        {
+                                            dataEntrada = DateTime.Now;
+                                            erros.AppendLine($"Linha {i + 1}: Data de entrada inválida para {produto}, usando data atual");
+                                        }
+
+                                        DateTime validade;
+                                        if (!DateTime.TryParse(validadeStr, out validade))
+                                        {
+                                            validade = DateTime.Now.AddMonths(6);
+                                            erros.AppendLine($"Linha {i + 1}: Data de validade inválida para {produto}, usando data padrão");
+                                        }
+
+                                        quantidadeStr = quantidadeStr.Replace(',', '.').Trim();
+
+                                        if (quantidadeStr.Contains(".") && quantidadeStr.IndexOf(".") != quantidadeStr.LastIndexOf("."))
+                                        {
+                                            quantidadeStr = quantidadeStr.Replace(".", "");
+                                        }
+
+                                        if (!decimal.TryParse(quantidadeStr, System.Globalization.NumberStyles.Any,
+                                            System.Globalization.CultureInfo.InvariantCulture, out decimal quantidadeDecimal))
+                                        {
+                                            registrosErro++;
+                                            erros.AppendLine($"Linha {i + 1}: Quantidade inválida '{quantidadeStr}' para o produto {produto}");
+                                            continue;
+                                        }
+
+                                        int quantidade = (int)Math.Round(quantidadeDecimal, MidpointRounding.AwayFromZero);
+
+                                        if (quantidade <= 0)
+                                        {
+                                            registrosErro++;
+                                            erros.AppendLine($"Linha {i + 1}: Quantidade deve ser maior que zero para o produto {produto}");
+                                            continue;
+                                        }
+
+                                        int codList = ObterCodigoLista(conn, trans, produto);
+                                        if (codList == 0)
+                                        {
+                                            registrosErro++;
+                                            erros.AppendLine($"Linha {i + 1}: Produto não encontrado no cadastro: {produto}");
+                                            continue;
+                                        }
+
+                                        int codOri = ObterCodigoOrigem(conn, trans, origem);
+                                        if (codOri == 0 && !string.IsNullOrWhiteSpace(origem))
+                                        {
+                                            codOri = InserirNovaOrigem(conn, trans, origem);
+                                            erros.AppendLine($"Linha {i + 1}: Nova origem criada: {origem}");
+                                        }
+                                        else if (codOri == 0)
+                                        {
+                                            codOri = 1;
+                                        }
+
+                                        int peso = ObterPesoProduto(conn, trans, codList);
+
+                                        InserirEntradaEstoque(conn, trans, codList, codOri, produto, quantidade, peso, dataEntrada, validade);
+
+                                        registrosImportados++;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        registrosErro++;
+                                        erros.AppendLine($"Linha {i + 1}: Erro inesperado - {ex.Message}");
+                                    }
+                                }
+
+                                trans.Commit();
+
+                                System.Diagnostics.Debug.WriteLine($"Registros importados: {registrosImportados}");
+                                System.Diagnostics.Debug.WriteLine($"Registros com erro: {registrosErro}");
+                                System.Diagnostics.Debug.WriteLine($"Registros ignorados: {registrosIgnorados}");
+
+                                string mensagem = $"✅ Importação concluída!\n\n" +
+                                                $"Registros importados com sucesso: {registrosImportados}\n" +
+                                                $"Registros ignorados (vazios/duplicados): {registrosIgnorados}\n" +
+                                                $"Registros com erro: {registrosErro}";
+
+                                if (erros.Length > 0)
+                                {
+                                    mensagem += $"\n\n📋 Detalhes dos erros e avisos:\n{erros.ToString()}";
+                                }
+
+                                MessageBox.Show(mensagem, "Resultado da Importação",
+                                    MessageBoxButtons.OK, registrosErro > 0 ? MessageBoxIcon.Warning : MessageBoxIcon.Information);
+
+                                CarregarDados();
+                                CarregarProdutosSaida();
+                                CarregarHistoricoSaidas("");
+                            }
+                            catch (Exception ex)
+                            {
+                                trans.Rollback();
+                                MessageBox.Show($"❌ Erro durante a importação: {ex.Message}", "Erro",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Erro ao abrir arquivo: {ex.Message}",
+                    "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ===== Métodos auxiliares para importação =====
+        private int ObterCodigoLista(MySqlConnection conn, MySqlTransaction trans, string produto)
+        {
+            string sql = "SELECT codList FROM tbLista WHERE descricao = @produto";
+            using (var cmd = new MySqlCommand(sql, conn, trans))
+            {
+                cmd.Parameters.AddWithValue("@produto", produto);
+                object result = cmd.ExecuteScalar();
+                return result != null ? Convert.ToInt32(result) : 0;
+            }
+        }
+
+        private int ObterCodigoOrigem(MySqlConnection conn, MySqlTransaction trans, string origem)
+        {
+            if (string.IsNullOrEmpty(origem))
+                return 0;
+
+            string sql = "SELECT codOri FROM tbOrigemDoacao WHERE nome = @origem";
+            using (var cmd = new MySqlCommand(sql, conn, trans))
+            {
+                cmd.Parameters.AddWithValue("@origem", origem.Trim());
+                object result = cmd.ExecuteScalar();
+                return result != null ? Convert.ToInt32(result) : 0;
+            }
+        }
+
+        private int InserirNovaOrigem(MySqlConnection conn, MySqlTransaction trans, string origem)
+        {
+            if (string.IsNullOrEmpty(origem))
+                return 1;
+
+            string sql = @"INSERT INTO tbOrigemDoacao (nome) VALUES (@nome);
+                          SELECT LAST_INSERT_ID();";
+            using (var cmd = new MySqlCommand(sql, conn, trans))
+            {
+                cmd.Parameters.AddWithValue("@nome", origem.Trim());
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+
+        private int ObterPesoProduto(MySqlConnection conn, MySqlTransaction trans, int codList)
+        {
+            string sql = "SELECT peso FROM tbLista WHERE codList = @codList";
+            using (var cmd = new MySqlCommand(sql, conn, trans))
+            {
+                cmd.Parameters.AddWithValue("@codList", codList);
+                object result = cmd.ExecuteScalar();
+                return result != null ? Convert.ToInt32(result) : 1000;
+            }
+        }
+
+        private void InserirEntradaEstoque(MySqlConnection conn, MySqlTransaction trans,
+            int codList, int codOri, string produto, int quantidade, int peso,
+            DateTime dataEntrada, DateTime validade)
+        {
+            string sqlInsert = @"
+                INSERT INTO tbProdutos 
+                    (descricao, quantidade, peso, unidade, codBar, 
+                     dataDeEntrada, dataDeValidade, dataLimiteDeSaida, 
+                     tipoMovimentacao, codUsu, codOri, codList)
+                VALUES 
+                    (@descricao, @quantidade, @peso, 'UNIDADES (UN)', NULL,
+                     @dataEntrada, @validade, DATE_ADD(@validade, INTERVAL -30 DAY),
+                     'ENTRADA', @codUsu, @codOri, @codList)";
+
+            using (var cmd = new MySqlCommand(sqlInsert, conn, trans))
+            {
+                cmd.Parameters.AddWithValue("@descricao", produto);
+                cmd.Parameters.AddWithValue("@quantidade", quantidade);
+                cmd.Parameters.AddWithValue("@peso", peso);
+                cmd.Parameters.AddWithValue("@dataEntrada", dataEntrada);
+                cmd.Parameters.AddWithValue("@validade", validade);
+                cmd.Parameters.AddWithValue("@codUsu", codUsuLogado);
+                cmd.Parameters.AddWithValue("@codOri", codOri);
+                cmd.Parameters.AddWithValue("@codList", codList);
+                cmd.ExecuteNonQuery();
+            }
+
+            string sqlUpdateEstoque = @"
+                UPDATE tbEstoqueItens 
+                SET quantidade = quantidade + @quantidade,
+                    dataMovimentacao = CURRENT_DATE(),
+                    horaMovimentacao = CURRENT_TIME()
+                WHERE codList = @codList";
+
+            using (var cmd = new MySqlCommand(sqlUpdateEstoque, conn, trans))
+            {
+                cmd.Parameters.AddWithValue("@quantidade", quantidade);
+                cmd.Parameters.AddWithValue("@codList", codList);
+                int linhasAfetadas = cmd.ExecuteNonQuery();
+
+                if (linhasAfetadas == 0)
+                {
+                    string sqlInsertEstoque = @"
+                        INSERT INTO tbEstoqueItens (codList, quantidade, dataMovimentacao, horaMovimentacao)
+                        VALUES (@codList, @quantidade, CURRENT_DATE(), CURRENT_TIME())";
+
+                    using (var cmdInsert = new MySqlCommand(sqlInsertEstoque, conn, trans))
+                    {
+                        cmdInsert.Parameters.AddWithValue("@codList", codList);
+                        cmdInsert.Parameters.AddWithValue("@quantidade", quantidade);
+                        cmdInsert.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
+
+        // ===== Configurar aba de histórico =====
+        // ===== Configurar aba de histórico (COM COLUNA DESTINO) =====
+        private void ConfigurarAbaHistorico()
+        {
+            if (tabPageSaidas == null) return;
+
+            tabPageSaidas.Controls.Clear();
+
+            // Painel de filtros
+            Panel panelFiltrosHistorico = new Panel
+            {
+                Height = 35,
+                Dock = DockStyle.Top,
+                BackColor = Color.WhiteSmoke,
+                Padding = new Padding(5)
+            };
+
+            Label lblFiltroHistorico = new Label
+            {
+                Location = new Point(10, 8),
+                Size = new Size(45, 20),
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+
+            TextBox txtFiltroHistorico = new TextBox
+            {
+                Location = new Point(60, 5),
+                Width = 200,
+                Height = 25
+            };
+
+            Button btnFiltrarHistorico = new Button
+            {
+                Text = "Filtrar",
+                Location = new Point(270, 5),
+                Width = 70,
+                Height = 25
+            };
+
+            Button btnLimparFiltroHistorico = new Button
+            {
+                Text = "Limpar",
+                Location = new Point(350, 5),
+                Width = 70,
+                Height = 25
+            };
+
+            panelFiltrosHistorico.Controls.AddRange(new Control[] {
+        lblFiltroHistorico, txtFiltroHistorico, btnFiltrarHistorico, btnLimparFiltroHistorico
+    });
+
+            // DataGridView
+            dgvHistoricoSaidas = new DataGridView
+            {
+                Dock = DockStyle.Fill,
+                AllowUserToAddRows = false,
+                ReadOnly = true,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                RowHeadersVisible = false,
+                BackgroundColor = Color.White,
+                BorderStyle = BorderStyle.Fixed3D,
+                CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal,
+                GridColor = Color.LightGray,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                MultiSelect = false,
+                Font = new Font("Segoe UI", 14)
+            };
+
+            // Estilo das linhas alternadas
+            dgvHistoricoSaidas.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 240, 240);
+            dgvHistoricoSaidas.RowsDefaultCellStyle.BackColor = Color.White;
+            dgvHistoricoSaidas.RowsDefaultCellStyle.ForeColor = Color.Black;
+            dgvHistoricoSaidas.RowsDefaultCellStyle.SelectionBackColor = Color.FromArgb(52, 152, 219);
+            dgvHistoricoSaidas.RowsDefaultCellStyle.SelectionForeColor = Color.White;
+
+            // Estilo do cabeçalho
+            dgvHistoricoSaidas.EnableHeadersVisualStyles = false;
+            dgvHistoricoSaidas.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(52, 73, 94);
+            dgvHistoricoSaidas.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            dgvHistoricoSaidas.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 14, FontStyle.Bold);
+            dgvHistoricoSaidas.ColumnHeadersHeight = 30;
+
+            // Configurar colunas COM DESTINO
+            DataGridViewTextBoxColumn colData = new DataGridViewTextBoxColumn
+            {
+                Name = "data",
+                HeaderText = "Data/Hora",
+                FillWeight = 15,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleCenter,
+                    Format = "dd/MM/yyyy HH:mm"
+                }
+            };
+
+            DataGridViewTextBoxColumn colProduto = new DataGridViewTextBoxColumn
+            {
+                Name = "produto",
+                HeaderText = "Produto",
+                FillWeight = 35,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleLeft
+                }
+            };
+
+            DataGridViewTextBoxColumn colQuantidade = new DataGridViewTextBoxColumn
+            {
+                Name = "quantidade",
+                HeaderText = "Qtd",
+                FillWeight = 10,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleRight,
+                    Format = "N0"
+                }
+            };
+
+            DataGridViewTextBoxColumn colUsuario = new DataGridViewTextBoxColumn
+            {
+                Name = "usuario",
+                HeaderText = "Usuário",
+                FillWeight = 15,
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleLeft
+                }
+            };
+
+            DataGridViewTextBoxColumn colDestino = new DataGridViewTextBoxColumn
+            {
+                Name = "destino",
+                HeaderText = "Destino",
+                FillWeight = 25, // 25% do espaço
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Alignment = DataGridViewContentAlignment.MiddleLeft
+                }
+            };
+
+            dgvHistoricoSaidas.Columns.AddRange(new DataGridViewColumn[] {
+        colData, colProduto, colQuantidade, colUsuario, colDestino
+    });
+
+            // Eventos de filtro
+            btnFiltrarHistorico.Click += (s, ev) => CarregarHistoricoSaidas(txtFiltroHistorico.Text);
+            btnLimparFiltroHistorico.Click += (s, ev) =>
+            {
+                txtFiltroHistorico.Clear();
+                CarregarHistoricoSaidas("");
+            };
+            txtFiltroHistorico.KeyPress += (s, ev) =>
+            {
+                if (ev.KeyChar == (char)Keys.Enter)
+                    CarregarHistoricoSaidas(txtFiltroHistorico.Text);
+            };
+
+            tabPageSaidas.Controls.Add(dgvHistoricoSaidas);
+            tabPageSaidas.Controls.Add(panelFiltrosHistorico);
+
+            CarregarHistoricoSaidas("");
+        }
+
+
+        // ===== Carregar histórico de saídas =====
+        // ===== Carregar histórico de saídas (COM COLUNA DESTINO) =====
+        private void CarregarHistoricoSaidas(string filtro = "")
+        {
+            if (dgvHistoricoSaidas == null) return;
+
+            dgvHistoricoSaidas.Rows.Clear();
+
+            try
+            {
+                using (var conn = DataBaseConnection.OpenConnection())
+                {
+                    string sql = @"
+                SELECT 
+                    DATE_FORMAT(p.dataDeEntrada, '%d/%m/%Y %H:%i') as data,
+                    l.descricao as produto,
+                    ABS(p.quantidade) as quantidade,
+                    u.usuario as usuario,
+                    p.destino as destino
+                FROM tbProdutos p
+                INNER JOIN tbLista l ON l.codList = p.codList
+                INNER JOIN tbUsuarios u ON u.codUsu = p.codUsu
+                WHERE p.quantidade < 0";
+
+                    if (!string.IsNullOrEmpty(filtro))
+                    {
+                        sql += " AND l.descricao LIKE @filtro";
+                    }
+
+                    sql += " ORDER BY p.dataDeEntrada DESC LIMIT 500";
+
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        if (!string.IsNullOrEmpty(filtro))
+                        {
+                            cmd.Parameters.AddWithValue("@filtro", $"%{filtro}%");
+                        }
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                string destino = reader["destino"]?.ToString() ?? "";
+
+                                dgvHistoricoSaidas.Rows.Add(
+                                    reader["data"],
+                                    reader["produto"],
+                                    reader["quantidade"],
+                                    reader["usuario"],
+                                    destino
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao carregar histórico: {ex.Message}");
+            }
+        }
+
+        // ===== GRID (COM COLUNA ORIGEM) =====
+        private void ConfigurarDataGridView(bool agrupado)
+        {
             dgvEstoque.Columns.Clear();
+            dgvEstoque.Rows.Clear();
+
             dgvEstoque.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvEstoque.AllowUserToAddRows = false;
             dgvEstoque.ReadOnly = true;
-            dgvEstoque.RowHeadersVisible = false;
             dgvEstoque.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvEstoque.MultiSelect = false;
-            dgvEstoque.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            dgvEstoque.RowsDefaultCellStyle.BackColor = Color.WhiteSmoke;
-            dgvEstoque.RowsDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Regular);
-            dgvEstoque.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
-            dgvEstoque.RowTemplate.Height = 38;
-            dgvEstoque.ClearSelection();
 
-            if (modoAgrupado)
+            if (agrupado)
             {
-                dgvEstoque.Columns.Add("ProdutoAgrupado", "Produto");
-                dgvEstoque.Columns.Add("QuantidadeTotal", "Quantidade Total");
-                dgvEstoque.Columns.Add("Unidade", "Unidade");
-                dgvEstoque.Columns.Add("Peso", "Peso");
-                dgvEstoque.Columns.Add("StatusValidade", "Status");
-                dgvEstoque.Columns.Add("ValidadeMinima", "Validade Mínima");
+                dgvEstoque.Columns.Add("Produto", "Produto");
 
-                dgvEstoque.Columns["QuantidadeTotal"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                dgvEstoque.Columns["Peso"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                DataGridViewTextBoxColumn colQtd = new DataGridViewTextBoxColumn
+                {
+                    Name = "Quantidade",
+                    HeaderText = "Qtd",
+                    DefaultCellStyle = new DataGridViewCellStyle
+                    {
+                        Format = "",
+                        Alignment = DataGridViewContentAlignment.MiddleRight
+                    }
+                };
+                dgvEstoque.Columns.Add(colQtd);
+
+                dgvEstoque.Columns.Add("Unidade", "Unid");
+                dgvEstoque.Columns.Add("Peso", "Peso (g)");
+                dgvEstoque.Columns.Add("PesoTotal", "Peso Total (kg)");
+                dgvEstoque.Columns.Add("Status", "Status");
+                dgvEstoque.Columns.Add("Validade", "Validade");
+                dgvEstoque.Columns.Add("Origem", "Origem"); // NOVA COLUNA
             }
             else
             {
-                dgvEstoque.Columns.Add("CodProd", "Código");
-                dgvEstoque.Columns.Add("Nome", "Nome");
-                dgvEstoque.Columns.Add("Peso", "Peso");
-                dgvEstoque.Columns.Add("Unidade", "Unidade");
-                dgvEstoque.Columns.Add("StatusValidade", "Status");
-                dgvEstoque.Columns.Add("DataDeEntrada", "Entrada");
-                dgvEstoque.Columns.Add("DataDeValidade", "Validade");
-
-                dgvEstoque.Columns["Peso"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                dgvEstoque.Columns.Add("Codigo", "Código");
+                dgvEstoque.Columns.Add("Produto", "Produto");
+                dgvEstoque.Columns.Add("Peso", "Peso (kg)");
+                dgvEstoque.Columns.Add("Unidade", "Unid");
+                dgvEstoque.Columns.Add("Status", "Status");
+                dgvEstoque.Columns.Add("Entrada", "Entrada");
+                dgvEstoque.Columns.Add("Validade", "Validade");
+                dgvEstoque.Columns.Add("Origem", "Origem"); // NOVA COLUNA
             }
-
-            dgvEstoque.ResumeLayout();
         }
 
-        private void CarregarUnidades()
+        // ===== PRODUTOS FILTRO =====
+        private void CarregarProdutos()
         {
-            cbxCategoria.Items.Clear();
-            try
+            cbxprodutoSelecionado.Items.Clear();
+
+            using (var conn = DataBaseConnection.OpenConnection())
             {
-                using (var conn = DataBaseConnection.OpenConnection())
+                string sql = "SELECT descricao FROM tbLista ORDER BY descricao";
+
+                using (var cmd = new MySqlCommand(sql, conn))
+                using (var reader = cmd.ExecuteReader())
                 {
-                    string sql = "SELECT descricao FROM tbunidades ORDER BY descricao ASC";
-                    using (var cmd = new MySqlCommand(sql, conn))
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            cbxCategoria.Items.Add(reader["descricao"].ToString());
-                        }
-                    }
+                    while (reader.Read())
+                        cbxprodutoSelecionado.Items.Add(reader["descricao"].ToString());
                 }
-                cbxCategoria.Items.Insert(0, "Selecione...");
-                cbxCategoria.SelectedIndex = 0;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao carregar unidades: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
+            cbxprodutoSelecionado.Items.Insert(0, "Todos os produtos");
+            cbxprodutoSelecionado.SelectedIndex = 0;
         }
 
+        // ===== Formatar peso =====
+        private string FormatarPeso(decimal pesoGramas)
+        {
+            return (pesoGramas / 1000m).ToString("0.00");
+        }
+
+        // ===== Calcular status =====
+        private string CalcularStatus(DateTime? validade)
+        {
+            if (!validade.HasValue) return "Sem validade";
+
+            int dias = (validade.Value - DateTime.Today).Days;
+
+            if (dias < 0) return "Vencido";
+            if (dias <= 60) return "Próximo";
+            return "Válido";
+        }
+
+
+        
+        // ===== CARREGAR GRID (COM COLUNA ORIGEM) =====
         private void CarregarDados()
         {
             dgvEstoque.Rows.Clear();
-            ConfigurarDataGridView(modoAgrupado);
 
-            if (modoAgrupado)
-            {
-                CarregarDadosAgrupado();
-            }
-            else
-            {
-                CarregarDadosDetalhado();
-            }
-        }
-
-        private void CarregarDadosAgrupado()
-        {
-            dgvEstoque.Rows.Clear();
+            int totalQuantidade = 0;
+            decimal pesoTotalGramas = 0;
+            int totalProdutos = 0;
 
             using (var conn = DataBaseConnection.OpenConnection())
             {
-                string sql = @"
-                    SELECT
-                        l.descricao AS descricao,
-                        SUM(p.quantidade) AS quantidade_total,
-                        u.descricao AS unidade,
-                        l.peso AS peso,
-                        MIN(p.dataDeValidade) AS validade_minima,
-                        CASE
-                            WHEN MIN(p.dataDeValidade) < CURDATE() THEN 'Vencido'
-                            WHEN DATEDIFF(MIN(p.dataDeValidade), CURDATE()) <= 60 THEN 'Próximo do vencimento'
-                            ELSE 'Válido'
-                        END AS status_validade
-                    FROM tbprodutos p
-                    INNER JOIN tblista l ON l.codList = p.codList
-                    INNER JOIN tbunidades u ON u.codUni = l.codUni
-                    GROUP BY l.codList, l.descricao, u.descricao, l.peso
-                    HAVING SUM(p.quantidade) > 0
-                    ORDER BY l.descricao;";
-
-
-
-                using (var cmd = new MySqlCommand(sql, conn))
+                if (modoAgrupado)
                 {
-                    cmd.Parameters.AddWithValue("@busca", busca ?? "");
-                    cmd.Parameters.AddWithValue("@buscaPattern", "%" + (busca ?? "") + "%");
-                    cmd.Parameters.AddWithValue("@validade", dataValidade.HasValue ? dataValidade.Value.Date : (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@unidade", unidadeEscolhida == "Selecione..." ? "" : unidadeEscolhida ?? "");
-                    cmd.Parameters.AddWithValue("@status", status_validade == "Selecione..." ? "" : status_validade ?? "");
+                    // NOVA QUERY: Agrupa por produto e traz a origem mais comum ou a mais recente
+                    string sql = @"
+                SELECT 
+                    l.descricao AS produto, 
+                    ei.quantidade,
+                    l.unidade AS unidade,
+                    l.peso,
+                    (SELECT MIN(p2.dataDeValidade) 
+                     FROM tbProdutos p2 
+                     WHERE p2.codList = l.codList AND p2.quantidade > 0) AS validade,
+                    (SELECT o.nome 
+                     FROM tbProdutos p3
+                     INNER JOIN tbOrigemDoacao o ON o.codOri = p3.codOri
+                     WHERE p3.codList = l.codList AND p3.quantidade > 0
+                     ORDER BY p3.dataDeEntrada DESC
+                     LIMIT 1) AS origem
+                FROM tbLista l
+                INNER JOIN tbEstoqueItens ei ON ei.codList = l.codList
+                WHERE ei.quantidade > 0
+                AND (@produto = '' OR l.descricao = @produto)
+                ORDER BY l.descricao";
 
-                    using (var reader = cmd.ExecuteReader())
+                    if (somentePrincipais)
+                        sql += " LIMIT 10";
+
+                    using (var cmd = new MySqlCommand(sql, conn))
                     {
-                        decimal totalQuantidade = 0;
-                        decimal totalPeso = 0;
+                        cmd.Parameters.AddWithValue("@produto", produtoSelecionado);
 
-                        while (reader.Read())
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            string validadeMinima = reader["validade_minima"] == DBNull.Value
-                                ? ""
-                                : Convert.ToDateTime(reader["validade_minima"]).ToString("dd/MM/yyyy");
+                            while (reader.Read())
+                            {
+                                int qtd = Convert.ToInt32(reader["quantidade"]);
+                                decimal pesoUnitario = Convert.ToDecimal(reader["peso"]);
+                                decimal pesoTotalProduto = qtd * pesoUnitario;
+                                DateTime? validade = reader["validade"] != DBNull.Value ? Convert.ToDateTime(reader["validade"]) : (DateTime?)null;
+                                string status = CalcularStatus(validade);
+                                string origem = reader["origem"] != DBNull.Value ? reader["origem"].ToString() : "Não informado";
 
-                            decimal qtd = Convert.ToDecimal(reader["quantidade_total"]);
-                            decimal peso = Convert.ToDecimal(reader["peso"]);
+                                totalQuantidade += qtd;
+                                pesoTotalGramas += pesoTotalProduto;
+                                totalProdutos++;
 
-                            totalQuantidade += qtd;
-                            totalPeso += (qtd * peso);
+                                int rowIndex = dgvEstoque.Rows.Add(
+                                    reader["produto"],
+                                    qtd,
+                                    reader["unidade"].ToString(),
+                                    pesoUnitario.ToString("0"),
+                                    (pesoTotalProduto / 1000m).ToString("0.00"),
+                                    status,
+                                    FormatarData(validade),
+                                    origem  // NOVA COLUNA
+                                );
 
-                            dgvEstoque.Rows.Add(
-                                reader["descricao"].ToString(),
-                                qtd.ToString("N0"),
-                                reader["unidade"].ToString(),
-                                peso.ToString("N0"),
-                                reader["status_validade"].ToString(),
-                                validadeMinima
-                            );
+                                if (status == "Vencido")
+                                    dgvEstoque.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightCoral;
+                                else if (status == "Próximo")
+                                    dgvEstoque.Rows[rowIndex].DefaultCellStyle.BackColor = Color.Khaki;
+                                else if (status == "Válido")
+                                    dgvEstoque.Rows[rowIndex].DefaultCellStyle.BackColor = Color.Honeydew;
+                            }
                         }
+                    }
+                }
+                else
+                {
+                    // MODO DETALHADO: Mostra a origem de cada lote individual
+                    string sql = @"
+                SELECT p.codProd codigo,
+                       l.descricao produto,
+                       l.peso,
+                       l.unidade unidade,
+                       p.dataDeEntrada entrada,
+                       p.dataDeValidade validade,
+                       o.nome origem
+                FROM tbProdutos p
+                INNER JOIN tbLista l ON l.codList = p.codList
+                INNER JOIN tbOrigemDoacao o ON o.codOri = p.codOri
+                WHERE p.quantidade > 0
+                AND (@produto = '' OR l.descricao = @produto)
+                ORDER BY l.descricao, p.dataDeEntrada";
 
-                        if (dgvEstoque.Rows.Count > 0)
+                    using (var cmd = new MySqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@produto", produtoSelecionado);
+
+                        using (var reader = cmd.ExecuteReader())
                         {
-                            string pesoTotalFormatado = totalPeso >= 1000
-                                ? (totalPeso / 1000).ToString("N2") + " kg"
-                                : totalPeso.ToString("N0") + " g";
+                            while (reader.Read())
+                            {
+                                totalQuantidade++;
 
-                            int linhaTotal = dgvEstoque.Rows.Add(
-                                "🔹 TOTAL GERAL 🔹",
-                                totalQuantidade.ToString("N0"),
-                                "",
-                                pesoTotalFormatado,
-                                "",
-                                ""
-                            );
+                                DateTime? validade = reader["validade"] != DBNull.Value
+                                    ? Convert.ToDateTime(reader["validade"])
+                                    : (DateTime?)null;
 
-                            dgvEstoque.Rows[linhaTotal].DefaultCellStyle.BackColor = Color.FromArgb(48, 112, 99);
-                            dgvEstoque.Rows[linhaTotal].DefaultCellStyle.ForeColor = Color.White;
-                            dgvEstoque.Rows[linhaTotal].DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
-                            dgvEstoque.Rows[linhaTotal].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                            dgvEstoque.Rows[linhaTotal].Selected = false;
+                                string status = CalcularStatus(validade);
+                                decimal pesoKg = Convert.ToDecimal(reader["peso"]) / 1000m;
+                                string origem = reader["origem"] != DBNull.Value ? reader["origem"].ToString() : "Não informado";
+
+                                int rowIndex = dgvEstoque.Rows.Add(
+                                    reader["codigo"],
+                                    reader["produto"],
+                                    pesoKg.ToString("0.00"),
+                                    reader["unidade"],
+                                    status,
+                                    FormatarData(reader["entrada"]),
+                                    FormatarData(reader["validade"]),
+                                    origem  // NOVA COLUNA
+                                );
+
+                                if (status == "Vencido")
+                                    dgvEstoque.Rows[rowIndex].DefaultCellStyle.BackColor = Color.LightCoral;
+                                else if (status == "Próximo")
+                                    dgvEstoque.Rows[rowIndex].DefaultCellStyle.BackColor = Color.Khaki;
+                                else if (status == "Válido")
+                                    dgvEstoque.Rows[rowIndex].DefaultCellStyle.BackColor = Color.Honeydew;
+                            }
                         }
                     }
                 }
             }
+
+            // Adicionar linha de total no modo agrupado
+            if (modoAgrupado && dgvEstoque.Rows.Count > 0)
+            {
+                string pesoTotalFormatado = (pesoTotalGramas / 1000m).ToString("0.00") + " kg";
+
+                int linhaTotal = dgvEstoque.Rows.Add(
+                    "▶ TOTAL GERAL",
+                    totalQuantidade.ToString("N0"),
+                    $"{totalProdutos} tipos",
+                    "",
+                    pesoTotalFormatado,
+                    "",
+                    "",
+                    ""  // Coluna Origem vazia no total
+                );
+
+                DataGridViewRow row = dgvEstoque.Rows[linhaTotal];
+                row.DefaultCellStyle.BackColor = Color.DarkSlateGray;
+                row.DefaultCellStyle.ForeColor = Color.White;
+                row.DefaultCellStyle.Font = new Font("Segoe UI", 14, FontStyle.Bold);
+
+                if (row.Cells["Produto"] != null)
+                    row.Cells["Produto"].Style.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                if (row.Cells["PesoTotal"] != null)
+                    row.Cells["PesoTotal"].Style.Alignment = DataGridViewContentAlignment.MiddleRight;
+            }
         }
 
-        private void CarregarDadosDetalhado()
+        private string FormatarData(object data)
         {
-            dgvEstoque.Rows.Clear();
+            if (data == DBNull.Value) return "";
+
+            DateTime dt;
+            if (DateTime.TryParse(data.ToString(), out dt))
+                return dt.ToString("dd/MM/yyyy");
+
+            return "";
+        }
+
+        // ===== Configurar aba de registrar saída =====
+        // ===== Configurar aba de registrar saída (VERSÃO AMPLIADA) =====
+        private void ConfigurarTabRegistrarSaida()
+        {
+            if (tabPageRegistrarSaida == null) return;
+
+            tabPageRegistrarSaida.Controls.Clear();
+
+            // Panel principal com scroll
+            Panel panelPrincipal = new Panel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                BackColor = Color.White
+            };
+
+            // ===== GRUPO SELEÇÃO DO PRODUTO (AMPLIADO) =====
+            GroupBox grpSelecao = new GroupBox
+            {
+                Text = " SELEÇÃO DO PRODUTO ",
+                Location = new Point(30, 30),
+                Size = new Size(700, 200), // Aumentado significativamente
+                Font = new Font("Segoe UI", 14, FontStyle.Bold),
+                BackColor = Color.FromArgb(250, 250, 250)
+            };
+
+            // Layout interno do grupo
+            TableLayoutPanel layoutSelecao = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 3,
+                Padding = new Padding(20),
+                BackColor = Color.Transparent
+            };
+            layoutSelecao.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150)); // Label maior
+            layoutSelecao.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            layoutSelecao.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
+            layoutSelecao.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
+            layoutSelecao.RowStyles.Add(new RowStyle(SizeType.Absolute, 50));
+
+            // Linha 1: Combo Produto (FONTE 14)
+            Label lblProduto = new Label
+            {
+                Text = "Produto:",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Font = new Font("Segoe UI", 14)
+            };
+
+            cmbProdutoSaida = new ComboBox
+            {
+                Dock = DockStyle.Fill,
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 14),
+                Height = 40
+            };
+            cmbProdutoSaida.SelectedIndexChanged += CmbProdutoSaida_SelectedIndexChanged;
+
+            // Linha 2: Selecionado (FONTE 14)
+            Label lblSelecionado = new Label
+            {
+                Text = "Selecionado:",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Font = new Font("Segoe UI", 14)
+            };
+
+            lblProdutoSelecionado = new Label
+            {
+                Text = "-",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Font = new Font("Segoe UI", 14, FontStyle.Bold),
+                ForeColor = Color.Navy
+            };
+
+            // Linha 3: Saldo (FONTE 14)
+            Label lblSaldo = new Label
+            {
+                Text = "Saldo:",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Font = new Font("Segoe UI", 14)
+            };
+
+            lblSaldoAtual = new Label
+            {
+                Text = "0",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Font = new Font("Segoe UI", 14, FontStyle.Bold),
+                ForeColor = Color.DarkGreen
+            };
+
+            layoutSelecao.Controls.Add(lblProduto, 0, 0);
+            layoutSelecao.Controls.Add(cmbProdutoSaida, 1, 0);
+            layoutSelecao.Controls.Add(lblSelecionado, 0, 1);
+            layoutSelecao.Controls.Add(lblProdutoSelecionado, 1, 1);
+            layoutSelecao.Controls.Add(lblSaldo, 0, 2);
+            layoutSelecao.Controls.Add(lblSaldoAtual, 1, 2);
+
+            grpSelecao.Controls.Add(layoutSelecao);
+
+            // ===== GRUPO DADOS DA SAÍDA (AMPLIADO) =====
+            GroupBox grpSaida = new GroupBox
+            {
+                Text = " DADOS DA SAÍDA ",
+                Location = new Point(30, 250),
+                Size = new Size(700, 180),
+                Font = new Font("Segoe UI", 14, FontStyle.Bold),
+                BackColor = Color.FromArgb(250, 250, 250)
+            };
+
+            TableLayoutPanel layoutSaida = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                ColumnCount = 2,
+                RowCount = 2,
+                Padding = new Padding(20),
+                BackColor = Color.Transparent
+            };
+            layoutSaida.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 150));
+            layoutSaida.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            layoutSaida.RowStyles.Add(new RowStyle(SizeType.Absolute, 60));
+            layoutSaida.RowStyles.Add(new RowStyle(SizeType.Absolute, 60));
+
+            // Linha 1: Quantidade (FONTE 14)
+            Label lblQtd = new Label
+            {
+                Text = "Quantidade:",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Font = new Font("Segoe UI", 14)
+            };
+
+            numQuantidadeSaida = new NumericUpDown
+            {
+                Dock = DockStyle.Left,
+                Width = 200,
+                Height = 40,
+                Minimum = 1,
+                Maximum = 100000,
+                Value = 1,
+                Font = new Font("Segoe UI", 14),
+                TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+            };
+
+            // Linha 2: Destino (FONTE 14)
+            Label lblDestino = new Label
+            {
+                Text = "Destino:",
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Font = new Font("Segoe UI", 14)
+            };
+
+            txtDestinoSaida = new TextBox
+            {
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI", 14),
+                Height = 40
+            };
+
+            layoutSaida.Controls.Add(lblQtd, 0, 0);
+            layoutSaida.Controls.Add(numQuantidadeSaida, 1, 0);
+            layoutSaida.Controls.Add(lblDestino, 0, 1);
+            layoutSaida.Controls.Add(txtDestinoSaida, 1, 1);
+
+            grpSaida.Controls.Add(layoutSaida);
+
+            // ===== BOTÃO REGISTRAR (AMPLIADO) =====
+            btnRegistrarSaida = new Button
+            {
+                Text = "📦 REGISTRAR SAÍDA",
+                Location = new Point(30, 450),
+                Size = new Size(300, 60),
+                Font = new Font("Segoe UI", 14, FontStyle.Bold),
+                BackColor = Color.FromArgb(52, 152, 219),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            btnRegistrarSaida.FlatAppearance.BorderSize = 0;
+            btnRegistrarSaida.Click += BtnRegistrarSaida_Click;
+
+            // ===== PAINEL DE INFORMAÇÕES (LATERAL DIREITA) =====
+            Panel panelInfo = new Panel
+            {
+                Location = new Point(750, 30),
+                Size = new Size(350, 480),
+                BackColor = Color.FromArgb(240, 240, 240),
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            Label lblInfoTitulo = new Label
+            {
+                Text = "ℹ️ INFORMAÇÕES",
+                Location = new Point(15, 15),
+                Size = new Size(320, 40),
+                Font = new Font("Segoe UI", 14, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
+            ListBox lstInfo = new ListBox
+            {
+                Location = new Point(15, 65),
+                Size = new Size(320, 400),
+                Font = new Font("Segoe UI", 14),
+                BorderStyle = BorderStyle.None,
+                BackColor = Color.FromArgb(240, 240, 240),
+                SelectionMode = SelectionMode.None
+            };
+
+            lstInfo.Items.Add("• Selecione um produto com");
+            lstInfo.Items.Add("  estoque disponível");
+            lstInfo.Items.Add("");
+            lstInfo.Items.Add("• A quantidade não pode");
+            lstInfo.Items.Add("  exceder o saldo atual");
+            lstInfo.Items.Add("");
+            lstInfo.Items.Add("• O sistema usa FIFO");
+            lstInfo.Items.Add("  (primeiro que entra,");
+            lstInfo.Items.Add("  primeiro que sai)");
+            lstInfo.Items.Add("");
+            lstInfo.Items.Add("• Informe o destino para");
+            lstInfo.Items.Add("  melhor rastreabilidade");
+            lstInfo.Items.Add("");
+            
+
+            panelInfo.Controls.AddRange(new Control[] { lblInfoTitulo, lstInfo });
+
+            // Adicionar controles ao painel principal
+            panelPrincipal.Controls.AddRange(new Control[] {
+        grpSelecao,
+        grpSaida,
+        btnRegistrarSaida,
+        panelInfo
+    });
+
+            tabPageRegistrarSaida.Controls.Add(panelPrincipal);
+        }
+
+        // ===== CARREGAR PRODUTOS SAÍDA =====
+        private void CarregarProdutosSaida()
+        {
+            if (cmbProdutoSaida == null) return;
+
+            cmbProdutoSaida.Items.Clear();
 
             using (var conn = DataBaseConnection.OpenConnection())
             {
                 string sql = @"
-                    SELECT
-                        p.codProd,
-                        l.descricao AS nomeProduto,
-                        l.peso,
-                        u.descricao AS unidade,
-                        p.dataDeEntrada,
-                        p.dataDeValidade,
-                        CASE
-                            WHEN p.dataDeValidade < CURDATE() THEN 'Vencido'
-                            WHEN DATEDIFF(p.dataDeValidade, CURDATE()) <= 60 THEN 'Próximo do vencimento'
-                            ELSE 'Válido'
-                        END AS status_validade
-                    FROM tbprodutos p
-                    INNER JOIN tblista l ON l.codList = p.codList
-                    INNER JOIN tbunidades u ON u.codUni = l.codUni
-                    WHERE p.quantidade > 0 AND (@busca = '' OR l.descricao LIKE @buscaPattern OR p.codProd LIKE @buscaPattern)
-                        AND (@unidade = '' OR u.descricao = @unidade)
-                        AND (@validade IS NULL OR DATE(p.dataDeValidade) = @validade)
-                        AND (@status = ''
-                            OR (@status = 'Válido' AND DATEDIFF(p.dataDeValidade, CURDATE()) > 60)
-                            OR (@status = 'Próximo do vencimento' AND DATEDIFF(p.dataDeValidade, CURDATE()) BETWEEN 0 AND 60)
-                            OR (@status = 'Vencido' AND p.dataDeValidade < CURDATE()))
-                    ORDER BY l.descricao, p.dataDeValidade ASC;";
+                    SELECT l.descricao, ei.quantidade
+                    FROM tbLista l
+                    INNER JOIN tbEstoqueItens ei ON ei.codList = l.codList
+                    WHERE ei.quantidade > 0
+                    ORDER BY l.descricao";
 
                 using (var cmd = new MySqlCommand(sql, conn))
+                using (var reader = cmd.ExecuteReader())
                 {
-                    cmd.Parameters.AddWithValue("@busca", busca ?? "");
-                    cmd.Parameters.AddWithValue("@buscaPattern", "%" + (busca ?? "") + "%");
-                    cmd.Parameters.AddWithValue("@validade", dataValidade.HasValue ? dataValidade.Value.Date : (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@unidade", unidadeEscolhida == "Selecione..." ? "" : unidadeEscolhida ?? "");
-                    cmd.Parameters.AddWithValue("@status", status_validade == "Selecione..." ? "" : status_validade ?? "");
-
-                    using (var reader = cmd.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            string entrada = reader["dataDeEntrada"] == DBNull.Value ? "" : Convert.ToDateTime(reader["dataDeEntrada"]).ToString("dd/MM/yyyy");
-                            string validadeStr = reader["dataDeValidade"] == DBNull.Value ? "" : Convert.ToDateTime(reader["dataDeValidade"]).ToString("dd/MM/yyyy");
-
-                            dgvEstoque.Rows.Add(
-                                reader["codProd"].ToString(),
-                                reader["nomeProduto"].ToString(),
-                                reader["peso"].ToString(),
-                                reader["unidade"].ToString(),
-                                reader["status_validade"].ToString(),
-                                entrada,
-                                validadeStr
-                            );
-                        }
+                        string nome = reader["descricao"].ToString();
+                        int qtd = Convert.ToInt32(reader["quantidade"]);
+                        cmbProdutoSaida.Items.Add($"{nome} | Estoque: {qtd}");
                     }
+                }
+
+                if (cmbProdutoSaida.Items.Count == 0)
+                {
+                    cmbProdutoSaida.Items.Add("Nenhum produto com estoque");
                 }
             }
         }
 
-        private void AplicarFiltros()
+        private void CmbProdutoSaida_SelectedIndexChanged(object sender, EventArgs e)
         {
-            bool categoriaSelecionada = cbxCategoria.SelectedIndex > 0;
-            bool statusSelecionado = cbxStatus.SelectedIndex > 0;
-            bool validadeSelecionada = dtpDataValidade.Checked;
+            if (cmbProdutoSaida.SelectedItem == null) return;
 
-            if (!categoriaSelecionada && !statusSelecionado && !validadeSelecionada && string.IsNullOrWhiteSpace(txtNomeOrCod.Text))
+            string item = cmbProdutoSaida.SelectedItem.ToString();
+            if (item == "Nenhum produto com estoque")
             {
-                MessageBox.Show("Nenhum filtro foi selecionado.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lblProdutoSelecionado.Text = "-";
+                lblSaldoAtual.Text = "0";
                 return;
             }
 
-            unidadeEscolhida = categoriaSelecionada ? cbxCategoria.Text : "";
-            status_validade = statusSelecionado ? cbxStatus.Text : "";
-            dataValidade = validadeSelecionada ? dtpDataValidade.Value.Date : (DateTime?)null;
-            busca = txtNomeOrCod.Text.Trim();
+            string produto = item.Split('|')[0].Trim();
+            lblProdutoSelecionado.Text = produto;
 
-            CarregarDados();
+            using (var conn = DataBaseConnection.OpenConnection())
+            {
+                string sql = @"SELECT ei.quantidade
+                               FROM tbEstoqueItens ei
+                               INNER JOIN tbLista l ON l.codList = ei.codList
+                               WHERE l.descricao = @produto";
+
+                using (var cmd = new MySqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@produto", produto);
+                    object result = cmd.ExecuteScalar();
+                    int saldo = result != null ? Convert.ToInt32(result) : 0;
+                    lblSaldoAtual.Text = saldo.ToString();
+
+                    numQuantidadeSaida.Maximum = saldo;
+                }
+            }
         }
 
-        private void LimparFiltros()
+        // ===== REGISTRAR SAÍDA =====
+        private void BtnRegistrarSaida_Click(object sender, EventArgs e)
         {
-            cbxCategoria.SelectedIndex = 0;
-            cbxStatus.SelectedIndex = 0;
-            dtpDataValidade.Value = DateTime.Today;
-            dtpDataValidade.Checked = false;
-            txtNomeOrCod.Clear();
+            if (cmbProdutoSaida.SelectedItem == null)
+            {
+                MessageBox.Show("Selecione um produto.");
+                return;
+            }
 
-            unidadeEscolhida = "";
-            status_validade = "";
-            dataValidade = null;
-            busca = "";
+            string item = cmbProdutoSaida.SelectedItem.ToString();
+            if (item == "Nenhum produto com estoque")
+            {
+                MessageBox.Show("Não há produtos com estoque disponível.");
+                return;
+            }
 
-            CarregarDados();
+            int qtd = (int)numQuantidadeSaida.Value;
+            if (qtd <= 0)
+            {
+                MessageBox.Show("Quantidade inválida.");
+                return;
+            }
+
+            string produto = item.Split('|')[0].Trim();
+            string destino = txtDestinoSaida.Text.Trim();
+
+            RegistrarSaida(produto, qtd, destino);
+
+            txtDestinoSaida.Clear();
+            numQuantidadeSaida.Value = 1;
+            lblSaldoAtual.Text = "0";
+            lblProdutoSelecionado.Text = "-";
+            cmbProdutoSaida.SelectedIndex = -1;
         }
 
-        private void ProcessarBaixaEstoque(string nomeProduto, int quantidadeBaixa, string destino)
+        // ===== MÉTODO PARA REGISTRAR SAÍDA =====
+        // ===== MÉTODO PARA REGISTRAR SAÍDA (COM DESTINO) =====
+        private void RegistrarSaida(string produto, int quantidade, string destino)
+        {
+            using (var conn = DataBaseConnection.OpenConnection())
+            using (var trans = conn.BeginTransaction())
+            {
+                try
+                {
+                    // 1. Buscar código do produto
+                    int codList;
+                    int peso;
+                    string sqlProduto = "SELECT codList, peso FROM tbLista WHERE descricao = @produto";
+                    using (var cmd = new MySqlCommand(sqlProduto, conn, trans))
+                    {
+                        cmd.Parameters.AddWithValue("@produto", produto);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (!reader.Read())
+                                throw new Exception("Produto não encontrado");
+                            codList = Convert.ToInt32(reader["codList"]);
+                            peso = Convert.ToInt32(reader["peso"]);
+                        }
+                    }
+
+                    // 2. Verificar estoque disponível
+                    string sqlSaldo = @"
+                SELECT COALESCE(SUM(quantidade), 0) 
+                FROM tbProdutos 
+                WHERE codList = @codList AND quantidade > 0";
+
+                    int saldoAtual;
+                    using (var cmd = new MySqlCommand(sqlSaldo, conn, trans))
+                    {
+                        cmd.Parameters.AddWithValue("@codList", codList);
+                        saldoAtual = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+
+                    if (saldoAtual < quantidade)
+                    {
+                        trans.Rollback();
+                        MessageBox.Show($"Estoque insuficiente!\n\nEstoque disponível: {saldoAtual}");
+                        return;
+                    }
+
+                    // 3. Buscar registros mais antigos para FIFO
+                    string sqlBuscar = @"
+                SELECT codProd, quantidade 
+                FROM tbProdutos 
+                WHERE codList = @codList AND quantidade > 0 
+                ORDER BY dataDeEntrada ASC";
+
+                    List<(int codProd, int qtd)> itensEstoque = new List<(int, int)>();
+                    using (var cmd = new MySqlCommand(sqlBuscar, conn, trans))
+                    {
+                        cmd.Parameters.AddWithValue("@codList", codList);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                itensEstoque.Add((Convert.ToInt32(reader["codProd"]), Convert.ToInt32(reader["quantidade"])));
+                            }
+                        }
+                    }
+
+                    // 4. Dar baixa nos itens (FIFO)
+                    int restante = quantidade;
+                    foreach (var item in itensEstoque)
+                    {
+                        if (restante <= 0) break;
+
+                        int retirar = Math.Min(restante, item.qtd);
+                        string sqlUpdate = "UPDATE tbProdutos SET quantidade = quantidade - @retirar WHERE codProd = @codProd";
+                        using (var cmd = new MySqlCommand(sqlUpdate, conn, trans))
+                        {
+                            cmd.Parameters.AddWithValue("@retirar", retirar);
+                            cmd.Parameters.AddWithValue("@codProd", item.codProd);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        restante -= retirar;
+                    }
+
+                    // 5. Registrar a saída no histórico COM DESTINO
+                    int codOri = 1;
+                    string sqlInsert = @"
+                INSERT INTO tbProdutos 
+                    (descricao, quantidade, peso, unidade, dataDeEntrada, 
+                     dataDeValidade, dataLimiteDeSaida, tipoMovimentacao, 
+                     codUsu, codOri, codList, destino)
+                VALUES 
+                    (@descricao, -@qtd, @peso, 'UNIDADES (UN)', NOW(),
+                     DATE_ADD(NOW(), INTERVAL 30 DAY), DATE_ADD(NOW(), INTERVAL 60 DAY),
+                     'SAIDA', @codUsu, @codOri, @codList, @destino)";
+
+                    using (var cmd = new MySqlCommand(sqlInsert, conn, trans))
+                    {
+                        cmd.Parameters.AddWithValue("@descricao", produto);
+                        cmd.Parameters.AddWithValue("@qtd", quantidade);
+                        cmd.Parameters.AddWithValue("@peso", peso);
+                        cmd.Parameters.AddWithValue("@codUsu", codUsuLogado);
+                        cmd.Parameters.AddWithValue("@codOri", codOri);
+                        cmd.Parameters.AddWithValue("@codList", codList);
+                        cmd.Parameters.AddWithValue("@destino", string.IsNullOrEmpty(destino) ? "Não informado" : destino);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // 6. Atualizar o estoque total
+                    string sqlUpdateEstoque = @"
+                UPDATE tbEstoqueItens 
+                SET quantidade = quantidade - @qtd
+                WHERE codList = @codList";
+
+                    using (var cmd = new MySqlCommand(sqlUpdateEstoque, conn, trans))
+                    {
+                        cmd.Parameters.AddWithValue("@qtd", quantidade);
+                        cmd.Parameters.AddWithValue("@codList", codList);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    trans.Commit();
+
+                    int novoSaldo = saldoAtual - quantidade;
+                    MessageBox.Show($"✅ Saída de {quantidade} unidades registrada!\n" +
+                                  $"Produto: {produto}\n" +
+                                  $"Destino: {(string.IsNullOrEmpty(destino) ? "Não informado" : destino)}\n" +
+                                  $"Saldo anterior: {saldoAtual}\n" +
+                                  $"Novo saldo: {novoSaldo}");
+
+                    // Atualizar telas
+                    CarregarDados();
+                    CarregarProdutosSaida();
+                    CarregarHistoricoSaidas("");
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                    MessageBox.Show($"❌ Erro: {ex.Message}");
+                }
+            }
+        }
+
+        // ===== MÉTODO DE DIAGNÓSTICO =====
+        private void DiagnosticarEstoque(string produto)
         {
             try
             {
                 using (var conn = DataBaseConnection.OpenConnection())
                 {
-                    string sqlProduto = "SELECT codList FROM tbLista WHERE descricao = @descricao LIMIT 1";
-                    int codList;
-                    using (var cmd = new MySqlCommand(sqlProduto, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@descricao", nomeProduto);
-                        codList = Convert.ToInt32(cmd.ExecuteScalar());
-                        
+                    string sql1 = @"
+                        SELECT SUM(p.quantidade) 
+                        FROM tbProdutos p
+                        INNER JOIN tbLista l ON l.codList = p.codList
+                        WHERE l.descricao = @produto AND p.quantidade > 0";
 
+                    using (var cmd = new MySqlCommand(sql1, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@produto", produto);
+                        object result = cmd.ExecuteScalar();
+                        int somaPositivos = result != null && result != DBNull.Value ? Convert.ToInt32(result) : 0;
+                        MessageBox.Show($"📦 Soma dos registros POSITIVOS em tbProdutos: {somaPositivos}", "Diagnóstico");
                     }
 
-                    string sqlEstoque = "SELECT IFNULL(SUM(quantidade),0) FROM tbprodutos WHERE codList = @codList";
-int estoqueAtual;
+                    string sql2 = @"
+                        SELECT ei.quantidade 
+                        FROM tbEstoqueItens ei
+                        INNER JOIN tbLista l ON l.codList = ei.codList
+                        WHERE l.descricao = @produto";
 
-using (var cmd = new MySqlCommand(sqlEstoque, conn))
-{
-    cmd.Parameters.AddWithValue("@codList", codList);
-    estoqueAtual = Convert.ToInt32(cmd.ExecuteScalar());
-}
-
-                    if (estoqueAtual < quantidadeBaixa)
+                    using (var cmd = new MySqlCommand(sql2, conn))
                     {
-                        MessageBox.Show($"Estoque insuficiente! Disponível: {estoqueAtual}", "Erro",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
+                        cmd.Parameters.AddWithValue("@produto", produto);
+                        object result = cmd.ExecuteScalar();
+                        int estoqueItens = result != null && result != DBNull.Value ? Convert.ToInt32(result) : 0;
+                        MessageBox.Show($"📊 tbEstoqueItens: {estoqueItens}", "Diagnóstico");
                     }
 
-                    string sqlInsert = @"INSERT INTO tbProdutos 
-                        (codList, quantidade, dataDeEntrada, tipoMovimentacao, codUsu, codOri, destino) 
-                        VALUES (@codList, @quantidade, NOW(), 'SAIDA', @codUsu, 1, @destino)";
+                    string sql3 = @"
+                        SELECT SUM(p.quantidade) 
+                        FROM tbProdutos p
+                        INNER JOIN tbLista l ON l.codList = p.codList
+                        WHERE l.descricao = @produto";
 
-                    using (var cmd = new MySqlCommand(sqlInsert, conn))
+                    using (var cmd = new MySqlCommand(sql3, conn))
                     {
-                        cmd.Parameters.AddWithValue("@codList", codList);
-                        cmd.Parameters.AddWithValue("@quantidade", -quantidadeBaixa);
-                        cmd.Parameters.AddWithValue("@codUsu", codUsuLogado);
-                        cmd.Parameters.AddWithValue("@destino",string.IsNullOrWhiteSpace(destino) ? (object)DBNull.Value : destino);
-
-                        cmd.ExecuteNonQuery();
+                        cmd.Parameters.AddWithValue("@produto", produto);
+                        object result = cmd.ExecuteScalar();
+                        int somaTotal = result != null && result != DBNull.Value ? Convert.ToInt32(result) : 0;
+                        MessageBox.Show($"📈 Soma TOTAL (inclui saídas negativas): {somaTotal}", "Diagnóstico");
                     }
 
-                    MessageBox.Show($"Baixa de {quantidadeBaixa} unidade(s) realizada com sucesso!\nDestino: {destino}",
-                        "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    string sql4 = @"
+                        SELECT p.codProd, p.quantidade, p.dataDeEntrada, p.tipoMovimentacao
+                        FROM tbProdutos p
+                        INNER JOIN tbLista l ON l.codList = p.codList
+                        WHERE l.descricao = @produto
+                        ORDER BY p.dataDeEntrada DESC
+                        LIMIT 5";
 
-                    CarregarDados();
+                    StringBuilder detalhes = new StringBuilder();
+                    detalhes.AppendLine("📋 Últimos 5 registros:");
+
+                    using (var cmd = new MySqlCommand(sql4, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@produto", produto);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int codProd = Convert.ToInt32(reader["codProd"]);
+                                int qtd = Convert.ToInt32(reader["quantidade"]);
+                                DateTime data = Convert.ToDateTime(reader["dataDeEntrada"]);
+                                string tipo = reader["tipoMovimentacao"]?.ToString() ?? "N/A";
+
+                                detalhes.AppendLine($"  • {data:dd/MM/yyyy HH:mm} | {tipo} | {qtd} un");
+                            }
+                        }
+                    }
+
+                    MessageBox.Show(detalhes.ToString(), "Detalhes");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"❌ Erro no diagnóstico: {ex.Message}");
             }
         }
 
-        // ==================== EVENTOS DOS BOTÕES ====================
-
-        private void btDarBaixa_Click(object sender, EventArgs e)
+        // ===== BOTÕES ORIGINAIS =====
+        private void btnAplicarFiltro_Click(object sender, EventArgs e)
         {
-            if (dgvEstoque.SelectedRows.Count == 0)
-            {
-                MessageBox.Show("Selecione um produto para dar baixa.", "Atenção",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            var selectedRow = dgvEstoque.SelectedRows[0];
-            if (selectedRow.Cells[0].Value?.ToString().Contains("TOTAL GERAL") == true ||
-                selectedRow.Cells[0].Value?.ToString().Contains("🔹") == true)
-            {
-                MessageBox.Show("Selecione um produto, não a linha de total.", "Atenção",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            string produto = "";
-            string quantidadeDisponivelStr = "0";
-
-            if (modoAgrupado)
-            {
-                produto = selectedRow.Cells["ProdutoAgrupado"].Value?.ToString() ?? "";
-                quantidadeDisponivelStr = selectedRow.Cells["QuantidadeTotal"].Value?.ToString() ?? "0";
-            }
-            else
-            {
-                produto = selectedRow.Cells["Nome"].Value?.ToString() ?? "";
-                quantidadeDisponivelStr = "1";
-            }
-
-            if (string.IsNullOrEmpty(produto))
-            {
-                MessageBox.Show("Produto não identificado.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            quantidadeDisponivelStr = Regex.Replace(quantidadeDisponivelStr, @"[^\d]", "");
-
-            if (!int.TryParse(quantidadeDisponivelStr, out int quantidadeDisponivel) || quantidadeDisponivel <= 0)
-                quantidadeDisponivel = 1;
-
-            using (var formBaixa = new Form())
-            {
-                formBaixa.Text = "Dar Baixa no Estoque";
-                formBaixa.Size = new Size(600, 450);
-                formBaixa.StartPosition = FormStartPosition.CenterParent;
-                formBaixa.FormBorderStyle = FormBorderStyle.FixedDialog;
-                formBaixa.MaximizeBox = false;
-                formBaixa.MinimizeBox = false;
-                formBaixa.BackColor = Color.FromArgb(242, 237, 228);
-
-                var lblProduto = new Label { Text = "Produto:", Location = new Point(20, 20), Size = new Size(80, 25) };
-                var lblProdutoNome = new Label
-                {
-                    Text = produto.Length > 40 ? produto.Substring(0, 40) + "..." : produto,
-                    Location = new Point(110, 20),
-                    Size = new Size(300, 25),
-                    Font = new Font("Microsoft YaHei", 10, FontStyle.Bold)
-                };
-                var lblDisponivel = new Label { Text = "Disponível:", Location = new Point(20, 50), Size = new Size(80, 25) };
-                var lblDisponivelQtd = new Label
-                {
-                    Text = quantidadeDisponivel.ToString(),
-                    Location = new Point(110, 50),
-                    Size = new Size(50, 25),
-                    Font = new Font("Microsoft YaHei", 10, FontStyle.Bold),
-                    ForeColor = Color.FromArgb(48, 112, 99)
-                };
-                var lblQuantidade = new Label { Text = "Quantidade:", Location = new Point(20, 80), Size = new Size(80, 25) };
-                var nudQuantidade = new NumericUpDown { Location = new Point(110, 80), Size = new Size(100, 25), Minimum = 1, Maximum = quantidadeDisponivel };
-                var lblDestino = new Label { Text = "Destino:", Location = new Point(20, 110), Size = new Size(80, 25) };
-                var txtDestino = new TextBox { Location = new Point(110, 110), Size = new Size(250, 25) };
-                var lblObservacao = new Label { Text = "Obs:", Location = new Point(20, 140), Size = new Size(80, 25) };
-                var txtObservacao = new TextBox { Location = new Point(110, 140), Size = new Size(250, 25) };
-
-                var btnConfirmar = new Button
-                {
-                    Text = "Confirmar",
-                    Location = new Point(110, 180),
-                    Size = new Size(120, 35),
-                    BackColor = Color.FromArgb(48, 112, 99),
-                    ForeColor = Color.White,
-                    FlatStyle = FlatStyle.Flat
-                };
-                btnConfirmar.Click += (s, ev) => formBaixa.DialogResult = DialogResult.OK;
-
-                var btnCancelar = new Button
-                {
-                    Text = "Cancelar",
-                    Location = new Point(240, 180),
-                    Size = new Size(120, 35),
-                    BackColor = Color.FromArgb(108, 117, 125),
-                    ForeColor = Color.White,
-                    FlatStyle = FlatStyle.Flat
-                };
-                btnCancelar.Click += (s, ev) => formBaixa.DialogResult = DialogResult.Cancel;
-
-                formBaixa.Controls.AddRange(new Control[] {
-                    lblProduto, lblProdutoNome, lblDisponivel, lblDisponivelQtd, lblQuantidade, nudQuantidade,
-                    lblDestino, txtDestino, lblObservacao, txtObservacao, btnConfirmar, btnCancelar
-                });
-
-                if (formBaixa.ShowDialog() == DialogResult.OK)
-                {
-                    int quantidadeBaixa = (int)nudQuantidade.Value;
-                    string destino = txtDestino.Text.Trim();
-
-                    
-                    //if (string.IsNullOrEmpty(destino))
-                    //{
-                    //    MessageBox.Show("Informe o destino da baixa.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    //    return;
-                    //}
-
-                    ProcessarBaixaEstoque(produto, quantidadeBaixa, destino);
-                }
-               
-            }
-        }
-
-        private void btnAplicarFiltros_Click(object sender, EventArgs e)
-        {
-            AplicarFiltros();
-        }
-
-        private void btnLimparFiltros_Click(object sender, EventArgs e)
-        {
-            LimparFiltros();
-        }
-
-        private void btnPesquisar_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtNomeOrCod.Text))
-            {
-                MessageBox.Show("Digite o nome ou código do produto para pesquisar.", "Atenção",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            AplicarFiltros();
-        }
-
-        private void btnCarregaTodosProdutos_Click(object sender, EventArgs e)
-        {
-            LimparFiltros();
-        }
-
-        private void btnAplicarModo_Click(object sender, EventArgs e)
-        {
-            modoAgrupado = !modoAgrupado;
-            cbxModoExibicao.SelectedIndex = modoAgrupado ? 0 : 1;
+            produtoSelecionado = cbxprodutoSelecionado.SelectedIndex == 0 ? "" : cbxprodutoSelecionado.Text;
+            somentePrincipais = false;
             CarregarDados();
         }
 
-        private void txtNomeOrCod_TextChanged(object sender, EventArgs e)
+
+        private void btnLimparFiltro_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtNomeOrCod.Text))
-            {
-                busca = "";
-                CarregarDados();
-            }
+            produtoSelecionado = "";
+            cbxprodutoSelecionado.SelectedIndex = 0;
+            somentePrincipais = false;
+            CarregarDados();
         }
 
-        private void txtNomeOrCod_KeyDown(object sender, KeyEventArgs e)
+        private void btnPrincipaisProdutos_Click(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                e.SuppressKeyPress = true;
-                if (!string.IsNullOrWhiteSpace(txtNomeOrCod.Text))
-                    AplicarFiltros();
-            }
+            somentePrincipais = true;
+            produtoSelecionado = "";
+            CarregarDados();
         }
 
-        private void btnProdutosPrincipais_Click(object sender, EventArgs e)
+        private void btnAlternarModo_Click(object sender, EventArgs e)
         {
-            var palavrasBusca = new List<string>
-            {
-                "MACARRÃO", "MOLHO DE TOMATE", "ARROZ", "FEIJÃO", "LEITE",
-                "FUBÁ", "ÓLEO", "AÇÚCAR", "SAL", "FARINHA", "CAFÉ"
-            };
-
-            modoAgrupado = true;
-            cbxModoExibicao.SelectedIndex = 0;
-            CarregarProdutosPrincipais(palavrasBusca);
+            modoAgrupado = !modoAgrupado;
+            btnAplicarModo.Text = modoAgrupado ? "Modo: Agrupado" : "Modo: Detalhado";
+            ConfigurarDataGridView(modoAgrupado);
+            CarregarDados();
         }
 
-        private void CarregarProdutosPrincipais(List<string> palavras)
+        private void VerificacaoSistema()
         {
-            dgvEstoque.Rows.Clear();
-
             using (var conn = DataBaseConnection.OpenConnection())
             {
-                var buscaQueries = new List<string>();
-                var cmd = new MySqlCommand();
+                int total = Convert.ToInt32(new MySqlCommand("SELECT COUNT(*) FROM tbLista", conn).ExecuteScalar());
 
-                for (int i = 0; i < palavras.Count; i++)
-                {
-                    string paramName = "@busca" + i;
-                    buscaQueries.Add($"(l.descricao LIKE {paramName})");
-                    cmd.Parameters.AddWithValue(paramName, "%" + palavras[i] + "%");
-                }
-
-                string filtroBusca = buscaQueries.Count > 0 ? $"({string.Join(" OR ", buscaQueries)})" : "1=1";
-
-                cmd.CommandText = $@"
-                    SELECT
-                        l.descricao AS descricao,
-                        SUM(p.quantidade) AS quantidade_total,
-                        u.descricao AS unidade,
-                        l.peso AS peso,
-                        MIN(p.dataDeValidade) AS validade_minima,
-                        CASE
-                            WHEN MIN(p.dataDeValidade) < CURDATE() THEN 'Vencido'
-                            WHEN DATEDIFF(MIN(p.dataDeValidade), CURDATE()) <= 60 THEN 'Próximo do vencimento'
-                            ELSE 'Válido'
-                        END AS status_validade
-                    FROM tbprodutos p
-                    INNER JOIN tblista l ON l.codList = p.codList
-                    INNER JOIN tbunidades u ON u.codUni = l.codUni
-                    WHERE {filtroBusca}
-                    GROUP BY l.codList, l.descricao, u.descricao, l.peso
-                    ORDER BY l.descricao;";
-
-                cmd.Connection = conn;
-
-                using (var reader = cmd.ExecuteReader())
-                {
-                    decimal totalQuantidade = 0;
-                    decimal totalPeso = 0;
-
-                    while (reader.Read())
-                    {
-                        string validadeMinima = reader["validade_minima"] == DBNull.Value
-                            ? ""
-                            : Convert.ToDateTime(reader["validade_minima"]).ToString("dd/MM/yyyy");
-
-                        decimal qtd = Convert.ToDecimal(reader["quantidade_total"]);
-                        decimal peso = Convert.ToDecimal(reader["peso"]);
-
-                        totalQuantidade += qtd;
-                        totalPeso += (qtd * peso);
-
-                        dgvEstoque.Rows.Add(
-                            reader["descricao"].ToString(),
-                            qtd.ToString("N0"),
-                            reader["unidade"].ToString(),
-                            peso.ToString("N0"),
-                            reader["status_validade"].ToString(),
-                            validadeMinima
-                        );
-                    }
-
-                    if (dgvEstoque.Rows.Count > 0)
-                    {
-                        string pesoTotalFormatado = totalPeso >= 1000
-                            ? (totalPeso / 1000).ToString("N2") + " kg"
-                            : totalPeso.ToString("N0") + " g";
-
-                        int linhaTotal = dgvEstoque.Rows.Add(
-                            "🔹 TOTAL GERAL 🔹",
-                            totalQuantidade.ToString("N0"),
-                            "",
-                            pesoTotalFormatado,
-                            "",
-                            ""
-                        );
-
-                        dgvEstoque.Rows[linhaTotal].DefaultCellStyle.BackColor = Color.FromArgb(48, 112, 99);
-                        dgvEstoque.Rows[linhaTotal].DefaultCellStyle.ForeColor = Color.White;
-                        dgvEstoque.Rows[linhaTotal].DefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
-                        dgvEstoque.Rows[linhaTotal].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                        dgvEstoque.Rows[linhaTotal].Selected = false;
-                    }
-                }
+                if (total == 0)
+                    MessageBox.Show("Nenhum produto cadastrado.");
             }
         }
 
         private void btnMenu_Click(object sender, EventArgs e)
         {
-            var menu = new frmMenuPrincipal(codUsuLogado);
+            frmMenuPrincipal menu = new frmMenuPrincipal(codUsuLogado);
             menu.Show();
             this.Close();
         }
 
-        private void btnExportarExcel_Click(object sender, EventArgs e)
+        // ===== DIAGNÓSTICO RÁPIDO =====
+        private void DiagnosticarSal()
         {
-            if (dgvEstoque.Rows.Count == 0)
-                return;
-
-            using (var sfd = new SaveFileDialog())
+            try
             {
-                sfd.Filter = "Arquivo Excel (*.xlsx)|*.xlsx";
-                sfd.FileName = "Relatorio.xlsx";
-
-                if (sfd.ShowDialog() != DialogResult.OK)
-                    return;
-
-                using (var wb = new XLWorkbook())
+                using (var conn = DataBaseConnection.OpenConnection())
                 {
-                    var ws = wb.Worksheets.Add("Relatório");
+                    // Verificar soma dos registros positivos em tbProdutos
+                    string sql1 = @"
+                SELECT SUM(p.quantidade) 
+                FROM tbProdutos p
+                INNER JOIN tbLista l ON l.codList = p.codList
+                WHERE l.descricao LIKE '%SAL%' AND p.quantidade > 0";
 
-                    for (int i = 0; i < dgvEstoque.Columns.Count; i++)
-                        ws.Cell(1, i + 1).Value = dgvEstoque.Columns[i].HeaderText;
+                    using (var cmd = new MySqlCommand(sql1, conn))
+                    {
+                        object result = cmd.ExecuteScalar();
+                        int somaPositivos = result != null ? Convert.ToInt32(result) : 0;
+                        MessageBox.Show($"Soma dos registros POSITIVOS: {somaPositivos}", "Diagnóstico");
+                    }
 
-                    for (int i = 0; i < dgvEstoque.Rows.Count; i++)
-                        for (int j = 0; j < dgvEstoque.Columns.Count; j++)
-                            ws.Cell(i + 2, j + 1).Value = dgvEstoque.Rows[i].Cells[j].Value?.ToString();
+                    // Verificar tbEstoqueItens
+                    string sql2 = @"
+                SELECT ei.quantidade 
+                FROM tbEstoqueItens ei
+                INNER JOIN tbLista l ON l.codList = ei.codList
+                WHERE l.descricao LIKE '%SAL%'";
 
-                    ws.Columns().AdjustToContents();
-                    wb.SaveAs(sfd.FileName);
+                    using (var cmd = new MySqlCommand(sql2, conn))
+                    {
+                        object result = cmd.ExecuteScalar();
+                        int estoqueItens = result != null ? Convert.ToInt32(result) : 0;
+                        MessageBox.Show($"tbEstoqueItens: {estoqueItens}", "Diagnóstico");
+                    }
+
+                    // Listar todos os registros de SAL
+                    string sql3 = @"
+                SELECT p.codProd, p.quantidade, p.dataDeEntrada, p.tipoMovimentacao
+                FROM tbProdutos p
+                INNER JOIN tbLista l ON l.codList = p.codList
+                WHERE l.descricao LIKE '%SAL%'
+                ORDER BY p.dataDeEntrada DESC";
+
+                    StringBuilder detalhes = new StringBuilder();
+                    detalhes.AppendLine("Registros de SAL:");
+
+                    using (var cmd = new MySqlCommand(sql3, conn))
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int qtd = Convert.ToInt32(reader["quantidade"]);
+                            DateTime data = Convert.ToDateTime(reader["dataDeEntrada"]);
+                            string tipo = reader["tipoMovimentacao"]?.ToString() ?? "N/A";
+                            detalhes.AppendLine($"  {data:dd/MM/yyyy} | {tipo} | {qtd}");
+                        }
+                    }
+
+                    MessageBox.Show(detalhes.ToString(), "Registros");
                 }
-
-                MessageBox.Show("Relatório exportado com sucesso.");
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro: {ex.Message}");
+            }
+           
+
         }
 
-        private void dgvEstoque_Paint(object sender, PaintEventArgs e)
+        private void btnMenu_Click_1(object sender, EventArgs e)
         {
-            if (dgvEstoque.Rows.Count == 0)
-            {
-                string mensagem = "Nenhum produto encontrado.";
-                using (var fonte = new Font("Segoe UI", 14, FontStyle.Bold))
-                {
-                    TextRenderer.DrawText(e.Graphics, mensagem, fonte, dgvEstoque.ClientRectangle,
-                        Color.Gray, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-                }
-            }
+            frmMenuPrincipal menu = new frmMenuPrincipal(codUsuLogado);
+            menu.Show();
+            this.Close();
         }
-
-        
     }
 }

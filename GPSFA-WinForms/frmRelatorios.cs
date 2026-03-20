@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using ClosedXML.Excel;
-using Projeto_Socorrista;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -1018,6 +1017,11 @@ namespace GPSFA_WinForms
         {
             if (tabControl1.SelectedTab == tabPage3)
                 CarregarSaidasEstoque();
+        }
+
+        private void frmRelatorios_Load_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

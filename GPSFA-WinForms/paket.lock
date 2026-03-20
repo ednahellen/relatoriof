@@ -1,0 +1,20 @@
+STORAGE: NONE
+NUGET
+  remote: https://api.nuget.org/v3/index.json
+    ExcelDataReader (3.8)
+      System.ValueTuple (>= 4.5) - restriction: >= net462
+    ExcelDataReader.DataSet (3.8)
+      ExcelDataReader (>= 3.8) - restriction: || (>= net462) (>= netstandard2.0)
+      System.ValueTuple (>= 4.5) - restriction: >= net462
+    System.Buffers (4.6.1) - restriction: || (>= net462) (&& (< netcoreapp2.1) (>= netstandard2.0) (< netstandard2.1))
+    System.Memory (4.6.3) - restriction: || (>= net462) (&& (< net8.0) (>= netstandard2.0))
+      System.Buffers (>= 4.6.1) - restriction: || (>= net462) (&& (< netcoreapp2.1) (>= netstandard2.0) (< netstandard2.1))
+      System.Numerics.Vectors (>= 4.6.1) - restriction: || (>= net462) (&& (< netcoreapp2.1) (>= netstandard2.0) (< netstandard2.1))
+      System.Runtime.CompilerServices.Unsafe (>= 6.1.2) - restriction: || (>= net462) (&& (< netcoreapp2.1) (>= netstandard2.0) (< netstandard2.1))
+    System.Numerics.Vectors (4.6.1) - restriction: || (>= net462) (&& (< netcoreapp2.1) (>= netstandard2.0) (< netstandard2.1))
+    System.Runtime.CompilerServices.Unsafe (6.1.2) - restriction: || (>= net462) (&& (< net8.0) (>= netstandard2.0)) (&& (< netcoreapp2.1) (>= netstandard2.0) (< netstandard2.1))
+    System.Text.Encoding.CodePages (10.0.5)
+      System.Memory (>= 4.6.3) - restriction: || (>= net462) (&& (< net8.0) (>= netstandard2.0))
+      System.Runtime.CompilerServices.Unsafe (>= 6.1.2) - restriction: || (>= net462) (&& (< net8.0) (>= netstandard2.0))
+      System.ValueTuple (>= 4.6.1) - restriction: >= net462
+    System.ValueTuple (4.6.2) - restriction: >= net462
