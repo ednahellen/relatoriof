@@ -42,15 +42,13 @@
             this.tabPageSaidas = new System.Windows.Forms.TabPage();
             this.tabPageRegistrarSaida = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnProdutosPrincipais = new System.Windows.Forms.Button();
+            this.btnImportar = new System.Windows.Forms.Button();
             this.btnAplicarModo = new System.Windows.Forms.Button();
             this.lblTitleEstoque = new System.Windows.Forms.Label();
-            this.btnExportarExcel = new System.Windows.Forms.Button();
+            this.btnExportar = new System.Windows.Forms.Button();
             this.gpbFiltrosDoRelatorio = new System.Windows.Forms.GroupBox();
-            this.btnImportar = new System.Windows.Forms.Button();
-            this.btnLimparFiltros = new System.Windows.Forms.Button();
-            this.btnAplicarFiltros = new System.Windows.Forms.Button();
             this.btnMenu = new System.Windows.Forms.Button();
+            this.btnProdutosPrincipais = new System.Windows.Forms.Button();
             this.btnSair = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.dtpDataValidade = new System.Windows.Forms.DateTimePicker();
@@ -58,9 +56,12 @@
             this.button4 = new System.Windows.Forms.Button();
             this.cbxModoExibicao = new System.Windows.Forms.ComboBox();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.btnLimparFiltros = new System.Windows.Forms.Button();
             this.cbxprodutoSelecionado = new System.Windows.Forms.ComboBox();
+            this.btnAplicarFiltros = new System.Windows.Forms.Button();
             this.lblProduto = new System.Windows.Forms.Label();
             this.pnlFiltrosDeBusca = new System.Windows.Forms.Panel();
+            this.btnCadastrar = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.tbEstoque.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -196,10 +197,10 @@
             // 
             this.panel1.AutoSize = true;
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
-            this.panel1.Controls.Add(this.btnProdutosPrincipais);
+            this.panel1.Controls.Add(this.btnImportar);
             this.panel1.Controls.Add(this.btnAplicarModo);
             this.panel1.Controls.Add(this.lblTitleEstoque);
-            this.panel1.Controls.Add(this.btnExportarExcel);
+            this.panel1.Controls.Add(this.btnExportar);
             this.panel1.Controls.Add(this.gpbFiltrosDoRelatorio);
             this.panel1.Controls.Add(this.cbxModoExibicao);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -209,14 +210,15 @@
             this.panel1.Size = new System.Drawing.Size(1323, 146);
             this.panel1.TabIndex = 18;
             // 
-            // btnProdutosPrincipais
+            // btnImportar
             // 
-            this.btnProdutosPrincipais.Location = new System.Drawing.Point(836, 12);
-            this.btnProdutosPrincipais.Name = "btnProdutosPrincipais";
-            this.btnProdutosPrincipais.Size = new System.Drawing.Size(164, 33);
-            this.btnProdutosPrincipais.TabIndex = 21;
-            this.btnProdutosPrincipais.Text = "Produtos Principais";
-            this.btnProdutosPrincipais.UseVisualStyleBackColor = true;
+            this.btnImportar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.btnImportar.Location = new System.Drawing.Point(926, 14);
+            this.btnImportar.Name = "btnImportar";
+            this.btnImportar.Size = new System.Drawing.Size(152, 43);
+            this.btnImportar.TabIndex = 81;
+            this.btnImportar.Text = "Importar";
+            this.btnImportar.UseVisualStyleBackColor = false;
             // 
             // btnAplicarModo
             // 
@@ -239,21 +241,21 @@
             this.lblTitleEstoque.TabIndex = 11;
             this.lblTitleEstoque.Text = "Controle de Alimentos";
             // 
-            // btnExportarExcel
+            // btnExportar
             // 
-            this.btnExportarExcel.Location = new System.Drawing.Point(1125, 12);
-            this.btnExportarExcel.Name = "btnExportarExcel";
-            this.btnExportarExcel.Size = new System.Drawing.Size(164, 33);
-            this.btnExportarExcel.TabIndex = 5;
-            this.btnExportarExcel.Text = "Imprimir";
-            this.btnExportarExcel.UseVisualStyleBackColor = true;
+            this.btnExportar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btnExportar.Location = new System.Drawing.Point(1125, 12);
+            this.btnExportar.Name = "btnExportar";
+            this.btnExportar.Size = new System.Drawing.Size(152, 43);
+            this.btnExportar.TabIndex = 5;
+            this.btnExportar.Text = "Imprimir";
+            this.btnExportar.UseVisualStyleBackColor = false;
             // 
             // gpbFiltrosDoRelatorio
             // 
-            this.gpbFiltrosDoRelatorio.Controls.Add(this.btnImportar);
-            this.gpbFiltrosDoRelatorio.Controls.Add(this.btnLimparFiltros);
-            this.gpbFiltrosDoRelatorio.Controls.Add(this.btnAplicarFiltros);
+            this.gpbFiltrosDoRelatorio.Controls.Add(this.btnCadastrar);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.btnMenu);
+            this.gpbFiltrosDoRelatorio.Controls.Add(this.btnProdutosPrincipais);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.btnSair);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.button3);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.dtpDataValidade);
@@ -268,43 +270,27 @@
             this.gpbFiltrosDoRelatorio.TabStop = false;
             this.gpbFiltrosDoRelatorio.Text = "Filtros";
             // 
-            // btnImportar
-            // 
-            this.btnImportar.Location = new System.Drawing.Point(856, 24);
-            this.btnImportar.Name = "btnImportar";
-            this.btnImportar.Size = new System.Drawing.Size(164, 33);
-            this.btnImportar.TabIndex = 81;
-            this.btnImportar.Text = "Importar";
-            this.btnImportar.UseVisualStyleBackColor = true;
-            // 
-            // btnLimparFiltros
-            // 
-            this.btnLimparFiltros.Location = new System.Drawing.Point(660, 25);
-            this.btnLimparFiltros.Name = "btnLimparFiltros";
-            this.btnLimparFiltros.Size = new System.Drawing.Size(164, 33);
-            this.btnLimparFiltros.TabIndex = 80;
-            this.btnLimparFiltros.Text = "Limpar Filtros";
-            this.btnLimparFiltros.UseVisualStyleBackColor = true;
-            // 
-            // btnAplicarFiltros
-            // 
-            this.btnAplicarFiltros.Location = new System.Drawing.Point(460, 23);
-            this.btnAplicarFiltros.Name = "btnAplicarFiltros";
-            this.btnAplicarFiltros.Size = new System.Drawing.Size(164, 33);
-            this.btnAplicarFiltros.TabIndex = 79;
-            this.btnAplicarFiltros.Text = "Aplicar Filtros";
-            this.btnAplicarFiltros.UseVisualStyleBackColor = true;
-            // 
             // btnMenu
             // 
+            this.btnMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(116)))), ((int)(((byte)(11)))), ((int)(((byte)(13)))));
             this.btnMenu.FlatAppearance.BorderSize = 2;
+            this.btnMenu.ForeColor = System.Drawing.Color.White;
             this.btnMenu.Location = new System.Drawing.Point(1121, 23);
             this.btnMenu.Name = "btnMenu";
-            this.btnMenu.Size = new System.Drawing.Size(164, 33);
+            this.btnMenu.Size = new System.Drawing.Size(152, 43);
             this.btnMenu.TabIndex = 10;
             this.btnMenu.Text = "Menu";
-            this.btnMenu.UseVisualStyleBackColor = true;
+            this.btnMenu.UseVisualStyleBackColor = false;
             this.btnMenu.Click += new System.EventHandler(this.btnMenu_Click_1);
+            // 
+            // btnProdutosPrincipais
+            // 
+            this.btnProdutosPrincipais.Location = new System.Drawing.Point(447, 26);
+            this.btnProdutosPrincipais.Name = "btnProdutosPrincipais";
+            this.btnProdutosPrincipais.Size = new System.Drawing.Size(235, 37);
+            this.btnProdutosPrincipais.TabIndex = 21;
+            this.btnProdutosPrincipais.Text = "Produtos Principais";
+            this.btnProdutosPrincipais.UseVisualStyleBackColor = true;
             // 
             // btnSair
             // 
@@ -374,13 +360,26 @@
             // panel4
             // 
             this.panel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(220)))), ((int)(((byte)(210)))));
+            this.panel4.Controls.Add(this.btnLimparFiltros);
             this.panel4.Controls.Add(this.cbxprodutoSelecionado);
+            this.panel4.Controls.Add(this.btnAplicarFiltros);
             this.panel4.Controls.Add(this.lblProduto);
             this.panel4.Location = new System.Drawing.Point(3, 147);
             this.panel4.Margin = new System.Windows.Forms.Padding(5);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(1309, 92);
             this.panel4.TabIndex = 13;
+            // 
+            // btnLimparFiltros
+            // 
+            this.btnLimparFiltros.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
+            this.btnLimparFiltros.ForeColor = System.Drawing.Color.White;
+            this.btnLimparFiltros.Location = new System.Drawing.Point(753, 31);
+            this.btnLimparFiltros.Name = "btnLimparFiltros";
+            this.btnLimparFiltros.Size = new System.Drawing.Size(168, 54);
+            this.btnLimparFiltros.TabIndex = 80;
+            this.btnLimparFiltros.Text = "Limpar Filtros";
+            this.btnLimparFiltros.UseVisualStyleBackColor = false;
             // 
             // cbxprodutoSelecionado
             // 
@@ -389,6 +388,17 @@
             this.cbxprodutoSelecionado.Name = "cbxprodutoSelecionado";
             this.cbxprodutoSelecionado.Size = new System.Drawing.Size(513, 35);
             this.cbxprodutoSelecionado.TabIndex = 14;
+            // 
+            // btnAplicarFiltros
+            // 
+            this.btnAplicarFiltros.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
+            this.btnAplicarFiltros.ForeColor = System.Drawing.Color.White;
+            this.btnAplicarFiltros.Location = new System.Drawing.Point(561, 33);
+            this.btnAplicarFiltros.Name = "btnAplicarFiltros";
+            this.btnAplicarFiltros.Size = new System.Drawing.Size(170, 52);
+            this.btnAplicarFiltros.TabIndex = 79;
+            this.btnAplicarFiltros.Text = "Aplicar Filtros";
+            this.btnAplicarFiltros.UseVisualStyleBackColor = false;
             // 
             // lblProduto
             // 
@@ -413,6 +423,16 @@
             this.pnlFiltrosDeBusca.Padding = new System.Windows.Forms.Padding(17, 0, 17, 16);
             this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1337, 1435);
             this.pnlFiltrosDeBusca.TabIndex = 15;
+            // 
+            // btnCadastrar
+            // 
+            this.btnCadastrar.Location = new System.Drawing.Point(925, 24);
+            this.btnCadastrar.Name = "btnCadastrar";
+            this.btnCadastrar.Size = new System.Drawing.Size(152, 43);
+            this.btnCadastrar.TabIndex = 82;
+            this.btnCadastrar.Text = "Cadastrar";
+            this.btnCadastrar.UseVisualStyleBackColor = true;
+            this.btnCadastrar.Click += new System.EventHandler(this.btnCadastrar_Click);
             // 
             // frmEstoque
             // 
@@ -453,7 +473,7 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lblTitleEstoque;
-        private System.Windows.Forms.Button btnExportarExcel;
+        private System.Windows.Forms.Button btnExportar;
         private System.Windows.Forms.GroupBox gpbFiltrosDoRelatorio;
         private System.Windows.Forms.Button btnMenu;
         private System.Windows.Forms.Button btnSair;
@@ -484,5 +504,6 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPageEstoque;
         private System.Windows.Forms.Button btnImportar;
+        private System.Windows.Forms.Button btnCadastrar;
     }
 }

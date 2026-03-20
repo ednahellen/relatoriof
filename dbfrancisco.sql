@@ -225,6 +225,9 @@ VALUES ('admin', '123', 'ADMIN', 1);
 
 -- 4. Inserir origem de doação
 INSERT INTO tbOrigemDoacao (nome) VALUES ('ROTARY');
+INSERT INTO tbOrigemDoacao (nome) VALUES ('DRIVE THRU');
+INSERT INTO tbOrigemDoacao (nome) VALUES ('AVULSO');
+INSERT INTO tbOrigemDoacao (nome) VALUES ('ESTOQUE');
 
 -- 5. Inserir lista completa de produtos (usando codUni=5 para UNIDADES)
 INSERT INTO tbLista (descricao, peso, unidade, quantidade, codUni) VALUES
@@ -233,7 +236,7 @@ INSERT INTO tbLista (descricao, peso, unidade, quantidade, codUni) VALUES
 ('ACHOCOLATADO 250G',250,'UNIDADES (UN)',0,5),
 ('ADOÇANTE',200,'MILILITROS (ML)',0,5),
 ('AGUA 1,5L',1500,'LITROS (L)',0,5),
-('AGUA SANITÁRIA 1L',1000,'LITROS (L)',0,5),
+('AGUA SANITARIA 1L',1000,'LITROS (L)',0,5),
 ('ALCOOL 1L',1000,'LITROS (L)',0,5),
 ('ALCOOL 70 1L',1000,'LITROS (L)',0,5),
 ('ALCOOL GEL',60,'LITROS (L)',0,5),
@@ -277,7 +280,8 @@ INSERT INTO tbLista (descricao, peso, unidade, quantidade, codUni) VALUES
 ('SAL 1KG',1000,'QUILOGRAMAS (KG)',0,5),
 ('SARDINHA',250,'GRAMAS (G)',0,5),
 ('SUCO',25,'GRAMAS (G)',0,5),
-('VINAGRE',750,'MILILITROS (ML)',0,5);
+('VINAGRE',750,'MILILITROS (ML)',0,5),
+('TEMPERO',300,'MILILITROS (ML)',0,5);
 
 -- 6. Inserir modelo de cesta
 INSERT INTO tbModeloCesta(descricao) VALUES('CESTA BASICA PADRAO');
@@ -291,6 +295,11 @@ VALUES
 (1, (SELECT codList FROM tbLista WHERE descricao = 'ARROZ 1KG'), 1),
 (1, (SELECT codList FROM tbLista WHERE descricao = 'FEIJAO 1KG'), 1),
 (1, (SELECT codList FROM tbLista WHERE descricao = 'LEITE 1L'), 1),
+(1, (SELECT codList FROM tbLista WHERE descricao = 'FUBA 400G'), 1),
+(1, (SELECT codList FROM tbLista WHERE descricao = 'FUBA 500G'), 1),
+(1, (SELECT codList FROM tbLista WHERE descricao = 'MOLHO DE TOMATE'), 1),
+(1, (SELECT codList FROM tbLista WHERE descricao = 'AÇUCAR 1KG'), 1),
+(1, (SELECT codList FROM tbLista WHERE descricao = 'SAL 1KG'), 1),
 (1, (SELECT codList FROM tbLista WHERE descricao = 'OLEO 900ML'), 1);
 
 INSERT INTO tbEstoqueItens (codList, quantidade)
@@ -416,3 +425,54 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+
+-- =============================================
+-- MELHORIAS ADICIONAIS
+-- =============================================
+
+-- Padronizar produtos sem acentos
+UPDATE tbLista 
+SET descricao = UPPER(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+    REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+        REPLACE(REPLACE(descricao,
+        'Á', 'A'), 'À', 'A'), 'Ã', 'A'), 'Â', 'A'), 'Ä', 'A'),
+        'É', 'E'), 'Ê', 'E'), 'Í', 'I'), 'Ó', 'O'), 'Ô', 'O'),
+        'Ú', 'U'), 'Ç', 'C'));
+
+-- Padronizar origens sem acentos
+UPDATE tbOrigemDoacao 
+SET nome = UPPER(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+    REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(
+        REPLACE(REPLACE(nome,
+        'Á', 'A'), 'À', 'A'), 'Ã', 'A'), 'Â', 'A'), 'Ä', 'A'),
+        'É', 'E'), 'Ê', 'E'), 'Í', 'I'), 'Ó', 'O'), 'Ô', 'O'),
+        'Ú', 'U'), 'Ç', 'C'));
+
+-- Adicionar índices para performance
+CREATE INDEX idx_produtos_codList ON tbProdutos(codList);
+CREATE INDEX idx_produtos_dataEntrada ON tbProdutos(dataDeEntrada);
+CREATE INDEX idx_produtos_tipoMov ON tbProdutos(tipoMovimentacao);
+CREATE INDEX idx_estoque_codList ON tbEstoqueItens(codList);
+CREATE INDEX idx_lista_descricao ON tbLista(descricao);
+
+-- Verificar integridade dos dados
+SELECT '=== VERIFICAÇÃO DE INTEGRIDADE ===' as status;
+SELECT COUNT(*) as total_produtos FROM tbLista;
+SELECT COUNT(*) as total_estoque FROM tbEstoqueItens;
+SELECT COUNT(*) as total_movimentacoes FROM tbProdutos;
+SELECT COUNT(*) as total_usuarios FROM tbUsuarios;
+
+-- Verificar se todos os produtos têm registro em tbEstoqueItens
+SELECT l.descricao as produtos_sem_estoque
+FROM tbLista l
+LEFT JOIN tbEstoqueItens ei ON ei.codList = l.codList
+WHERE ei.codList IS NULL;
+
+-- Se houver produtos sem registro, corrigir
+INSERT INTO tbEstoqueItens (codList, quantidade, dataMovimentacao, horaMovimentacao)
+SELECT l.codList, 0, CURDATE(), CURTIME()
+FROM tbLista l
+LEFT JOIN tbEstoqueItens ei ON ei.codList = l.codList
+WHERE ei.codList IS NULL
+ON DUPLICATE KEY UPDATE quantidade = quantidade;

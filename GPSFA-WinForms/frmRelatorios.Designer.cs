@@ -33,7 +33,6 @@
             this.button1 = new System.Windows.Forms.Button();
             this.btnPesquisar = new System.Windows.Forms.Button();
             this.btnMenu = new System.Windows.Forms.Button();
-            this.btnExportarExcel = new System.Windows.Forms.Button();
             this.lblTitleRelatórios = new System.Windows.Forms.Label();
             this.gpbFiltrosDoRelatorio = new System.Windows.Forms.GroupBox();
             this.lblStatus = new System.Windows.Forms.Label();
@@ -50,27 +49,11 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.dgvRelatorios = new System.Windows.Forms.DataGridView();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.pnlRegistroSaida = new System.Windows.Forms.Panel();
-            this.btnRegistrarSaida = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
-            this.txtDestinoSaida = new System.Windows.Forms.TextBox();
-            this.dtpDataSaida = new System.Windows.Forms.DateTimePicker();
-            this.nudQuantidadeSaida = new System.Windows.Forms.NumericUpDown();
-            this.cmbProdutoSaida = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.btnAtualizarSaidas = new System.Windows.Forms.Button();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pnlFiltrosDeBusca.SuspendLayout();
             this.gpbFiltrosDoRelatorio.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRelatorios)).BeginInit();
-            this.tabPage2.SuspendLayout();
-            this.pnlRegistroSaida.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudQuantidadeSaida)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlFiltrosDeBusca
@@ -80,7 +63,6 @@
             this.pnlFiltrosDeBusca.Controls.Add(this.button1);
             this.pnlFiltrosDeBusca.Controls.Add(this.btnPesquisar);
             this.pnlFiltrosDeBusca.Controls.Add(this.btnMenu);
-            this.pnlFiltrosDeBusca.Controls.Add(this.btnExportarExcel);
             this.pnlFiltrosDeBusca.Controls.Add(this.lblTitleRelatórios);
             this.pnlFiltrosDeBusca.Controls.Add(this.gpbFiltrosDoRelatorio);
             this.pnlFiltrosDeBusca.Dock = System.Windows.Forms.DockStyle.Top;
@@ -92,9 +74,9 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(127, 12);
+            this.button1.Location = new System.Drawing.Point(788, 9);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(164, 33);
+            this.button1.Size = new System.Drawing.Size(152, 43);
             this.button1.TabIndex = 19;
             this.button1.Text = "Cadastrar";
             this.button1.UseVisualStyleBackColor = true;
@@ -103,7 +85,7 @@
             // 
             this.btnPesquisar.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPesquisar.Image = ((System.Drawing.Image)(resources.GetObject("btnPesquisar.Image")));
-            this.btnPesquisar.Location = new System.Drawing.Point(976, 7);
+            this.btnPesquisar.Location = new System.Drawing.Point(604, 11);
             this.btnPesquisar.Name = "btnPesquisar";
             this.btnPesquisar.Size = new System.Drawing.Size(152, 43);
             this.btnPesquisar.TabIndex = 80;
@@ -115,21 +97,14 @@
             // 
             // btnMenu
             // 
-            this.btnMenu.Location = new System.Drawing.Point(308, 12);
+            this.btnMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(116)))), ((int)(((byte)(11)))), ((int)(((byte)(13)))));
+            this.btnMenu.ForeColor = System.Drawing.Color.White;
+            this.btnMenu.Location = new System.Drawing.Point(976, 12);
             this.btnMenu.Name = "btnMenu";
-            this.btnMenu.Size = new System.Drawing.Size(164, 33);
+            this.btnMenu.Size = new System.Drawing.Size(152, 43);
             this.btnMenu.TabIndex = 18;
             this.btnMenu.Text = "Menu";
-            this.btnMenu.UseVisualStyleBackColor = true;
-            // 
-            // btnExportarExcel
-            // 
-            this.btnExportarExcel.Location = new System.Drawing.Point(754, 12);
-            this.btnExportarExcel.Name = "btnExportarExcel";
-            this.btnExportarExcel.Size = new System.Drawing.Size(164, 33);
-            this.btnExportarExcel.TabIndex = 17;
-            this.btnExportarExcel.Text = "Exportar Excel";
-            this.btnExportarExcel.UseVisualStyleBackColor = true;
+            this.btnMenu.UseVisualStyleBackColor = false;
             // 
             // lblTitleRelatórios
             // 
@@ -273,8 +248,6 @@
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(0, 165);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -303,150 +276,6 @@
             this.dgvRelatorios.Size = new System.Drawing.Size(1149, 416);
             this.dgvRelatorios.TabIndex = 0;
             // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.pnlRegistroSaida);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1155, 431);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "📝 Registrar Saída";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // pnlRegistroSaida
-            // 
-            this.pnlRegistroSaida.Controls.Add(this.btnRegistrarSaida);
-            this.pnlRegistroSaida.Controls.Add(this.label6);
-            this.pnlRegistroSaida.Controls.Add(this.txtDestinoSaida);
-            this.pnlRegistroSaida.Controls.Add(this.dtpDataSaida);
-            this.pnlRegistroSaida.Controls.Add(this.nudQuantidadeSaida);
-            this.pnlRegistroSaida.Controls.Add(this.cmbProdutoSaida);
-            this.pnlRegistroSaida.Controls.Add(this.label5);
-            this.pnlRegistroSaida.Controls.Add(this.label4);
-            this.pnlRegistroSaida.Controls.Add(this.label3);
-            this.pnlRegistroSaida.Controls.Add(this.btnAtualizarSaidas);
-            this.pnlRegistroSaida.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlRegistroSaida.Location = new System.Drawing.Point(3, 3);
-            this.pnlRegistroSaida.Name = "pnlRegistroSaida";
-            this.pnlRegistroSaida.Size = new System.Drawing.Size(1149, 425);
-            this.pnlRegistroSaida.TabIndex = 0;
-            // 
-            // btnRegistrarSaida
-            // 
-            this.btnRegistrarSaida.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
-            this.btnRegistrarSaida.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.btnRegistrarSaida.ForeColor = System.Drawing.Color.White;
-            this.btnRegistrarSaida.Location = new System.Drawing.Point(168, 250);
-            this.btnRegistrarSaida.Name = "btnRegistrarSaida";
-            this.btnRegistrarSaida.Size = new System.Drawing.Size(200, 40);
-            this.btnRegistrarSaida.TabIndex = 29;
-            this.btnRegistrarSaida.Text = "REGISTRAR SAÍDA";
-            this.btnRegistrarSaida.UseVisualStyleBackColor = false;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.label6.Location = new System.Drawing.Point(49, 191);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(92, 25);
-            this.label6.TabIndex = 28;
-            this.label6.Text = "Destino:";
-            // 
-            // txtDestinoSaida
-            // 
-            this.txtDestinoSaida.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.txtDestinoSaida.Location = new System.Drawing.Point(168, 188);
-            this.txtDestinoSaida.Name = "txtDestinoSaida";
-            this.txtDestinoSaida.Size = new System.Drawing.Size(350, 30);
-            this.txtDestinoSaida.TabIndex = 27;
-            // 
-            // dtpDataSaida
-            // 
-            this.dtpDataSaida.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.dtpDataSaida.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpDataSaida.Location = new System.Drawing.Point(216, 138);
-            this.dtpDataSaida.Name = "dtpDataSaida";
-            this.dtpDataSaida.Size = new System.Drawing.Size(139, 30);
-            this.dtpDataSaida.TabIndex = 26;
-            // 
-            // nudQuantidadeSaida
-            // 
-            this.nudQuantidadeSaida.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.nudQuantidadeSaida.Location = new System.Drawing.Point(199, 88);
-            this.nudQuantidadeSaida.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudQuantidadeSaida.Name = "nudQuantidadeSaida";
-            this.nudQuantidadeSaida.Size = new System.Drawing.Size(120, 30);
-            this.nudQuantidadeSaida.TabIndex = 25;
-            this.nudQuantidadeSaida.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // cmbProdutoSaida
-            // 
-            this.cmbProdutoSaida.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.cmbProdutoSaida.FormattingEnabled = true;
-            this.cmbProdutoSaida.Location = new System.Drawing.Point(168, 37);
-            this.cmbProdutoSaida.Name = "cmbProdutoSaida";
-            this.cmbProdutoSaida.Size = new System.Drawing.Size(350, 33);
-            this.cmbProdutoSaida.TabIndex = 24;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.label5.Location = new System.Drawing.Point(49, 140);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(156, 25);
-            this.label5.TabIndex = 23;
-            this.label5.Text = "Data de Saída:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.label4.Location = new System.Drawing.Point(49, 90);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(131, 25);
-            this.label4.TabIndex = 22;
-            this.label4.Text = "Quantidade:";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.label3.Location = new System.Drawing.Point(49, 40);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(94, 25);
-            this.label3.TabIndex = 21;
-            this.label3.Text = "Produto:";
-            // 
-            // btnAtualizarSaidas
-            // 
-            this.btnAtualizarSaidas.Location = new System.Drawing.Point(53, 320);
-            this.btnAtualizarSaidas.Name = "btnAtualizarSaidas";
-            this.btnAtualizarSaidas.Size = new System.Drawing.Size(164, 33);
-            this.btnAtualizarSaidas.TabIndex = 20;
-            this.btnAtualizarSaidas.Text = "Atualizar Lista";
-            this.btnAtualizarSaidas.UseVisualStyleBackColor = true;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1155, 431);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "📋 Lista de Saídas";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
             // frmRelatorios
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -462,7 +291,6 @@
             this.Name = "frmRelatorios";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Grupo Socorrista São Francisco de Assis - Relatórios";
-            this.Load += new System.EventHandler(this.frmRelatorios_Load_1);
             this.pnlFiltrosDeBusca.ResumeLayout(false);
             this.pnlFiltrosDeBusca.PerformLayout();
             this.gpbFiltrosDoRelatorio.ResumeLayout(false);
@@ -470,10 +298,6 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvRelatorios)).EndInit();
-            this.tabPage2.ResumeLayout(false);
-            this.pnlRegistroSaida.ResumeLayout(false);
-            this.pnlRegistroSaida.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudQuantidadeSaida)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -486,9 +310,6 @@
         private System.Windows.Forms.GroupBox gpbFiltrosDoRelatorio;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.Panel pnlRegistroSaida;
 
         // Controles de filtro
         private System.Windows.Forms.DateTimePicker dtpDataInicialPeriodo;
@@ -505,7 +326,6 @@
         // Botões
         private System.Windows.Forms.Button btnPesquisar;
         private System.Windows.Forms.Button btnLimparFiltros;
-        private System.Windows.Forms.Button btnExportarExcel;
         private System.Windows.Forms.Button btnMenu;
         private System.Windows.Forms.Button button1;
 
@@ -514,18 +334,6 @@
 
         // DataGridViews
         private System.Windows.Forms.DataGridView dgvRelatorios;
-
-        // Controles da tabPage2 (Registro de Saída)
-        private System.Windows.Forms.ComboBox cmbProdutoSaida;
-        private System.Windows.Forms.NumericUpDown nudQuantidadeSaida;
-        private System.Windows.Forms.DateTimePicker dtpDataSaida;
-        private System.Windows.Forms.TextBox txtDestinoSaida;
-        private System.Windows.Forms.Button btnRegistrarSaida;
-        private System.Windows.Forms.Button btnAtualizarSaidas;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
 
     }
 }

@@ -1,14 +1,15 @@
-﻿using System;
+﻿using ClosedXML.Excel;
+using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using MySql.Data.MySqlClient;
-using ClosedXML.Excel;
-using System.IO;
-using System.Text;
-using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 
 namespace GPSFA_WinForms
 {
@@ -43,7 +44,6 @@ namespace GPSFA_WinForms
             CarregarProdutos();
             CarregarStatus();
             CarregarDados();
-            CarregarProdutosSaida();
             CriarGridSaidasEstoque();
         }
 
@@ -61,7 +61,6 @@ namespace GPSFA_WinForms
             };
             btnImportarDados.Click += BtnImportarDados_Click;
             pnlFiltrosDeBusca.Controls.Add(btnImportarDados);
-            btnExportarExcel.Location = new Point(754, 12);
             btnPesquisar.Location = new Point(976, 7);
         }
 
@@ -69,12 +68,9 @@ namespace GPSFA_WinForms
         {
             if (btnPesquisar != null) btnPesquisar.Click += btnPesquisar_Click;
             if (btnLimparFiltros != null) btnLimparFiltros.Click += btnLimparFiltros_Click;
-            if (btnExportarExcel != null) btnExportarExcel.Click += btnExportarExcel_Click;
             if (btnMenu != null) btnMenu.Click += btnMenu_Click;
             if (button1 != null) button1.Click += button1_Click;
-            if (btnRegistrarSaida != null) btnRegistrarSaida.Click += BtnRegistrarSaida_Click;
-            if (btnAtualizarSaidas != null) btnAtualizarSaidas.Click += (s, e) => CarregarSaidasEstoque();
-            if (tabControl1 != null) tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
+            
         }
 
         private void ConfigurarDataGridView()
@@ -486,7 +482,7 @@ namespace GPSFA_WinForms
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 BackgroundColor = Color.White
             };
-            tabPage3.Controls.Add(dgvSaidasEstoque);
+            
             ConfigurarColunasSaidas();
         }
 
@@ -510,66 +506,66 @@ namespace GPSFA_WinForms
             dgvSaidasEstoque.ColumnHeadersHeight = 40;
         }
 
-        private void CarregarProdutosSaida()
-        {
-            if (cmbProdutoSaida == null) return;
-            cmbProdutoSaida.Items.Clear();
-            cmbProdutoSaida.Items.Add("SELECIONE UM PRODUTO");
+        //private void CarregarProdutosSaida()
+        //{
+        //    if (cmbProdutoSaida == null) return;
+        //    cmbProdutoSaida.Items.Clear();
+        //    cmbProdutoSaida.Items.Add("SELECIONE UM PRODUTO");
 
-            using (var conexao = DataBaseConnection.OpenConnection())
-            {
-                string sql = "SELECT descricao FROM tbLista ORDER BY descricao";
-                using (var cmd = new MySqlCommand(sql, conexao))
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                        cmbProdutoSaida.Items.Add(reader["descricao"].ToString());
-                }
-            }
-            cmbProdutoSaida.SelectedIndex = 0;
-        }
+        //    using (var conexao = DataBaseConnection.OpenConnection())
+        //    {
+        //        string sql = "SELECT descricao FROM tbLista ORDER BY descricao";
+        //        using (var cmd = new MySqlCommand(sql, conexao))
+        //        using (var reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //                cmbProdutoSaida.Items.Add(reader["descricao"].ToString());
+        //        }
+        //    }
+        //    cmbProdutoSaida.SelectedIndex = 0;
+        //}
 
-        private void CarregarSaidasEstoque()
-        {
-            if (dgvSaidasEstoque == null) return;
-            dgvSaidasEstoque.Rows.Clear();
+        //private void CarregarSaidasEstoque()
+        //{
+        //    if (dgvSaidasEstoque == null) return;
+        //    dgvSaidasEstoque.Rows.Clear();
 
-            using (var conexao = DataBaseConnection.OpenConnection())
-            {
-                string sql = @"
-                SELECT 
-                    DATE_FORMAT(c.dataDeSaida, '%d/%m/%Y %H:%i') AS data,
-                    l.descricao AS produto,
-                    ic.quantidade,
-                    'Doação' AS destino,
-                    'Sistema' AS responsavel
-                FROM tbItensCesta ic
-                INNER JOIN tbCestas c ON c.codCes = ic.codCes
-                INNER JOIN tbLista l ON l.codList = ic.codList
-                ORDER BY c.dataDeSaida DESC
-                LIMIT 500";
+        //    using (var conexao = DataBaseConnection.OpenConnection())
+        //    {
+        //        string sql = @"
+        //        SELECT 
+        //            DATE_FORMAT(c.dataDeSaida, '%d/%m/%Y %H:%i') AS data,
+        //            l.descricao AS produto,
+        //            ic.quantidade,
+        //            'Doação' AS destino,
+        //            'Sistema' AS responsavel
+        //        FROM tbItensCesta ic
+        //        INNER JOIN tbCestas c ON c.codCes = ic.codCes
+        //        INNER JOIN tbLista l ON l.codList = ic.codList
+        //        ORDER BY c.dataDeSaida DESC
+        //        LIMIT 500";
 
-                using (var cmd = new MySqlCommand(sql, conexao))
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        dgvSaidasEstoque.Rows.Add(
-                            reader["data"],
-                            reader["produto"],
-                            Convert.ToDecimal(reader["quantidade"]).ToString("N0"),
-                            reader["destino"],
-                            reader["responsavel"]
-                        );
-                    }
-                }
-            }
+        //        using (var cmd = new MySqlCommand(sql, conexao))
+        //        using (var reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                dgvSaidasEstoque.Rows.Add(
+        //                    reader["data"],
+        //                    reader["produto"],
+        //                    Convert.ToDecimal(reader["quantidade"]).ToString("N0"),
+        //                    reader["destino"],
+        //                    reader["responsavel"]
+        //                );
+        //            }
+        //        }
+        //    }
 
-            foreach (DataGridViewRow row in dgvSaidasEstoque.Rows)
-            {
-                row.DefaultCellStyle.BackColor = (row.Index % 2 == 0) ? Color.White : Color.FromArgb(250, 250, 250);
-            }
-        }
+        //    foreach (DataGridViewRow row in dgvSaidasEstoque.Rows)
+        //    {
+        //        row.DefaultCellStyle.BackColor = (row.Index % 2 == 0) ? Color.White : Color.FromArgb(250, 250, 250);
+        //    }
+        //}
 
         private int ObterSaldoProduto(int codList, MySqlConnection conn)
         {
@@ -872,70 +868,70 @@ namespace GPSFA_WinForms
 
 
         // ===== BOTÕES DE AÇÃO =====
-        private void BtnRegistrarSaida_Click(object sender, EventArgs e)
-        {
-            if (cmbProdutoSaida.SelectedIndex <= 0)
-            {
-                MessageBox.Show("Selecione um produto.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+        //private void BtnRegistrarSaida_Click(object sender, EventArgs e)
+        //{
+        //    if (cmbProdutoSaida.SelectedIndex <= 0)
+        //    {
+        //        MessageBox.Show("Selecione um produto.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        return;
+        //    }
 
-            int quantidade = (int)nudQuantidadeSaida.Value;
-            if (quantidade <= 0)
-            {
-                MessageBox.Show("Informe uma quantidade válida.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+        //    int quantidade = (int)nudQuantidadeSaida.Value;
+        //    if (quantidade <= 0)
+        //    {
+        //        MessageBox.Show("Informe uma quantidade válida.", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //        return;
+        //    }
 
-            string produto = cmbProdutoSaida.SelectedItem.ToString();
+        //    string produto = cmbProdutoSaida.SelectedItem.ToString();
 
-            using (var conn = DataBaseConnection.OpenConnection())
-            {
-                MySqlTransaction trans = conn.BeginTransaction();
+        //    using (var conn = DataBaseConnection.OpenConnection())
+        //    {
+        //        MySqlTransaction trans = conn.BeginTransaction();
 
-                try
-                {
-                    string sqlProduto = "SELECT codList FROM tbLista WHERE descricao = @descricao LIMIT 1";
-                    int codList;
-                    using (MySqlCommand cmd = new MySqlCommand(sqlProduto, conn, trans))
-                    {
-                        cmd.Parameters.AddWithValue("@descricao", produto);
-                        codList = Convert.ToInt32(cmd.ExecuteScalar());
-                    }
+        //        try
+        //        {
+        //            string sqlProduto = "SELECT codList FROM tbLista WHERE descricao = @descricao LIMIT 1";
+        //            int codList;
+        //            using (MySqlCommand cmd = new MySqlCommand(sqlProduto, conn, trans))
+        //            {
+        //                cmd.Parameters.AddWithValue("@descricao", produto);
+        //                codList = Convert.ToInt32(cmd.ExecuteScalar());
+        //            }
 
-                    int saldo = ObterSaldoProduto(codList, conn);
-                    if (saldo < quantidade)
-                    {
-                        MessageBox.Show("Estoque insuficiente.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        trans.Rollback();
-                        return;
-                    }
+        //            int saldo = ObterSaldoProduto(codList, conn);
+        //            if (saldo < quantidade)
+        //            {
+        //                MessageBox.Show("Estoque insuficiente.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //                trans.Rollback();
+        //                return;
+        //            }
 
-                    string sqlSaida = @"INSERT INTO tbProdutos
-                                (codList, quantidade, dataDeEntrada, tipoMovimentacao)
-                                VALUES (@codList, @quantidade, NOW(), 'SAIDA')";
-                    using (MySqlCommand cmd = new MySqlCommand(sqlSaida, conn, trans))
-                    {
-                        cmd.Parameters.AddWithValue("@codList", codList);
-                        cmd.Parameters.AddWithValue("@quantidade", quantidade * -1);
-                        cmd.ExecuteNonQuery();
-                    }
+        //            string sqlSaida = @"INSERT INTO tbProdutos
+        //                        (codList, quantidade, dataDeEntrada, tipoMovimentacao)
+        //                        VALUES (@codList, @quantidade, NOW(), 'SAIDA')";
+        //            using (MySqlCommand cmd = new MySqlCommand(sqlSaida, conn, trans))
+        //            {
+        //                cmd.Parameters.AddWithValue("@codList", codList);
+        //                cmd.Parameters.AddWithValue("@quantidade", quantidade * -1);
+        //                cmd.ExecuteNonQuery();
+        //            }
 
-                    trans.Commit();
-                    MessageBox.Show("Saída registrada com sucesso.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //            trans.Commit();
+        //            MessageBox.Show("Saída registrada com sucesso.", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    nudQuantidadeSaida.Value = 1;
-                    txtDestinoSaida.Clear();
-                    CarregarDados();
-                    CarregarSaidasEstoque();
-                }
-                catch (Exception ex)
-                {
-                    trans.Rollback();
-                    MessageBox.Show("Erro: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
+        //            nudQuantidadeSaida.Value = 1;
+        //            txtDestinoSaida.Clear();
+        //            CarregarDados();
+        //            CarregarSaidasEstoque();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            trans.Rollback();
+        //            MessageBox.Show("Erro: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        }
+        //    }
+        //}
 
         private void btnPesquisar_Click(object sender, EventArgs e) => CarregarDados();
 
@@ -1013,15 +1009,172 @@ namespace GPSFA_WinForms
             this.Close();
         }
 
-        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        // ===== MÉTODO PARA EXPORTAR (MENU) =====
+        private void BtnExportar_Click(object sender, EventArgs e)
         {
-            if (tabControl1.SelectedTab == tabPage3)
-                CarregarSaidasEstoque();
+            ContextMenuStrip menuExportar = new ContextMenuStrip();
+
+            ToolStripMenuItem itemCSV = new ToolStripMenuItem("📄 Exportar para CSV");
+            ToolStripMenuItem itemExcel = new ToolStripMenuItem("📊 Exportar para Excel");
+            ToolStripMenuItem itemImprimir = new ToolStripMenuItem("🖨️ Imprimir");
+
+            itemCSV.Click += (s, ev) => ExportarParaCSV();
+            itemExcel.Click += (s, ev) => btnExportarExcel_Click(s, ev);
+            itemImprimir.Click += (s, ev) => ImprimirRelatorio();
+
+            menuExportar.Items.AddRange(new ToolStripItem[] { itemCSV, itemExcel, itemImprimir });
+
+            Button btn = sender as Button;
+            menuExportar.Show(btn, new Point(0, btn.Height));
         }
 
-        private void frmRelatorios_Load_1(object sender, EventArgs e)
+        // ===== EXPORTAR PARA CSV =====
+        private void ExportarParaCSV()
         {
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Filter = "Arquivos CSV|*.csv",
+                Title = "Exportar Relatório para CSV",
+                FileName = $"Relatorio_Estoque_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
+            };
 
+            if (sfd.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+
+                // Adicionar cabeçalho
+                for (int i = 0; i < dgvRelatorios.Columns.Count; i++)
+                {
+                    sb.Append("\"" + dgvRelatorios.Columns[i].HeaderText + "\"");
+                    if (i < dgvRelatorios.Columns.Count - 1)
+                        sb.Append(";");
+                }
+                sb.AppendLine();
+
+                // Adicionar dados
+                foreach (DataGridViewRow row in dgvRelatorios.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    for (int i = 0; i < dgvRelatorios.Columns.Count; i++)
+                    {
+                        string valor = row.Cells[i].Value?.ToString() ?? "";
+                        sb.Append("\"" + valor.Replace("\"", "\"\"") + "\"");
+                        if (i < dgvRelatorios.Columns.Count - 1)
+                            sb.Append(";");
+                    }
+                    sb.AppendLine();
+                }
+
+                System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                MessageBox.Show($"✅ Arquivo exportado com sucesso!\n\nLocal: {sfd.FileName}",
+                    "Exportação Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Erro ao exportar: {ex.Message}", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ===== IMPRIMIR RELATÓRIO =====
+        private void ImprimirRelatorio()
+        {
+            PrintDialog printDialog = new PrintDialog();
+            PrintDocument printDocument = new PrintDocument();
+
+            printDocument.PrintPage += (sender, e) =>
+            {
+                Font tituloFont = new Font("Segoe UI", 16, FontStyle.Bold);
+                Font subtituloFont = new Font("Segoe UI", 12, FontStyle.Regular);
+                Font cabecalhoFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                Font textoFont = new Font("Segoe UI", 9, FontStyle.Regular);
+
+                float yPos = e.MarginBounds.Top;
+                float leftMargin = e.MarginBounds.Left;
+                float rightMargin = e.MarginBounds.Right;
+                float pageWidth = e.MarginBounds.Width;
+
+                // Título
+                e.Graphics.DrawString("Relatório de Estoque", tituloFont, Brushes.Black,
+                    leftMargin, yPos);
+                yPos += 35;
+
+                // Período
+                e.Graphics.DrawString($"Período: {dtpDataInicialPeriodo.Value:dd/MM/yyyy} a {dtpDataFinalPeriodo.Value:dd/MM/yyyy}",
+                    subtituloFont, Brushes.Black, leftMargin, yPos);
+                yPos += 25;
+
+                // Filtros
+                string filtros = $"Produto: {(cbxProduto.SelectedItem?.ToString() ?? "TODOS")} | " +
+                                $"Status: {(cbxStatus.SelectedItem?.ToString() ?? "TODOS")} | " +
+                                $"Usuário: {(cbbUsuario.SelectedItem?.ToString() ?? "TODOS")}";
+                e.Graphics.DrawString(filtros, subtituloFont, Brushes.Black, leftMargin, yPos);
+                yPos += 35;
+
+                // Desenhar cabeçalho da tabela
+                float colWidth = pageWidth / dgvRelatorios.Columns.Count;
+                float colX = leftMargin;
+
+                // Fundo do cabeçalho
+                e.Graphics.FillRectangle(Brushes.LightGray, leftMargin, yPos, pageWidth, 25);
+
+                // Escrever cabeçalhos
+                for (int i = 0; i < dgvRelatorios.Columns.Count; i++)
+                {
+                    e.Graphics.DrawString(dgvRelatorios.Columns[i].HeaderText, cabecalhoFont, Brushes.Black,
+                        colX + 3, yPos + 5);
+                    colX += colWidth;
+                }
+
+                yPos += 30;
+
+                // Escrever dados
+                foreach (DataGridViewRow row in dgvRelatorios.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    colX = leftMargin;
+
+                    // Verificar se precisa de nova página
+                    if (yPos + 25 > e.MarginBounds.Bottom)
+                    {
+                        e.HasMorePages = true;
+                        return;
+                    }
+
+                    // Destacar linha de total
+                    bool isTotal = row.Cells["Produto"].Value?.ToString()?.Contains("❖ TOTAL GERAL ❖") == true;
+                    if (isTotal)
+                    {
+                        e.Graphics.FillRectangle(Brushes.DarkGray, leftMargin, yPos, pageWidth, 22);
+                    }
+
+                    for (int i = 0; i < dgvRelatorios.Columns.Count; i++)
+                    {
+                        string valor = row.Cells[i].Value?.ToString() ?? "";
+                        e.Graphics.DrawString(valor, textoFont, isTotal ? Brushes.White : Brushes.Black,
+                            colX + 3, yPos + 3);
+                        colX += colWidth;
+                    }
+
+                    yPos += 22;
+                }
+
+                // Data de emissão no rodapé
+                e.Graphics.DrawString($"Emissão: {DateTime.Now:dd/MM/yyyy HH:mm:ss}",
+                    subtituloFont, Brushes.Gray, leftMargin, yPos + 10);
+            };
+
+            printDialog.Document = printDocument;
+
+            if (printDialog.ShowDialog() == DialogResult.OK)
+            {
+                printDocument.Print();
+            }
         }
     }
 }

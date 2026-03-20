@@ -1,12 +1,14 @@
-﻿using MySql.Data.MySqlClient;
+﻿using ExcelDataReader;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
+using System.Drawing.Printing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using ExcelDataReader;
 
 namespace GPSFA_WinForms
 {
@@ -46,8 +48,10 @@ namespace GPSFA_WinForms
             btnProdutosPrincipais.Click += btnPrincipaisProdutos_Click;
             btnAplicarModo.Click += btnAlternarModo_Click;
 
-            // Usar o botão que já existe no Designer
+            
             btnImportar.Click += BtnImportar_Click;
+
+            btnExportar.Click += BtnExportar_Click; 
 
             ConfigurarDataGridView(modoAgrupado);
             CarregarProdutos();
@@ -60,7 +64,10 @@ namespace GPSFA_WinForms
             VerificacaoSistema();
         }
 
+
+
         // ===== Importar dados do Excel =====
+        // ===== MÉTODO DE IMPORTAÇÃO CORRIGIDO =====
         private void BtnImportar_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog
@@ -94,8 +101,33 @@ namespace GPSFA_WinForms
                         int registrosImportados = 0;
                         int registrosErro = 0;
                         int registrosIgnorados = 0;
+                        int produtosNaoEncontrados = 0;
                         StringBuilder erros = new StringBuilder();
                         HashSet<string> linhasProcessadas = new HashSet<string>();
+                        Dictionary<string, int> cacheProdutos = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+                        // Primeiro, carregar todos os produtos do banco em cache
+                        using (var connCache = DataBaseConnection.OpenConnection())
+                        {
+                            string sqlCache = "SELECT codList, descricao FROM tbLista";
+                            using (var cmd = new MySqlCommand(sqlCache, connCache))
+                            using (var readerCache = cmd.ExecuteReader())
+                            {
+                                while (readerCache.Read())
+                                {
+                                    string descricao = readerCache["descricao"].ToString().Trim().ToUpper();
+                                    int codList = Convert.ToInt32(readerCache["codList"]);
+                                    cacheProdutos[descricao] = codList;
+                                }
+                            }
+                        }
+
+                        // Log dos produtos encontrados
+                        System.Diagnostics.Debug.WriteLine($"Produtos no cache: {cacheProdutos.Count}");
+                        foreach (var p in cacheProdutos)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"  {p.Key} -> {p.Value}");
+                        }
 
                         using (var conn = DataBaseConnection.OpenConnection())
                         using (var trans = conn.BeginTransaction())
@@ -116,6 +148,7 @@ namespace GPSFA_WinForms
                                             continue;
                                         }
 
+                                        // Verificar linha vazia
                                         bool linhaVazia = true;
                                         for (int j = 0; j < 5; j++)
                                         {
@@ -138,11 +171,11 @@ namespace GPSFA_WinForms
                                         string quantidadeStr = row[3]?.ToString()?.Trim();
                                         string validadeStr = row[4]?.ToString()?.Trim();
 
+                                        // Criar chave única para evitar duplicatas
                                         string chaveLinha = $"{dataEntradaStr}|{origem}|{produto}|{quantidadeStr}|{validadeStr}";
                                         if (linhasProcessadas.Contains(chaveLinha))
                                         {
                                             registrosIgnorados++;
-                                            erros.AppendLine($"Linha {i + 1}: Linha duplicada ignorada");
                                             continue;
                                         }
                                         linhasProcessadas.Add(chaveLinha);
@@ -175,8 +208,8 @@ namespace GPSFA_WinForms
                                             erros.AppendLine($"Linha {i + 1}: Data de validade inválida para {produto}, usando data padrão");
                                         }
 
+                                        // Converter quantidade
                                         quantidadeStr = quantidadeStr.Replace(',', '.').Trim();
-
                                         if (quantidadeStr.Contains(".") && quantidadeStr.IndexOf(".") != quantidadeStr.LastIndexOf("."))
                                         {
                                             quantidadeStr = quantidadeStr.Replace(".", "");
@@ -199,11 +232,34 @@ namespace GPSFA_WinForms
                                             continue;
                                         }
 
-                                        int codList = ObterCodigoLista(conn, trans, produto);
+                                        // BUSCAR O PRODUTO NO CACHE (MAIS FLEXÍVEL)
+                                        string produtoUpper = produto.Trim().ToUpper();
+                                        int codList = 0;
+
+                                        // Tentar match exato
+                                        if (cacheProdutos.ContainsKey(produtoUpper))
+                                        {
+                                            codList = cacheProdutos[produtoUpper];
+                                        }
+                                        else
+                                        {
+                                            // Tentar match parcial (remover acentos, etc)
+                                            foreach (var p in cacheProdutos)
+                                            {
+                                                if (p.Key.Contains(produtoUpper) || produtoUpper.Contains(p.Key))
+                                                {
+                                                    codList = p.Value;
+                                                    erros.AppendLine($"Linha {i + 1}: Produto '{produto}' correspondeu a '{p.Key}'");
+                                                    break;
+                                                }
+                                            }
+                                        }
+
                                         if (codList == 0)
                                         {
                                             registrosErro++;
-                                            erros.AppendLine($"Linha {i + 1}: Produto não encontrado no cadastro: {produto}");
+                                            produtosNaoEncontrados++;
+                                            erros.AppendLine($"Linha {i + 1}: Produto NÃO ENCONTRADO no cadastro: {produto}");
                                             continue;
                                         }
 
@@ -233,14 +289,19 @@ namespace GPSFA_WinForms
 
                                 trans.Commit();
 
+                                // RECALCULAR ESTOQUES APÓS IMPORTAÇÃO
+                                RecalcularTodosEstoques();
+
                                 System.Diagnostics.Debug.WriteLine($"Registros importados: {registrosImportados}");
                                 System.Diagnostics.Debug.WriteLine($"Registros com erro: {registrosErro}");
                                 System.Diagnostics.Debug.WriteLine($"Registros ignorados: {registrosIgnorados}");
+                                System.Diagnostics.Debug.WriteLine($"Produtos não encontrados: {produtosNaoEncontrados}");
 
                                 string mensagem = $"✅ Importação concluída!\n\n" +
                                                 $"Registros importados com sucesso: {registrosImportados}\n" +
                                                 $"Registros ignorados (vazios/duplicados): {registrosIgnorados}\n" +
-                                                $"Registros com erro: {registrosErro}";
+                                                $"Registros com erro: {registrosErro}\n" +
+                                                $"Produtos não encontrados no cadastro: {produtosNaoEncontrados}";
 
                                 if (erros.Length > 0)
                                 {
@@ -323,18 +384,19 @@ namespace GPSFA_WinForms
         }
 
         private void InserirEntradaEstoque(MySqlConnection conn, MySqlTransaction trans,
-            int codList, int codOri, string produto, int quantidade, int peso,
-            DateTime dataEntrada, DateTime validade)
+    int codList, int codOri, string produto, int quantidade, int peso,
+    DateTime dataEntrada, DateTime validade)
         {
+            // 1. Inserir na tabela tbProdutos
             string sqlInsert = @"
-                INSERT INTO tbProdutos 
-                    (descricao, quantidade, peso, unidade, codBar, 
-                     dataDeEntrada, dataDeValidade, dataLimiteDeSaida, 
-                     tipoMovimentacao, codUsu, codOri, codList)
-                VALUES 
-                    (@descricao, @quantidade, @peso, 'UNIDADES (UN)', NULL,
-                     @dataEntrada, @validade, DATE_ADD(@validade, INTERVAL -30 DAY),
-                     'ENTRADA', @codUsu, @codOri, @codList)";
+        INSERT INTO tbProdutos 
+            (descricao, quantidade, peso, unidade, codBar, 
+             dataDeEntrada, dataDeValidade, dataLimiteDeSaida, 
+             tipoMovimentacao, codUsu, codOri, codList)
+        VALUES 
+            (@descricao, @quantidade, @peso, 'UNIDADES (UN)', NULL,
+             @dataEntrada, @validade, DATE_ADD(@validade, INTERVAL -30 DAY),
+             'ENTRADA', @codUsu, @codOri, @codList)";
 
             using (var cmd = new MySqlCommand(sqlInsert, conn, trans))
             {
@@ -349,36 +411,85 @@ namespace GPSFA_WinForms
                 cmd.ExecuteNonQuery();
             }
 
-            string sqlUpdateEstoque = @"
-                UPDATE tbEstoqueItens 
-                SET quantidade = quantidade + @quantidade,
-                    dataMovimentacao = CURRENT_DATE(),
-                    horaMovimentacao = CURRENT_TIME()
-                WHERE codList = @codList";
-
-            using (var cmd = new MySqlCommand(sqlUpdateEstoque, conn, trans))
+            // 2. ATUALIZAR OU INSERIR NO tbEstoqueItens
+            // Primeiro verificar se já existe registro
+            string sqlVerificaEstoque = "SELECT COUNT(*) FROM tbEstoqueItens WHERE codList = @codList";
+            int existe;
+            using (var cmd = new MySqlCommand(sqlVerificaEstoque, conn, trans))
             {
-                cmd.Parameters.AddWithValue("@quantidade", quantidade);
                 cmd.Parameters.AddWithValue("@codList", codList);
-                int linhasAfetadas = cmd.ExecuteNonQuery();
+                existe = Convert.ToInt32(cmd.ExecuteScalar());
+            }
 
-                if (linhasAfetadas == 0)
+            if (existe > 0)
+            {
+                // Atualizar existente
+                string sqlUpdateEstoque = @"
+            UPDATE tbEstoqueItens 
+            SET quantidade = quantidade + @quantidade,
+                dataMovimentacao = CURRENT_DATE(),
+                horaMovimentacao = CURRENT_TIME()
+            WHERE codList = @codList";
+
+                using (var cmd = new MySqlCommand(sqlUpdateEstoque, conn, trans))
                 {
-                    string sqlInsertEstoque = @"
-                        INSERT INTO tbEstoqueItens (codList, quantidade, dataMovimentacao, horaMovimentacao)
-                        VALUES (@codList, @quantidade, CURRENT_DATE(), CURRENT_TIME())";
+                    cmd.Parameters.AddWithValue("@quantidade", quantidade);
+                    cmd.Parameters.AddWithValue("@codList", codList);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            else
+            {
+                // Inserir novo registro
+                string sqlInsertEstoque = @"
+            INSERT INTO tbEstoqueItens (codList, quantidade, dataMovimentacao, horaMovimentacao)
+            VALUES (@codList, @quantidade, CURRENT_DATE(), CURRENT_TIME())";
 
-                    using (var cmdInsert = new MySqlCommand(sqlInsertEstoque, conn, trans))
+                using (var cmdInsert = new MySqlCommand(sqlInsertEstoque, conn, trans))
+                {
+                    cmdInsert.Parameters.AddWithValue("@codList", codList);
+                    cmdInsert.Parameters.AddWithValue("@quantidade", quantidade);
+                    cmdInsert.ExecuteNonQuery();
+                }
+            }
+
+            // 3. CORREÇÃO: Verificar se o trigger está funcionando
+            // Adicionar log para debug
+            System.Diagnostics.Debug.WriteLine($"Inserido: Produto={produto}, Quantidade={quantidade}, codList={codList}");
+        }
+
+        // ===== RECALCULAR TODOS OS ESTOQUES =====
+        private void RecalcularTodosEstoques()
+        {
+            try
+            {
+                using (var conn = DataBaseConnection.OpenConnection())
+                using (var trans = conn.BeginTransaction())
+                {
+                    // Recalcular todos os estoques baseado na soma dos registros positivos em tbProdutos
+                    string sql = @"
+                UPDATE tbEstoqueItens ei
+                SET quantidade = (
+                    SELECT COALESCE(SUM(p.quantidade), 0)
+                    FROM tbProdutos p
+                    WHERE p.codList = ei.codList AND p.quantidade > 0
+                ),
+                dataMovimentacao = CURRENT_DATE(),
+                horaMovimentacao = CURRENT_TIME()";
+
+                    using (var cmd = new MySqlCommand(sql, conn, trans))
                     {
-                        cmdInsert.Parameters.AddWithValue("@codList", codList);
-                        cmdInsert.Parameters.AddWithValue("@quantidade", quantidade);
-                        cmdInsert.ExecuteNonQuery();
+                        int linhasAfetadas = cmd.ExecuteNonQuery();
+                        trans.Commit();
+                        System.Diagnostics.Debug.WriteLine($"Estoques recalculados: {linhasAfetadas} produtos atualizados");
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro ao recalcular estoques: {ex.Message}");
+            }
         }
-
-        // ===== Configurar aba de histórico =====
         // ===== Configurar aba de histórico (COM COLUNA DESTINO) =====
         private void ConfigurarAbaHistorico()
         {
@@ -1009,9 +1120,9 @@ namespace GPSFA_WinForms
                 Dock = DockStyle.Left,
                 Width = 200,
                 Height = 40,
-                Minimum = 1,
+                Minimum = 0,
                 Maximum = 100000,
-                Value = 1,
+                Value = 0,
                 Font = new Font("Segoe UI", 14),
                 TextAlign = System.Windows.Forms.HorizontalAlignment.Right
             };
@@ -1162,9 +1273,9 @@ namespace GPSFA_WinForms
             using (var conn = DataBaseConnection.OpenConnection())
             {
                 string sql = @"SELECT ei.quantidade
-                               FROM tbEstoqueItens ei
-                               INNER JOIN tbLista l ON l.codList = ei.codList
-                               WHERE l.descricao = @produto";
+                       FROM tbEstoqueItens ei
+                       INNER JOIN tbLista l ON l.codList = ei.codList
+                       WHERE l.descricao = @produto";
 
                 using (var cmd = new MySqlCommand(sql, conn))
                 {
@@ -1174,6 +1285,7 @@ namespace GPSFA_WinForms
                     lblSaldoAtual.Text = saldo.ToString();
 
                     numQuantidadeSaida.Maximum = saldo;
+                    numQuantidadeSaida.Value = 0;  
                 }
             }
         }
@@ -1197,7 +1309,8 @@ namespace GPSFA_WinForms
             int qtd = (int)numQuantidadeSaida.Value;
             if (qtd <= 0)
             {
-                MessageBox.Show("Quantidade inválida.");
+                MessageBox.Show("Informe uma quantidade válida (maior que zero).", "Atenção",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -1207,7 +1320,7 @@ namespace GPSFA_WinForms
             RegistrarSaida(produto, qtd, destino);
 
             txtDestinoSaida.Clear();
-            numQuantidadeSaida.Value = 1;
+            numQuantidadeSaida.Value = 0;  // MUDADO: volta para 0 em vez de 1
             lblSaldoAtual.Text = "0";
             lblProdutoSelecionado.Text = "-";
             cmbProdutoSaida.SelectedIndex = -1;
@@ -1491,6 +1604,7 @@ namespace GPSFA_WinForms
             this.Close();
         }
 
+
         // ===== DIAGNÓSTICO RÁPIDO =====
         private void DiagnosticarSal()
         {
@@ -1566,5 +1680,357 @@ namespace GPSFA_WinForms
             menu.Show();
             this.Close();
         }
+
+        // ===== MÉTODO PARA EXPORTAR =====
+        private void BtnExportar_Click(object sender, EventArgs e)
+        {
+            // Criar menu de contexto para escolher o tipo de exportação
+            ContextMenuStrip menuExportar = new ContextMenuStrip();
+
+            ToolStripMenuItem itemCSV = new ToolStripMenuItem("📄 Exportar para CSV");
+            ToolStripMenuItem itemExcel = new ToolStripMenuItem("📊 Exportar para Excel");
+            ToolStripMenuItem itemImprimir = new ToolStripMenuItem("🖨️ Imprimir");
+
+            itemCSV.Click += (s, ev) => ExportarParaCSV();
+            itemExcel.Click += (s, ev) => ExportarParaExcel();
+            itemImprimir.Click += (s, ev) => ImprimirEstoque();
+
+            menuExportar.Items.AddRange(new ToolStripItem[] { itemCSV, itemExcel, itemImprimir });
+
+            Button btn = sender as Button;
+            menuExportar.Show(btn, new Point(0, btn.Height));
+        }
+
+        // ===== EXPORTAR PARA CSV =====
+        private void ExportarParaCSV()
+        {
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Filter = "Arquivos CSV|*.csv",
+                Title = "Exportar Estoque para CSV",
+                FileName = $"Estoque_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
+            };
+
+            if (sfd.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+
+                // Adicionar cabeçalho
+                for (int i = 0; i < dgvEstoque.Columns.Count; i++)
+                {
+                    sb.Append("\"" + dgvEstoque.Columns[i].HeaderText + "\"");
+                    if (i < dgvEstoque.Columns.Count - 1)
+                        sb.Append(";");
+                }
+                sb.AppendLine();
+
+                // Adicionar dados
+                foreach (DataGridViewRow row in dgvEstoque.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    for (int i = 0; i < dgvEstoque.Columns.Count; i++)
+                    {
+                        string valor = row.Cells[i].Value?.ToString() ?? "";
+                        sb.Append("\"" + valor.Replace("\"", "\"\"") + "\"");
+                        if (i < dgvEstoque.Columns.Count - 1)
+                            sb.Append(";");
+                    }
+                    sb.AppendLine();
+                }
+
+                System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                MessageBox.Show($"✅ Arquivo exportado com sucesso!\n\nLocal: {sfd.FileName}",
+                    "Exportação Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Erro ao exportar: {ex.Message}", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        // ===== EXPORTAR PARA EXCEL (HTML) =====
+        private void ExportarParaExcel()
+        {
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Filter = "Arquivos HTML|*.html;*.htm",
+                Title = "Exportar Estoque para Excel",
+                FileName = $"Estoque_{DateTime.Now:yyyyMMdd_HHmmss}.html"
+            };
+
+            if (sfd.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+
+                sb.AppendLine("<!DOCTYPE html>");
+                sb.AppendLine("<html>");
+                sb.AppendLine("<head>");
+                sb.AppendLine("<meta charset='UTF-8'>");
+                sb.AppendLine("<title>Relatório de Estoque</title>");
+                sb.AppendLine("<style>");
+                sb.AppendLine("body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; }");
+                sb.AppendLine("h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }");
+                sb.AppendLine("table { border-collapse: collapse; width: 100%; margin-top: 20px; }");
+                sb.AppendLine("th { background-color: #2c3e50; color: white; padding: 12px; text-align: center; border: 1px solid #ddd; }");
+                sb.AppendLine("td { padding: 10px; text-align: left; border: 1px solid #ddd; }");
+                sb.AppendLine("tr:nth-child(even) { background-color: #f2f2f2; }");
+                sb.AppendLine(".total { background-color: #2c3e50; color: white; font-weight: bold; }");
+                sb.AppendLine(".footer { margin-top: 30px; text-align: center; color: #7f8c8d; font-size: 12px; }");
+                sb.AppendLine("</style>");
+                sb.AppendLine("</head>");
+                sb.AppendLine("<body>");
+                sb.AppendLine($"<h1>📊 Relatório de Estoque</h1>");
+                sb.AppendLine($"<p><strong>Data de emissão:</strong> {DateTime.Now:dd/MM/yyyy HH:mm:ss}</p>");
+                sb.AppendLine($"<p><strong>Modo de visualização:</strong> {(modoAgrupado ? "Agrupado" : "Detalhado")}</p>");
+
+                sb.AppendLine("<table>");
+                sb.AppendLine("<thead>");
+                sb.AppendLine("<tr>");
+
+                // Cabeçalho
+                foreach (DataGridViewColumn col in dgvEstoque.Columns)
+                {
+                    sb.AppendLine($"<th>{col.HeaderText}</th>");
+                }
+                sb.AppendLine("</tr>");
+                sb.AppendLine("</thead>");
+                sb.AppendLine("<tbody>");
+
+                // Dados
+                foreach (DataGridViewRow row in dgvEstoque.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    sb.AppendLine("<tr>");
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        string valor = cell.Value?.ToString() ?? "";
+                        // Destacar a linha de total
+                        if (row.Cells[0].Value?.ToString()?.Contains("TOTAL") == true)
+                        {
+                            sb.AppendLine($"<td class='total'><strong>{valor}</strong></td>");
+                        }
+                        else
+                        {
+                            sb.AppendLine($"<td>{valor}</td>");
+                        }
+                    }
+                    sb.AppendLine("</tr>");
+                }
+
+                sb.AppendLine("</tbody>");
+                sb.AppendLine("</table>");
+                sb.AppendLine("<div class='footer'>");
+                sb.AppendLine($"<p>Relatório gerado automaticamente pelo Sistema GPSFA</p>");
+                sb.AppendLine($"<p>Total de registros: {dgvEstoque.Rows.Count - 1} itens</p>");
+                sb.AppendLine("</div>");
+                sb.AppendLine("</body></html>");
+
+                System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                MessageBox.Show($"✅ Arquivo exportado com sucesso!\n\nLocal: {sfd.FileName}\n\nAbra o arquivo no Excel para visualizar e imprimir.",
+                    "Exportação Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Erro ao exportar: {ex.Message}", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+        // ===== DIAGNÓSTICO: VERIFICAR PRODUTOS DO EXCEL VS CADASTRO =====
+        private void DiagnosticarProdutosExcel(string caminhoArquivo)
+        {
+            try
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+                using (var stream = File.Open(caminhoArquivo, FileMode.Open, FileAccess.Read))
+                {
+                    using (var excelReader = ExcelReaderFactory.CreateReader(stream))  // MUDADO: excelReader em vez de reader
+                    {
+                        var conf = new ExcelDataSetConfiguration
+                        {
+                            ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                            {
+                                UseHeaderRow = true
+                            }
+                        };
+
+                        var result = excelReader.AsDataSet(conf);
+                        DataTable dt = result.Tables[0];
+
+                        HashSet<string> produtosExcel = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                        for (int i = 1; i < dt.Rows.Count; i++)
+                        {
+                            string produto = dt.Rows[i][2]?.ToString()?.Trim();
+                            if (!string.IsNullOrEmpty(produto))
+                            {
+                                produtosExcel.Add(produto);
+                            }
+                        }
+
+                        // Buscar produtos do banco
+                        HashSet<string> produtosBanco = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                        using (var conn = DataBaseConnection.OpenConnection())
+                        {
+                            string sql = "SELECT descricao FROM tbLista";
+                            using (var cmd = new MySqlCommand(sql, conn))
+                            using (var dbReader = cmd.ExecuteReader())  // MUDADO: dbReader em vez de reader
+                            {
+                                while (dbReader.Read())
+                                {
+                                    produtosBanco.Add(dbReader["descricao"].ToString().Trim());
+                                }
+                            }
+                        }
+
+                        // Encontrar produtos que estão no Excel mas não no banco
+                        var faltantes = produtosExcel.Except(produtosBanco).ToList();
+
+                        StringBuilder mensagem = new StringBuilder();
+                        mensagem.AppendLine($"📊 Total de produtos no Excel: {produtosExcel.Count}");
+                        mensagem.AppendLine($"📦 Total de produtos no cadastro: {produtosBanco.Count}");
+                        mensagem.AppendLine($"❌ Produtos no Excel mas NÃO no cadastro: {faltantes.Count}");
+                        mensagem.AppendLine("");
+
+                        if (faltantes.Count > 0)
+                        {
+                            mensagem.AppendLine("LISTA DE PRODUTOS FALTANTES:");
+                            foreach (var produto in faltantes.OrderBy(p => p))
+                            {
+                                mensagem.AppendLine($"  • {produto}");
+                            }
+                        }
+                        else
+                        {
+                            mensagem.AppendLine("✅ Todos os produtos do Excel estão cadastrados!");
+                        }
+
+                        MessageBox.Show(mensagem.ToString(), "Diagnóstico de Produtos",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro no diagnóstico: {ex.Message}");
+            }
+        }
+
+
+
+        // ===== IMPRIMIR ESTOQUE =====
+        private void ImprimirEstoque()
+        {
+            PrintDialog printDialog = new PrintDialog();
+            PrintDocument printDocument = new PrintDocument();
+
+            printDocument.PrintPage += (sender, e) =>
+            {
+                Font tituloFont = new Font("Segoe UI", 16, FontStyle.Bold);
+                Font subtituloFont = new Font("Segoe UI", 12, FontStyle.Regular);
+                Font cabecalhoFont = new Font("Segoe UI", 10, FontStyle.Bold);
+                Font textoFont = new Font("Segoe UI", 9, FontStyle.Regular);
+
+                float yPos = e.MarginBounds.Top;
+                int linha = 0;
+
+                // Título
+                e.Graphics.DrawString("Relatório de Estoque", tituloFont, Brushes.Black,
+                    e.MarginBounds.Left, yPos);
+                yPos += 30;
+
+                // Data e Modo
+                e.Graphics.DrawString($"Data: {DateTime.Now:dd/MM/yyyy HH:mm:ss}", subtituloFont, Brushes.Black,
+                    e.MarginBounds.Left, yPos);
+                yPos += 25;
+                e.Graphics.DrawString($"Modo: {(modoAgrupado ? "Agrupado" : "Detalhado")}", subtituloFont, Brushes.Black,
+                    e.MarginBounds.Left, yPos);
+                yPos += 35;
+
+                // Desenhar cabeçalho da tabela
+                float colX = e.MarginBounds.Left;
+                float colWidth = (e.MarginBounds.Width) / dgvEstoque.Columns.Count;
+
+                // Fundo do cabeçalho
+                e.Graphics.FillRectangle(Brushes.LightGray, e.MarginBounds.Left, yPos,
+                    e.MarginBounds.Width, 25);
+
+                // Escrever cabeçalhos
+                for (int i = 0; i < dgvEstoque.Columns.Count; i++)
+                {
+                    e.Graphics.DrawString(dgvEstoque.Columns[i].HeaderText, cabecalhoFont, Brushes.Black,
+                        colX + 5, yPos + 5);
+                    colX += colWidth;
+                }
+
+                yPos += 30;
+
+                // Escrever dados
+                foreach (DataGridViewRow row in dgvEstoque.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    colX = e.MarginBounds.Left;
+
+                    // Verificar se precisa de nova página
+                    if (yPos + 25 > e.MarginBounds.Bottom)
+                    {
+                        e.HasMorePages = true;
+                        return;
+                    }
+
+                    // Destacar linha de total
+                    bool isTotal = row.Cells[0].Value?.ToString()?.Contains("TOTAL") == true;
+                    if (isTotal)
+                    {
+                        e.Graphics.FillRectangle(Brushes.DarkGray, e.MarginBounds.Left, yPos,
+                            e.MarginBounds.Width, 22);
+                    }
+
+                    for (int i = 0; i < dgvEstoque.Columns.Count; i++)
+                    {
+                        string valor = row.Cells[i].Value?.ToString() ?? "";
+                        e.Graphics.DrawString(valor, textoFont, isTotal ? Brushes.White : Brushes.Black,
+                            colX + 5, yPos + 3);
+                        colX += colWidth;
+                    }
+
+                    yPos += 22;
+                }
+
+                // Rodapé
+                e.Graphics.DrawString($"Total de registros: {dgvEstoque.Rows.Count - 1} itens",
+                    subtituloFont, Brushes.Gray, e.MarginBounds.Left, yPos + 10);
+            };
+
+            printDialog.Document = printDocument;
+
+            if (printDialog.ShowDialog() == DialogResult.OK)
+            {
+                printDocument.Print();
+            }
+
+
+        }
+
+        private void btnCadastrar_Click(object sender, EventArgs e)
+        {
+            frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado);
+            abrir.Show();
+            this.Hide();
+        }
     }
+
+
 }
