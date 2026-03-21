@@ -203,6 +203,47 @@ ALTER TABLE tbProdutos
 MODIFY COLUMN dataDeValidade DATE NOT NULL,
 MODIFY COLUMN dataLimiteDeSaida DATE NOT NULL;
 
+
+
+-- Recalcular estoque
+UPDATE tbEstoqueItens ei
+SET quantidade = (
+    SELECT COALESCE(SUM(quantidade), 0)
+    FROM tbProdutos p
+    WHERE p.codList = ei.codList AND p.quantidade > 0
+),
+dataMovimentacao = CURDATE(),
+horaMovimentacao = CURTIME();
+
+-- Verificar resultado
+SELECT 
+    l.descricao,
+    ei.quantidade
+FROM tbLista l
+INNER JOIN tbEstoqueItens ei ON ei.codList = l.codList
+WHERE l.descricao = 'CAFE 250G';
+
+USE dbfrancisco;
+
+-- Recalcular todos os estoques
+UPDATE tbEstoqueItens ei
+SET quantidade = (
+    SELECT COALESCE(SUM(quantidade), 0)
+    FROM tbProdutos p
+    WHERE p.codList = ei.codList AND p.quantidade > 0
+),
+dataMovimentacao = CURDATE(),
+horaMovimentacao = CURTIME();
+
+-- Verificar resultados
+SELECT 
+    l.descricao,
+    ei.quantidade,
+    (SELECT SUM(p.quantidade) FROM tbProdutos p WHERE p.codList = l.codList AND p.quantidade > 0) as soma_produtos
+FROM tbLista l
+INNER JOIN tbEstoqueItens ei ON ei.codList = l.codList
+WHERE l.descricao IN ('ARROZ 1KG', 'ACUCAR 1KG');
+
 -- =============================================
 -- INSERÇÃO DE DADOS INICIAIS (ORDEM CORRETA)
 -- =============================================

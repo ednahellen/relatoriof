@@ -163,21 +163,21 @@ namespace GPSFA_WinForms
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine(@"SELECT 
-                        p.codProd AS 'Código',
-                        DATE_FORMAT(p.dataDeEntrada, '%d/%m/%Y %H:%i') AS 'Data Entrada',
-                        l.descricao AS Produto,
-                        p.quantidade AS Qtd,
-                        l.peso AS 'Peso (g)',
-                        l.unidade AS Unidade,
-                        CASE 
-                            WHEN p.dataDeValidade IS NULL OR p.dataDeValidade < '2000-01-01' THEN ''
-                            ELSE DATE_FORMAT(p.dataDeValidade, '%d/%m/%Y')
-                        END AS Validade,
-                        DATEDIFF(p.dataDeValidade, CURDATE()) AS 'Dias Restantes'
-                    FROM tbProdutos p
-                    INNER JOIN tbLista l ON p.codList = l.codList
-                    WHERE p.dataDeEntrada >= @ini 
-                    AND p.dataDeEntrada < DATE_ADD(@fim, INTERVAL 1 DAY)");
+                p.codProd AS 'Código',
+                DATE_FORMAT(p.dataDeEntrada, '%d/%m/%Y %H:%i') AS 'Data Entrada',
+                l.descricao AS Produto,
+                CAST(p.quantidade AS SIGNED) AS Qtd,
+                l.peso AS 'Peso (g)',
+                l.unidade AS Unidade,
+                CASE 
+                    WHEN p.dataDeValidade IS NULL OR p.dataDeValidade < '2000-01-01' THEN ''
+                    ELSE DATE_FORMAT(p.dataDeValidade, '%d/%m/%Y')
+                END AS Validade,
+                DATEDIFF(p.dataDeValidade, CURDATE()) AS 'Dias Restantes'
+            FROM tbProdutos p
+            INNER JOIN tbLista l ON p.codList = l.codList
+            WHERE p.dataDeEntrada >= @ini 
+            AND p.dataDeEntrada < DATE_ADD(@fim, INTERVAL 1 DAY)");
 
                     if (cbxProduto.SelectedItem != null && cbxProduto.SelectedItem.ToString() != "TODOS")
                         sql.AppendLine("AND l.descricao = @produto");
@@ -197,6 +197,7 @@ namespace GPSFA_WinForms
                     }
                 }
 
+                // Adicionar coluna de Status
                 tabela.Columns.Add("Status", typeof(string));
 
                 foreach (DataRow row in tabela.Rows)
@@ -448,9 +449,28 @@ namespace GPSFA_WinForms
             {
                 if (row["Produto"].ToString() == "❖ TOTAL GERAL ❖") continue;
 
-                decimal qtd = 0, peso = 0;
-                if (row["Qtd"] != DBNull.Value) decimal.TryParse(row["Qtd"].ToString(), out qtd);
-                if (row["Peso (g)"] != DBNull.Value) decimal.TryParse(row["Peso (g)"].ToString(), out peso);
+                decimal qtd = 0;
+                decimal peso = 0;
+
+                // Tratamento seguro para quantidade
+                if (row["Qtd"] != DBNull.Value)
+                {
+                    string qtdStr = row["Qtd"].ToString();
+                    // Remove pontos e vírgulas e mantém apenas números
+                    string apenasNumeros = "";
+                    foreach (char c in qtdStr)
+                    {
+                        if (char.IsDigit(c))
+                            apenasNumeros += c;
+                    }
+                    decimal.TryParse(apenasNumeros, out qtd);
+                }
+
+                // Tratamento seguro para peso
+                if (row["Peso (g)"] != DBNull.Value)
+                {
+                    decimal.TryParse(row["Peso (g)"].ToString(), out peso);
+                }
 
                 totalQtd += qtd;
                 totalPesoGramas += (qtd * peso);
@@ -458,7 +478,7 @@ namespace GPSFA_WinForms
 
             DataRow totalRow = tabela.NewRow();
             totalRow["Produto"] = "❖ TOTAL GERAL ❖";
-            totalRow["Qtd"] = totalQtd.ToString("N0");
+            totalRow["Qtd"] = totalQtd; 
             totalRow["Peso (g)"] = totalPesoGramas;
             totalRow["Unidade"] = FormatarPeso(totalPesoGramas);
             totalRow["Status"] = "";

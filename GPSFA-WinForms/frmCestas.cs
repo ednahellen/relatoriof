@@ -128,10 +128,7 @@ namespace GPSFA_WinForms
         {
             try
             {
-                MySqlCommand comm = new MySqlCommand();
                 MySqlConnection conn = DataBaseConnection.OpenConnection();
-
-                //using (var transaction = conn.BeginTransaction())
 
                 for (int i = 0; i < quantidadeDeCestas; i++)
                 {
@@ -139,40 +136,41 @@ namespace GPSFA_WinForms
                     var cmdCesta = new MySqlCommand(
                         "INSERT INTO tbCestas(codUsu) VALUES(@codUsu); SELECT LAST_INSERT_ID();",
                         conn
-                    //transaction
                     );
 
                     cmdCesta.Parameters.Add("@codUsu", MySqlDbType.Int32).Value = codUsu;
-
                     int codCesta = Convert.ToInt32(cmdCesta.ExecuteScalar());
 
                     // 2️⃣ Inserir itens da cesta
                     foreach (DataGridViewRow row in dgvItensDaCesta.Rows)
                     {
-                        int codList = Convert.ToInt32(row.Cells["codList"].Value);
-                        int quantidade = Convert.ToInt32(row.Cells["QtdePorCesta"].Value);
+                        if (row.IsNewRow) continue;
 
+                        int codList = Convert.ToInt32(row.Cells["codList"].Value);
+                        int quantidadePorCesta = Convert.ToInt32(row.Cells["QtdePorCesta"].Value);
+
+                        // Insere o item mesmo se não tiver estoque (vai dar negativo depois)
                         var cmdItem = new MySqlCommand(
                             "INSERT INTO tbItensCesta(codCes, codList, quantidade) VALUES(@codCes, @codList, @quantidade)",
                             conn
-                        //transaction
                         );
 
                         cmdItem.Parameters.Add("@codCes", MySqlDbType.Int32).Value = codCesta;
                         cmdItem.Parameters.Add("@codList", MySqlDbType.Int32).Value = codList;
-                        cmdItem.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidade;
+                        cmdItem.Parameters.Add("@quantidade", MySqlDbType.Int32).Value = quantidadePorCesta;
 
                         cmdItem.ExecuteNonQuery();
-
                     }
                 }
+
+                DataBaseConnection.CloseConnection();
+                MessageBox.Show($"{quantidadeDeCestas} cesta(s) montada(s) com sucesso!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception error)
             {
-                MessageBox.Show($"Erro ao montar cestas! Erro:\n\n{error}", "Mensagem do sistema");
+                MessageBox.Show($"Erro ao montar cestas! Erro:\n\n{error}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DataBaseConnection.CloseConnection();
             }
-
-            DataBaseConnection.CloseConnection();
         }
 
 
@@ -464,11 +462,11 @@ namespace GPSFA_WinForms
 
                 var valor = row.Cells["Status"].Value?.ToString();
 
-                if (!string.IsNullOrEmpty(valor) &&
-                    valor.Equals("Insuficiente", StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
+                //if (!string.IsNullOrEmpty(valor) &&
+                //    valor.Equals("Insuficiente", StringComparison.OrdinalIgnoreCase))
+                //{
+                //    return true;
+                //}
             }
 
             return false;
@@ -505,38 +503,24 @@ namespace GPSFA_WinForms
 
         // Realiza o registro de montagem de cestas - A FAZER
         private void btnMontar_Click(object sender, EventArgs e)
-        {   
-            // Valida se o DGV ou txtQtdCestas está vazio
-            if (dgvItensDaCesta.Rows.Count > 1 || txtQtdCestas.Text.Equals("") || !QuantidadeValida())
+        {
+            // Valida se o DGV está vazio ou se a quantidade é inválida
+            if (dgvItensDaCesta.Rows.Count <= 1 || string.IsNullOrEmpty(txtQtdCestas.Text) || !QuantidadeValida())
             {
-                MessageBox.Show("A cesta deve conter pelo menos 5 itens e a quantidade precisa ser maior que 0", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Adicione itens à cesta e informe uma quantidade válida", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            else
-            {
-                // valida se o usuário confirma a montagem
-                DialogResult result = MessageBox.Show($"Deseja confirmar a montagem de {txtQtdCestas.Text} cestas?", "Mensagem do sistema", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                if (result == DialogResult.Yes) 
-                {
-                    if (!ExisteItemInsuficiente())
-                    {
-                        montarCestas(Convert.ToInt32(txtQtdCestas.Text), codUsuLogado);
-                        MessageBox.Show("Cestas montadas com sucesso", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        limparDados();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Existem itens com estoque insuficiente!", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-                }
-                else
-                {
-                    limparDados();
-                    return;
-                }
+            // valida se o usuário confirma a montagem
+            DialogResult result = MessageBox.Show($"Deseja confirmar a montagem de {txtQtdCestas.Text} cestas?\n\nItens com estoque insuficiente serão distribuídos apenas o disponível.", "Mensagem do sistema", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                montarCestas(Convert.ToInt32(txtQtdCestas.Text), codUsuLogado);
+                MessageBox.Show("Cestas montadas com sucesso", "Mensagem do sistema", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                limparDados();
             }
         }
     }
+    
 }
