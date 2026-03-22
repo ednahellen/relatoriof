@@ -1,13 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GPSFA_WinForms
@@ -47,7 +41,7 @@ namespace GPSFA_WinForms
         public int acessaUsuario(string usuario, string senha)
         {
             int resp;
-            try 
+            try
             {
                 MySqlCommand comm = new MySqlCommand();
                 comm.CommandText = "SELECT codUsu, ativo, tipo FROM tbUsuarios where usuario=@usuario and senha=@senha;";
@@ -70,7 +64,7 @@ namespace GPSFA_WinForms
 
                         return resp = 1;
                     }
-                    else 
+                    else
                     {
                         MessageBox.Show($"Erro ao autenticar usuário.", "Mensagem do sistema",
                         MessageBoxButtons.OK,
@@ -119,7 +113,7 @@ namespace GPSFA_WinForms
                    MessageBoxIcon.Error,
                    MessageBoxDefaultButton.Button1);
                 limparCampos();
-                    
+
             }
         }
 

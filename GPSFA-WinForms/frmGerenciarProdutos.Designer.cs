@@ -102,7 +102,7 @@
             this.cbbUnidadeMedida.Location = new System.Drawing.Point(900, 223);
             this.cbbUnidadeMedida.Name = "cbbUnidadeMedida";
             this.cbbUnidadeMedida.Size = new System.Drawing.Size(254, 39);
-            this.cbbUnidadeMedida.TabIndex = 5;
+            this.cbbUnidadeMedida.TabIndex = 6;
             // 
             // txtPeso
             // 
@@ -112,7 +112,7 @@
             this.txtPeso.MaxLength = 10;
             this.txtPeso.Name = "txtPeso";
             this.txtPeso.Size = new System.Drawing.Size(98, 39);
-            this.txtPeso.TabIndex = 4;
+            this.txtPeso.TabIndex = 5;
             this.txtPeso.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPeso_KeyPress);
             // 
             // lblPeso
@@ -134,7 +134,7 @@
             this.txtQuantidade.MaxLength = 10;
             this.txtQuantidade.Name = "txtQuantidade";
             this.txtQuantidade.Size = new System.Drawing.Size(137, 39);
-            this.txtQuantidade.TabIndex = 3;
+            this.txtQuantidade.TabIndex = 4;
             this.txtQuantidade.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtQuantidade_KeyPress_1);
             // 
             // lblQuantidade
@@ -167,7 +167,7 @@
             this.dtpDataValidade.Location = new System.Drawing.Point(277, 347);
             this.dtpDataValidade.Name = "dtpDataValidade";
             this.dtpDataValidade.Size = new System.Drawing.Size(160, 34);
-            this.dtpDataValidade.TabIndex = 7;
+            this.dtpDataValidade.TabIndex = 8;
             // 
             // lblDataEntrada
             // 
@@ -188,7 +188,7 @@
             this.dtpDataEntrada.Location = new System.Drawing.Point(35, 347);
             this.dtpDataEntrada.Name = "dtpDataEntrada";
             this.dtpDataEntrada.Size = new System.Drawing.Size(160, 34);
-            this.dtpDataEntrada.TabIndex = 6;
+            this.dtpDataEntrada.TabIndex = 7;
             // 
             // lblDescricao
             // 
@@ -285,7 +285,7 @@
             this.cbbOrigemDoacao.Location = new System.Drawing.Point(462, 111);
             this.cbbOrigemDoacao.Name = "cbbOrigemDoacao";
             this.cbbOrigemDoacao.Size = new System.Drawing.Size(236, 39);
-            this.cbbOrigemDoacao.TabIndex = 61;
+            this.cbbOrigemDoacao.TabIndex = 2;
             this.cbbOrigemDoacao.SelectedIndexChanged += new System.EventHandler(this.cbbOrigemDoacao_SelectedIndexChanged);
             // 
             // btnMedida
@@ -329,7 +329,7 @@
             this.cbbDescricao.Location = new System.Drawing.Point(35, 223);
             this.cbbDescricao.Name = "cbbDescricao";
             this.cbbDescricao.Size = new System.Drawing.Size(477, 39);
-            this.cbbDescricao.TabIndex = 58;
+            this.cbbDescricao.TabIndex = 3;
             this.cbbDescricao.SelectedIndexChanged += new System.EventHandler(this.cbbDescricao_SelectedIndexChanged);
             // 
             // pnlCrud
@@ -355,7 +355,7 @@
             this.btnVoltar.Location = new System.Drawing.Point(1045, 12);
             this.btnVoltar.Name = "btnVoltar";
             this.btnVoltar.Size = new System.Drawing.Size(166, 70);
-            this.btnVoltar.TabIndex = 17;
+            this.btnVoltar.TabIndex = 15;
             this.btnVoltar.Text = "&Voltar";
             this.btnVoltar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnVoltar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -370,7 +370,7 @@
             this.btnLimpar.Location = new System.Drawing.Point(519, 12);
             this.btnLimpar.Name = "btnLimpar";
             this.btnLimpar.Size = new System.Drawing.Size(166, 70);
-            this.btnLimpar.TabIndex = 14;
+            this.btnLimpar.TabIndex = 12;
             this.btnLimpar.Text = "&Limpar";
             this.btnLimpar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnLimpar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -385,7 +385,7 @@
             this.btnPesquisar.Location = new System.Drawing.Point(863, 12);
             this.btnPesquisar.Name = "btnPesquisar";
             this.btnPesquisar.Size = new System.Drawing.Size(166, 70);
-            this.btnPesquisar.TabIndex = 16;
+            this.btnPesquisar.TabIndex = 14;
             this.btnPesquisar.Text = "&Pesquisar";
             this.btnPesquisar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnPesquisar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -399,7 +399,7 @@
             this.btnAlterar.Location = new System.Drawing.Point(347, 12);
             this.btnAlterar.Name = "btnAlterar";
             this.btnAlterar.Size = new System.Drawing.Size(166, 70);
-            this.btnAlterar.TabIndex = 13;
+            this.btnAlterar.TabIndex = 11;
             this.btnAlterar.Text = "&Alterar";
             this.btnAlterar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnAlterar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -413,7 +413,7 @@
             this.btnExcluir.Location = new System.Drawing.Point(691, 12);
             this.btnExcluir.Name = "btnExcluir";
             this.btnExcluir.Size = new System.Drawing.Size(166, 70);
-            this.btnExcluir.TabIndex = 15;
+            this.btnExcluir.TabIndex = 13;
             this.btnExcluir.Text = "&Excluir";
             this.btnExcluir.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnExcluir.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -427,7 +427,7 @@
             this.btnCadastrar.Location = new System.Drawing.Point(175, 12);
             this.btnCadastrar.Name = "btnCadastrar";
             this.btnCadastrar.Size = new System.Drawing.Size(166, 70);
-            this.btnCadastrar.TabIndex = 12;
+            this.btnCadastrar.TabIndex = 10;
             this.btnCadastrar.Text = "&Cadastrar";
             this.btnCadastrar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnCadastrar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -442,7 +442,7 @@
             this.btnNovo.Location = new System.Drawing.Point(3, 12);
             this.btnNovo.Name = "btnNovo";
             this.btnNovo.Size = new System.Drawing.Size(166, 70);
-            this.btnNovo.TabIndex = 11;
+            this.btnNovo.TabIndex = 9;
             this.btnNovo.Text = "&Novo";
             this.btnNovo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnNovo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;

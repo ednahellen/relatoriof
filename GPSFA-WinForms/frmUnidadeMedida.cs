@@ -1,18 +1,10 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 // Importando biblioteca para remover espaço extras entre registros.
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace GPSFA_WinForms
 {
@@ -46,7 +38,7 @@ namespace GPSFA_WinForms
 
         public frmUnidadeMedida(string descricao, int codUsu)
         {
-            InitializeComponent();            
+            InitializeComponent();
             codUsuLogado = codUsu;
             buscaCodigoUnidade(descricao);
             txtDescricao.Text = descricao;
@@ -54,7 +46,7 @@ namespace GPSFA_WinForms
             btnCadastrar.Enabled = false;
         }
 
-        int codUni = 0; 
+        int codUni = 0;
 
         public void buscaCodigoUnidade(string descricao)
         {
@@ -71,20 +63,20 @@ namespace GPSFA_WinForms
             codUni = 0;
 
             while (DR.Read())
-            {               
+            {
                 codUni = DR.GetInt32(0);
             }
 
             DataBaseConnection.CloseConnection();
         }
-               
+
         private int excluirUnidade(int codUni)
         {
             MySqlCommand comm = new MySqlCommand();
-            comm.CommandText = "DELETE FROM tbUnidades WHERE codUni = " +codUni;
+            comm.CommandText = "DELETE FROM tbUnidades WHERE codUni = " + codUni;
             comm.CommandType = CommandType.Text;
 
-            comm.Parameters.Clear();            
+            comm.Parameters.Clear();
 
             comm.Connection = DataBaseConnection.OpenConnection();
 
@@ -106,7 +98,7 @@ namespace GPSFA_WinForms
                 txtDescricao.Focus();
             }
             else
-            limparCampos();
+                limparCampos();
             btnCadastrar.Enabled = false;
             btnNovo.Enabled = true;
             btnLimpar.Enabled = false;
@@ -117,8 +109,8 @@ namespace GPSFA_WinForms
 
         private void limparCampos()
         {
-           txtDescricao.Clear();
-           txtDescricao.Focus();
+            txtDescricao.Clear();
+            txtDescricao.Focus();
         }
 
         private void desativarBotoes()
@@ -126,8 +118,8 @@ namespace GPSFA_WinForms
             btnCadastrar.Enabled = false;
             btnAlterar.Enabled = false;
             btnLimpar.Enabled = false;
-            btnExcluir.Enabled = false;        
-        } 
+            btnExcluir.Enabled = false;
+        }
 
         public int cadastrarUnidades(string descricao)
         {
@@ -136,14 +128,14 @@ namespace GPSFA_WinForms
             comm.CommandType = CommandType.Text;
 
             comm.Parameters.Clear();
-            comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 20).Value = descricao;           
+            comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 20).Value = descricao;
 
             comm.Connection = DataBaseConnection.OpenConnection();
 
             try
             {
                 int resp = comm.ExecuteNonQuery();
-                
+
                 DataBaseConnection.CloseConnection();
 
                 return resp;
@@ -153,11 +145,11 @@ namespace GPSFA_WinForms
                 MessageBox.Show("Este registro já existe!", "Mensagem do sistema",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error,
-                    MessageBoxDefaultButton.Button1);                 
+                    MessageBoxDefaultButton.Button1);
             }
             return 0;
         }
-       
+
         int respAlterar = 0;
 
         private int alterarUnidadeDeMedida(string descricao)
@@ -169,7 +161,7 @@ namespace GPSFA_WinForms
             comm.Parameters.Clear();
 
             comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 20).Value = descricao;
-           
+
 
             comm.Connection = DataBaseConnection.OpenConnection();
 
@@ -185,8 +177,8 @@ namespace GPSFA_WinForms
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error,
                         MessageBoxDefaultButton.Button1);
-                        
-                        txtDescricao.Enabled = false;
+
+                txtDescricao.Enabled = false;
             }
 
             return respAlterar;
@@ -203,7 +195,7 @@ namespace GPSFA_WinForms
             comm.Parameters.Add("@descricao", MySqlDbType.VarChar, 20).Value = descricao;
 
 
-            comm.Connection = DataBaseConnection.OpenConnection(); 
+            comm.Connection = DataBaseConnection.OpenConnection();
 
             int resp = comm.ExecuteNonQuery();
 
@@ -220,13 +212,13 @@ namespace GPSFA_WinForms
 
         private void habilitarBotoes()
         {
-            btnCadastrar.Enabled = true;         
+            btnCadastrar.Enabled = true;
 
         }
 
         private void desativaCampos()
         {
-            txtDescricao.Enabled = false; 
+            txtDescricao.Enabled = false;
         }
 
         private void habilitaCampos()
@@ -246,7 +238,7 @@ namespace GPSFA_WinForms
             habilitarBotoes();
             desativarBotoesNovo();
             habilitaCampos();
-            txtDescricao.Focus();            
+            txtDescricao.Focus();
         }
 
         private void btnCadastrar_Click(object sender, EventArgs e)
@@ -302,7 +294,7 @@ namespace GPSFA_WinForms
                 }
             }
         }
-       
+
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
             frmPesquisarUnidadeDeMedida abrir = new frmPesquisarUnidadeDeMedida(codUsuLogado);
@@ -350,40 +342,40 @@ namespace GPSFA_WinForms
         }
 
         private void btnExcluir_Click(object sender, EventArgs e)
-        {            
-            
-                DialogResult result = MessageBox.Show("Deseja excluir?", "Mensagem do Sistema",
-                  MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+        {
 
-                if (result.Equals(DialogResult.Yes))
+            DialogResult result = MessageBox.Show("Deseja excluir?", "Mensagem do Sistema",
+              MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
+
+            if (result.Equals(DialogResult.Yes))
+            {
+                int resp = excluirUnidade(codUni);
+
+                if (resp.Equals(1))
                 {
-                    int resp = excluirUnidade(codUni);
-
-                    if (resp.Equals(1))
-                    {
-                        MessageBox.Show("Excluido com Sucesso!", "Mensagem do Sistema",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
-                        txtDescricao.Clear();
-                        txtDescricao.Focus();
-                        btnExcluir.Enabled = false;
-                        btnAlterar.Enabled = false;
-                        btnLimpar.Enabled = false;
-                        btnNovo.Enabled = true;
-                        txtDescricao.Enabled = false;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Erro ao excluir!", "Mensagem do Sistema",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-                        txtDescricao.Clear();
-                        txtDescricao.Focus();
-                        btnExcluir.Enabled = false;
-                        btnAlterar.Enabled = false;
-                        btnLimpar.Enabled = false;
-                        btnNovo.Enabled = true;
-                        txtDescricao.Enabled = false;
-                    }
-                }            
+                    MessageBox.Show("Excluido com Sucesso!", "Mensagem do Sistema",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+                    txtDescricao.Clear();
+                    txtDescricao.Focus();
+                    btnExcluir.Enabled = false;
+                    btnAlterar.Enabled = false;
+                    btnLimpar.Enabled = false;
+                    btnNovo.Enabled = true;
+                    txtDescricao.Enabled = false;
+                }
+                else
+                {
+                    MessageBox.Show("Erro ao excluir!", "Mensagem do Sistema",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    txtDescricao.Clear();
+                    txtDescricao.Focus();
+                    btnExcluir.Enabled = false;
+                    btnAlterar.Enabled = false;
+                    btnLimpar.Enabled = false;
+                    btnNovo.Enabled = true;
+                    txtDescricao.Enabled = false;
+                }
+            }
         }
 
         private void frmUnidadeMedida_Load(object sender, EventArgs e)
@@ -400,11 +392,11 @@ namespace GPSFA_WinForms
                 btnLimpar.Enabled = true;
             }
             else
-            {                
+            {
                 btnAlterar.Enabled = false;
-                btnExcluir.Enabled = false;              
+                btnExcluir.Enabled = false;
             }
         }
     }
-    }
+}
 

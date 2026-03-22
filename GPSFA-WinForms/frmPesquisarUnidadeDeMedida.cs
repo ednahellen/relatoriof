@@ -1,15 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 
 namespace GPSFA_WinForms
 {
@@ -25,7 +18,7 @@ namespace GPSFA_WinForms
 
         public frmPesquisarUnidadeDeMedida()
         {
-            InitializeComponent();   
+            InitializeComponent();
             btnPesquisarUnidade.Enabled = false;
             ltbPesquisarUnidades.Enabled = false;
             btnLimpar.Enabled = false;
@@ -45,15 +38,15 @@ namespace GPSFA_WinForms
 
         public frmPesquisarUnidadeDeMedida(string descricao)
         {
-            InitializeComponent();          
+            InitializeComponent();
 
-            txtDescricao.Text = descricao;          
+            txtDescricao.Text = descricao;
 
             buscaUnidades(descricao);
-        }                
-   
+        }
+
         public void buscaUnidades(string descricao)
-        {           
+        {
 
             MySqlCommand comm = new MySqlCommand();
             comm.CommandText = $"SELECT descricao FROM tbUnidades WHERE descricao LIKE '%{descricao}%';";
@@ -73,17 +66,18 @@ namespace GPSFA_WinForms
                     "Mensagem do sistema",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information,
-                    MessageBoxDefaultButton.Button1);               
+                    MessageBoxDefaultButton.Button1);
                 txtDescricao.Clear();
                 txtDescricao.Focus();
             }
-            else { 
+            else
+            {
                 while (DR.Read())
-                {                
-                    ltbPesquisarUnidades.Items.Add(DR.GetString(0));                
-                }      
+                {
+                    ltbPesquisarUnidades.Items.Add(DR.GetString(0));
+                }
             }
-            DataBaseConnection.CloseConnection();            
+            DataBaseConnection.CloseConnection();
         }
 
         private void btnVoltar_Click(object sender, EventArgs e)
@@ -94,7 +88,7 @@ namespace GPSFA_WinForms
         }
 
         private void btnPesquisarUnidade_Click(object sender, EventArgs e)
-        {            
+        {
             if (txtDescricao.Text.Equals(""))
             {
                 MessageBox.Show("Favor inserir um valor",
@@ -105,9 +99,9 @@ namespace GPSFA_WinForms
                 txtDescricao.Focus();
             }
             else
-            {                
-                    buscaUnidades(txtDescricao.Text);
-                    ltbPesquisarUnidades.Enabled = true;                    
+            {
+                buscaUnidades(txtDescricao.Text);
+                ltbPesquisarUnidades.Enabled = true;
             }
         }
 
@@ -116,7 +110,7 @@ namespace GPSFA_WinForms
             IntPtr hMenu = GetSystemMenu(this.Handle, false);
             int MenuCount = GetMenuItemCount(hMenu) - 1;
             RemoveMenu(hMenu, MenuCount, MF_BYCOMMAND);
-        }    
+        }
 
         private void ltbPesquisarUnidades_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -150,7 +144,7 @@ namespace GPSFA_WinForms
             txtDescricao.Clear();
             txtDescricao.Focus();
             btnPesquisarUnidade.Enabled = false;
-            btnLimpar.Enabled = false;           
+            btnLimpar.Enabled = false;
         }
 
         private void txtDescricao_TextChanged(object sender, EventArgs e)

@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using CpfCnpjLibrary; //API VALIDA CNPJ | CPF
 using MySql.Data.MySqlClient;
+using System;
+using System.Data;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using ViaCep; // API BUSCA CEP
-using CpfCnpjLibrary; //API VALIDA CNPJ | CPF
 
 namespace GPSFA_WinForms
 {
@@ -32,11 +25,11 @@ namespace GPSFA_WinForms
         {
             InitializeComponent();
             desativarBotoes();
-            desativarCampos();           
+            desativarCampos();
         }
         // Método Construtor da Janela com parâmetro do CodUsu logado.
         public frmOrigemDoacao(int codUsu)
-        {   
+        {
             codUsuLogado = codUsu;
             InitializeComponent();
             desativarBotoes();
@@ -44,7 +37,7 @@ namespace GPSFA_WinForms
         }
         // Método Construtor Base da Janela com parâmetros para preenchimento dos campos da janela.
         public frmOrigemDoacao(string nome, string cpf, string cnpj, string cep, string rua, string numero, string complemento, string bairro, string cidade, string estado, string telCel, string referencia)
-        {            
+        {
             InitializeComponent();
             buscaCodigoOrigem(nome);
             btnNovo.Enabled = false;
@@ -70,10 +63,10 @@ namespace GPSFA_WinForms
         public frmOrigemDoacao(string nome)
         {
             InitializeComponent();
-            buscaCodigoOrigem(nome); 
+            buscaCodigoOrigem(nome);
             txtNomeFornecedor.Text = nome;
             buscaOrigemDoacao(nome);
-            desativarBotoes();            
+            desativarBotoes();
             btnNovo.Enabled = false;
             btnAlterar.Enabled = true;
             btnLimpar.Enabled = true;
@@ -141,7 +134,7 @@ namespace GPSFA_WinForms
             mskCnpj.Clear();
             cbbEstado.Text = "";
             cbbCidade.Text = "";
-        }       
+        }
 
         // Variavel global do código do usuário logado
         int codUsuLogado;
@@ -162,7 +155,7 @@ namespace GPSFA_WinForms
             DR = comm.ExecuteReader();
 
             if (DR.HasRows == false)
-            {               
+            {
                 respBuscar = 0;
             }
             else
@@ -218,8 +211,8 @@ namespace GPSFA_WinForms
                         mskCpf.Enabled = false;
                     }
                     catch (Exception)
-                    {                       
-                        mskCpf.Enabled = false;                        
+                    {
+                        mskCpf.Enabled = false;
                     }
                     try
                     {
@@ -228,7 +221,7 @@ namespace GPSFA_WinForms
                     }
                     catch (Exception)
                     {
-                        mskCnpj.Enabled = false;                        
+                        mskCnpj.Enabled = false;
                     }
                     try
                     {
@@ -253,7 +246,7 @@ namespace GPSFA_WinForms
                         cbbEstado.Items.Add("");
                         mskTelefone.Text = "";
                         txtReferencia.Text = "";
-                    }                    
+                    }
                 }
             }
             DataBaseConnection.CloseConnection();
@@ -265,7 +258,7 @@ namespace GPSFA_WinForms
         {
             try
             {
-                ViaCepClient viaCep = new ViaCepClient();               
+                ViaCepClient viaCep = new ViaCepClient();
 
                 var endereco = viaCep.Search(CEP);
 
@@ -374,9 +367,9 @@ namespace GPSFA_WinForms
             comm.Parameters.Add("@referencia", MySqlDbType.VarChar, 200).Value = referencia;
 
             comm.Connection = DataBaseConnection.OpenConnection();
-           
+
             respAlterar = comm.ExecuteNonQuery();
-            DataBaseConnection.CloseConnection();           
+            DataBaseConnection.CloseConnection();
 
             return respAlterar;
         }
@@ -397,14 +390,14 @@ namespace GPSFA_WinForms
             DataBaseConnection.CloseConnection();
 
             return resp;
-        }     
-                
+        }
+
         //Desativando o botão fechar da janela Parte 2/2.
         private void frmOrigemDoacao_Load(object sender, EventArgs e)
         {
             IntPtr hMenu = GetSystemMenu(this.Handle, false);
             int MenuCount = GetMenuItemCount(hMenu) - 1;
-            RemoveMenu(hMenu, MenuCount, MF_BYCOMMAND);           
+            RemoveMenu(hMenu, MenuCount, MF_BYCOMMAND);
         }
 
         //Ações dos botões e campos
@@ -465,7 +458,7 @@ namespace GPSFA_WinForms
             }
             else
             {
-                mskCpf.Enabled= false;
+                mskCpf.Enabled = false;
             }
         }
 
@@ -536,9 +529,9 @@ namespace GPSFA_WinForms
                     MessageBoxDefaultButton.Button1);
                     mskCpf.Focus();
                     return;
-                }               
-               
-                    int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), mskCpf.Text, cnpj, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
+                }
+
+                int resp = cadastrarFornecedores(Regex.Replace(txtNomeFornecedor.Text, @"\s+", " ").Trim().ToUpper(), mskCpf.Text, cnpj, mskCep.Text, txtRua.Text, txtNumero.Text, txtComplemento.Text, txtBairro.Text, cbbCidade.Text, cbbEstado.Text, mskTelefone.Text, txtReferencia.Text);
 
 
                 if (resp.Equals(1))
@@ -823,7 +816,7 @@ namespace GPSFA_WinForms
         {
             try
             {
-              
+
 
             }
             catch (Exception)
@@ -839,7 +832,7 @@ namespace GPSFA_WinForms
 
         private void cbbEstado_SelectedIndexChanged(object sender, EventArgs e)
         {
-           
+
         }
     }
 }

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using MySql.Data.MySqlClient;
 
 namespace GPSFA_WinForms
 {
@@ -196,7 +190,7 @@ namespace GPSFA_WinForms
 
                             DataBaseConnection.CloseConnection();
                         }
-                        else 
+                        else
                         {
                             MessageBox.Show("Codigo não encontrado");
                             DataBaseConnection.CloseConnection();
@@ -257,7 +251,7 @@ namespace GPSFA_WinForms
                 }
             }
         }
-        
+
 
         //  ----  Métodos para eventos de clique dos botões
         private void btnCadastrar_Click(object sender, EventArgs e)
@@ -269,12 +263,12 @@ namespace GPSFA_WinForms
                     MessageBoxIcon.Information,
                     MessageBoxDefaultButton.Button1);
                 txtDescricao.Focus();
-            }     
+            }
             else
             {
 
                 //Regex utilizado para remover espaços extras entre as palavras.
-                double peso = Double.Parse(txtPeso.Text);              
+                double peso = Double.Parse(txtPeso.Text);
                 int resp = cadastrarProdutos(Regex.Replace(txtDescricao.Text, @"\s+", " ").Trim().ToUpper(), peso, cbbUnidadeMedida.SelectedItem.ToString(), codUniSelecionado);
 
                 if (resp.Equals(1))
@@ -295,7 +289,7 @@ namespace GPSFA_WinForms
                     MessageBoxIcon.Error,
                     MessageBoxDefaultButton.Button1);
 
-                   
+
                     btnCadastrar.Enabled = false;
                     btnLimpar.Enabled = false;
                     btnNovo.Enabled = true;
@@ -317,8 +311,8 @@ namespace GPSFA_WinForms
             frmUnidadeMedida abrir = new frmUnidadeMedida(codUsuLogado);
             abrir.Show();
             this.Close();
-        }      
-        
+        }
+
         private void btnPesquisar_Click(object sender, EventArgs e)
         {
             frmPesquisarProdutosLista abrir = new frmPesquisarProdutosLista(codUsuLogado);

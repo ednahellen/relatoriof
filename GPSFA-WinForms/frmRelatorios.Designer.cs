@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmRelatorios));
             this.pnlFiltrosDeBusca = new System.Windows.Forms.Panel();
+            this.btnImprimir = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.btnPesquisar = new System.Windows.Forms.Button();
             this.btnMenu = new System.Windows.Forms.Button();
@@ -60,11 +61,13 @@
             // 
             this.pnlFiltrosDeBusca.AutoSize = true;
             this.pnlFiltrosDeBusca.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(112)))), ((int)(((byte)(99)))));
+            this.pnlFiltrosDeBusca.Controls.Add(this.btnImprimir);
             this.pnlFiltrosDeBusca.Controls.Add(this.button1);
             this.pnlFiltrosDeBusca.Controls.Add(this.btnPesquisar);
             this.pnlFiltrosDeBusca.Controls.Add(this.btnMenu);
             this.pnlFiltrosDeBusca.Controls.Add(this.lblTitleRelatórios);
             this.pnlFiltrosDeBusca.Controls.Add(this.gpbFiltrosDoRelatorio);
+            this.pnlFiltrosDeBusca.Controls.Add(this.btnLimparFiltros);
             this.pnlFiltrosDeBusca.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlFiltrosDeBusca.Location = new System.Drawing.Point(0, 0);
             this.pnlFiltrosDeBusca.Name = "pnlFiltrosDeBusca";
@@ -72,9 +75,19 @@
             this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1163, 159);
             this.pnlFiltrosDeBusca.TabIndex = 4;
             // 
+            // btnImprimir
+            // 
+            this.btnImprimir.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btnImprimir.Location = new System.Drawing.Point(813, 9);
+            this.btnImprimir.Name = "btnImprimir";
+            this.btnImprimir.Size = new System.Drawing.Size(152, 43);
+            this.btnImprimir.TabIndex = 81;
+            this.btnImprimir.Text = "Imprimir";
+            this.btnImprimir.UseVisualStyleBackColor = false;
+            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(788, 9);
+            this.button1.Location = new System.Drawing.Point(655, 11);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(152, 43);
             this.button1.TabIndex = 19;
@@ -85,7 +98,7 @@
             // 
             this.btnPesquisar.Font = new System.Drawing.Font("Microsoft YaHei", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPesquisar.Image = ((System.Drawing.Image)(resources.GetObject("btnPesquisar.Image")));
-            this.btnPesquisar.Location = new System.Drawing.Point(604, 11);
+            this.btnPesquisar.Location = new System.Drawing.Point(493, 10);
             this.btnPesquisar.Name = "btnPesquisar";
             this.btnPesquisar.Size = new System.Drawing.Size(152, 43);
             this.btnPesquisar.TabIndex = 80;
@@ -93,7 +106,6 @@
             this.btnPesquisar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnPesquisar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnPesquisar.UseVisualStyleBackColor = true;
-            this.btnPesquisar.Click += new System.EventHandler(this.btnPesquisar_Click);
             // 
             // btnMenu
             // 
@@ -113,7 +125,7 @@
             this.lblTitleRelatórios.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.lblTitleRelatórios.Location = new System.Drawing.Point(12, 9);
             this.lblTitleRelatórios.Name = "lblTitleRelatórios";
-            this.lblTitleRelatórios.Size = new System.Drawing.Size(114, 27);
+            this.lblTitleRelatórios.Size = new System.Drawing.Size(93, 22);
             this.lblTitleRelatórios.TabIndex = 11;
             this.lblTitleRelatórios.Text = "Relatórios";
             // 
@@ -125,7 +137,6 @@
             this.gpbFiltrosDoRelatorio.Controls.Add(this.label1);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.cbxProduto);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.cbbUsuario);
-            this.gpbFiltrosDoRelatorio.Controls.Add(this.btnLimparFiltros);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.dtpDataFinalPeriodo);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.lblE);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.lblDataInicial);
@@ -146,7 +157,7 @@
             this.lblStatus.ForeColor = System.Drawing.SystemColors.Window;
             this.lblStatus.Location = new System.Drawing.Point(772, 25);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(70, 27);
+            this.lblStatus.Size = new System.Drawing.Size(57, 21);
             this.lblStatus.TabIndex = 86;
             this.lblStatus.Text = "Status";
             // 
@@ -155,7 +166,7 @@
             this.cbxStatus.FormattingEnabled = true;
             this.cbxStatus.Location = new System.Drawing.Point(776, 54);
             this.cbxStatus.Name = "cbxStatus";
-            this.cbxStatus.Size = new System.Drawing.Size(213, 35);
+            this.cbxStatus.Size = new System.Drawing.Size(213, 29);
             this.cbxStatus.TabIndex = 85;
             // 
             // label2
@@ -165,7 +176,7 @@
             this.label2.ForeColor = System.Drawing.SystemColors.Window;
             this.label2.Location = new System.Drawing.Point(526, 25);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(90, 27);
+            this.label2.Size = new System.Drawing.Size(72, 21);
             this.label2.TabIndex = 84;
             this.label2.Text = "Produto";
             // 
@@ -176,7 +187,7 @@
             this.label1.ForeColor = System.Drawing.SystemColors.Window;
             this.label1.Location = new System.Drawing.Point(292, 25);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(85, 27);
+            this.label1.Size = new System.Drawing.Size(68, 21);
             this.label1.TabIndex = 83;
             this.label1.Text = "Usuário";
             // 
@@ -185,7 +196,7 @@
             this.cbxProduto.FormattingEnabled = true;
             this.cbxProduto.Location = new System.Drawing.Point(530, 54);
             this.cbxProduto.Name = "cbxProduto";
-            this.cbxProduto.Size = new System.Drawing.Size(232, 35);
+            this.cbxProduto.Size = new System.Drawing.Size(232, 29);
             this.cbxProduto.TabIndex = 81;
             // 
             // cbbUsuario
@@ -193,14 +204,14 @@
             this.cbbUsuario.FormattingEnabled = true;
             this.cbbUsuario.Location = new System.Drawing.Point(296, 54);
             this.cbbUsuario.Name = "cbbUsuario";
-            this.cbbUsuario.Size = new System.Drawing.Size(223, 35);
+            this.cbbUsuario.Size = new System.Drawing.Size(223, 29);
             this.cbbUsuario.TabIndex = 81;
             // 
             // btnLimparFiltros
             // 
-            this.btnLimparFiltros.Location = new System.Drawing.Point(1008, 54);
+            this.btnLimparFiltros.Location = new System.Drawing.Point(333, 12);
             this.btnLimparFiltros.Name = "btnLimparFiltros";
-            this.btnLimparFiltros.Size = new System.Drawing.Size(120, 33);
+            this.btnLimparFiltros.Size = new System.Drawing.Size(152, 43);
             this.btnLimparFiltros.TabIndex = 9;
             this.btnLimparFiltros.Text = "&Limpar filtros";
             this.btnLimparFiltros.UseVisualStyleBackColor = true;
@@ -211,7 +222,7 @@
             this.dtpDataFinalPeriodo.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpDataFinalPeriodo.Location = new System.Drawing.Point(156, 54);
             this.dtpDataFinalPeriodo.Name = "dtpDataFinalPeriodo";
-            this.dtpDataFinalPeriodo.Size = new System.Drawing.Size(123, 34);
+            this.dtpDataFinalPeriodo.Size = new System.Drawing.Size(123, 29);
             this.dtpDataFinalPeriodo.TabIndex = 2;
             // 
             // lblE
@@ -221,7 +232,7 @@
             this.lblE.ForeColor = System.Drawing.SystemColors.Window;
             this.lblE.Location = new System.Drawing.Point(152, 27);
             this.lblE.Name = "lblE";
-            this.lblE.Size = new System.Drawing.Size(47, 27);
+            this.lblE.Size = new System.Drawing.Size(38, 21);
             this.lblE.TabIndex = 5;
             this.lblE.Text = "Fim";
             // 
@@ -232,7 +243,7 @@
             this.lblDataInicial.ForeColor = System.Drawing.SystemColors.Window;
             this.lblDataInicial.Location = new System.Drawing.Point(14, 27);
             this.lblDataInicial.Name = "lblDataInicial";
-            this.lblDataInicial.Size = new System.Drawing.Size(63, 27);
+            this.lblDataInicial.Size = new System.Drawing.Size(51, 21);
             this.lblDataInicial.TabIndex = 4;
             this.lblDataInicial.Text = "Início";
             // 
@@ -242,7 +253,7 @@
             this.dtpDataInicialPeriodo.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.dtpDataInicialPeriodo.Location = new System.Drawing.Point(18, 54);
             this.dtpDataInicialPeriodo.Name = "dtpDataInicialPeriodo";
-            this.dtpDataInicialPeriodo.Size = new System.Drawing.Size(123, 34);
+            this.dtpDataInicialPeriodo.Size = new System.Drawing.Size(123, 29);
             this.dtpDataInicialPeriodo.TabIndex = 1;
             // 
             // tabControl1
@@ -257,10 +268,10 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.dgvRelatorios);
-            this.tabPage1.Location = new System.Drawing.Point(4, 34);
+            this.tabPage1.Location = new System.Drawing.Point(4, 29);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1155, 422);
+            this.tabPage1.Size = new System.Drawing.Size(1155, 427);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "📊 Relatório de Estoque";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -273,7 +284,7 @@
             this.dgvRelatorios.Location = new System.Drawing.Point(3, 3);
             this.dgvRelatorios.Name = "dgvRelatorios";
             this.dgvRelatorios.RowHeadersWidth = 51;
-            this.dgvRelatorios.Size = new System.Drawing.Size(1149, 416);
+            this.dgvRelatorios.Size = new System.Drawing.Size(1149, 421);
             this.dgvRelatorios.TabIndex = 0;
             // 
             // frmRelatorios
@@ -334,6 +345,6 @@
 
         // DataGridViews
         private System.Windows.Forms.DataGridView dgvRelatorios;
-
+        private System.Windows.Forms.Button btnImprimir;
     }
 }

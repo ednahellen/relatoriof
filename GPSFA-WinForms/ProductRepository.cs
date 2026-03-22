@@ -1,10 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
 using System.Data;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 
 namespace GPSFA_WinForms
 {
@@ -17,7 +12,7 @@ namespace GPSFA_WinForms
             {
                 comm.CommandText = "SELECT descricao, quantidade, peso, unidade, codBar, dataDeEntrada, dataDeValidade FROM tbprodutos ORDER BY dataDeEntrada DESC;";
                 comm.Connection = DataBaseConnection.OpenConnection();
-                
+
                 MySqlDataAdapter da = new MySqlDataAdapter(comm);
                 da.Fill(dt);
 

@@ -1,12 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GPSFA_WinForms
@@ -66,7 +60,7 @@ namespace GPSFA_WinForms
             frmGerenciarProdutos abrir = new frmGerenciarProdutos(codUsuLogado, origemSelecionada);
             abrir.Show();
             this.Hide();
-            
+
             MySqlCommand comm = new MySqlCommand();
             comm.CommandText = "SELECT codOri, nome FROM tbOrigemDoacao WHERE nome = @nome;";
             comm.CommandType = CommandType.Text;
@@ -82,11 +76,11 @@ namespace GPSFA_WinForms
                     try
                     {
                         codOrigem = DR.GetInt32(0);
-                        
+
                         origemSelecionada = DR.GetString(1);
 
                         DataBaseConnection.CloseConnection();
-                        
+
                     }
                     catch (Exception error)
                     {
@@ -97,8 +91,8 @@ namespace GPSFA_WinForms
                         DataBaseConnection.CloseConnection();
                     }
                 }
-            }          
-           
+            }
+
         }
     }
 }

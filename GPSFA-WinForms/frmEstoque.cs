@@ -48,10 +48,10 @@ namespace GPSFA_WinForms
             btnProdutosPrincipais.Click += btnPrincipaisProdutos_Click;
             btnAplicarModo.Click += btnAlternarModo_Click;
 
-            
+
             btnImportar.Click += BtnImportar_Click;
 
-            btnExportar.Click += BtnExportar_Click; 
+            btnExportar.Click += BtnExportar_Click;
 
             ConfigurarDataGridView(modoAgrupado);
             CarregarProdutos();
@@ -802,7 +802,7 @@ namespace GPSFA_WinForms
         }
 
 
-        
+
         // ===== CARREGAR GRID (COM COLUNA ORIGEM) =====
         private void CarregarDados()
         {
@@ -1206,7 +1206,7 @@ namespace GPSFA_WinForms
             lstInfo.Items.Add("• Informe o destino para");
             lstInfo.Items.Add("  melhor rastreabilidade");
             lstInfo.Items.Add("");
-            
+
 
             panelInfo.Controls.AddRange(new Control[] { lblInfoTitulo, lstInfo });
 
@@ -1285,7 +1285,7 @@ namespace GPSFA_WinForms
                     lblSaldoAtual.Text = saldo.ToString();
 
                     numQuantidadeSaida.Maximum = saldo;
-                    numQuantidadeSaida.Value = 0;  
+                    numQuantidadeSaida.Value = 0;
                 }
             }
         }
@@ -1327,7 +1327,6 @@ namespace GPSFA_WinForms
         }
 
         // ===== MÉTODO PARA REGISTRAR SAÍDA =====
-        // ===== MÉTODO PARA REGISTRAR SAÍDA (COM DESTINO) =====
         private void RegistrarSaida(string produto, int quantidade, string destino)
         {
             using (var conn = DataBaseConnection.OpenConnection())
@@ -1409,22 +1408,33 @@ namespace GPSFA_WinForms
                         restante -= retirar;
                     }
 
-                    // 5. Registrar a saída no histórico COM DESTINO
-                    int codOri = 1;
+                    // 5. Buscar um código de origem válido
+                    int codOri = 0;
+                    string sqlOri = "SELECT codOri FROM tbOrigemDoacao LIMIT 1";
+                    using (var cmd = new MySqlCommand(sqlOri, conn, trans))
+                    {
+                        object result = cmd.ExecuteScalar();
+                        if (result != null)
+                            codOri = Convert.ToInt32(result);
+                        else
+                            codOri = 1; // fallback
+                    }
+
+                    // 6. Registrar a saída no histórico COM DESTINO
                     string sqlInsert = @"
                 INSERT INTO tbProdutos 
                     (descricao, quantidade, peso, unidade, dataDeEntrada, 
                      dataDeValidade, dataLimiteDeSaida, tipoMovimentacao, 
                      codUsu, codOri, codList, destino)
                 VALUES 
-                    (@descricao, -@qtd, @peso, 'UNIDADES (UN)', NOW(),
+                    (@descricao, @qtd, @peso, 'UNIDADES (UN)', NOW(),
                      DATE_ADD(NOW(), INTERVAL 30 DAY), DATE_ADD(NOW(), INTERVAL 60 DAY),
                      'SAIDA', @codUsu, @codOri, @codList, @destino)";
 
                     using (var cmd = new MySqlCommand(sqlInsert, conn, trans))
                     {
                         cmd.Parameters.AddWithValue("@descricao", produto);
-                        cmd.Parameters.AddWithValue("@qtd", quantidade);
+                        cmd.Parameters.AddWithValue("@qtd", -quantidade); // negativo para saída
                         cmd.Parameters.AddWithValue("@peso", peso);
                         cmd.Parameters.AddWithValue("@codUsu", codUsuLogado);
                         cmd.Parameters.AddWithValue("@codOri", codOri);
@@ -1433,7 +1443,7 @@ namespace GPSFA_WinForms
                         cmd.ExecuteNonQuery();
                     }
 
-                    // 6. Atualizar o estoque total
+                    // 7. Atualizar o estoque total
                     string sqlUpdateEstoque = @"
                 UPDATE tbEstoqueItens 
                 SET quantidade = quantidade - @qtd
@@ -1463,10 +1473,11 @@ namespace GPSFA_WinForms
                 catch (Exception ex)
                 {
                     trans.Rollback();
-                    MessageBox.Show($"❌ Erro: {ex.Message}");
+                    MessageBox.Show($"❌ Erro: {ex.Message}\n\nDetalhes: {ex.StackTrace}", "Erro");
                 }
             }
         }
+
 
         // ===== MÉTODO DE DIAGNÓSTICO =====
         private void DiagnosticarEstoque(string produto)
@@ -1670,7 +1681,7 @@ namespace GPSFA_WinForms
             {
                 MessageBox.Show($"Erro: {ex.Message}");
             }
-           
+
 
         }
 

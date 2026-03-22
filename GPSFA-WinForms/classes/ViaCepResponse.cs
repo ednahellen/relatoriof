@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GPSFA_WinForms.classes
+﻿namespace GPSFA_WinForms.classes
 {
     public class ViaCepResponse
     {

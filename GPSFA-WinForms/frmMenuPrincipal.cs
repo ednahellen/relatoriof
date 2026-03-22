@@ -1,16 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Drawing.Printing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 
 namespace GPSFA_WinForms
 {
@@ -26,11 +18,11 @@ namespace GPSFA_WinForms
 
         public frmMenuPrincipal()
         {
-            InitializeComponent();            
+            InitializeComponent();
         }
 
         // Variáveis globais da janela para salvar o usuário atualmente logado e seu tipo de acesso
-        int codUsuLogado; 
+        int codUsuLogado;
         string tipoAcessoUsuLogado;
 
         // Instancia da janela para receber o código do usuário loado
@@ -102,7 +94,8 @@ namespace GPSFA_WinForms
                 abrir.Show();
                 this.Hide();
             }
-            else {
+            else
+            {
                 MessageBox.Show("Acesso negado!\n\nVocê precisa ser um administrador para acessar esta função.", "Mensagem do sistema",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);
@@ -131,7 +124,7 @@ namespace GPSFA_WinForms
             abrir.Show();
             this.Hide();
 
-        }    
+        }
 
         private void frmMenuPrincipal_Load(object sender, EventArgs e)
         {
@@ -158,7 +151,7 @@ namespace GPSFA_WinForms
         }
 
         private void btnGerenciarProdutos_Click(object sender, EventArgs e)
-        {        
+        {
             frmTipoDeArrecadacao abrir = new frmTipoDeArrecadacao(codUsuLogado);
             abrir.Show();
             this.Hide();

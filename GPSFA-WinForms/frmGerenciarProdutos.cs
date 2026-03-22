@@ -1,16 +1,8 @@
 using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI.Common;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GPSFA_WinForms
@@ -98,7 +90,7 @@ namespace GPSFA_WinForms
 
                 {
                     const string sql = "SELECT nome FROM TBOrigemDoacao ORDER BY nome ASC";
-                    using (var  cmd= new MySqlCommand(sql, conn))
+                    using (var cmd = new MySqlCommand(sql, conn))
                     using (var reader = cmd.ExecuteReader())
                     {
                         cbbOrigemDoacao.Items.Clear();
@@ -109,7 +101,7 @@ namespace GPSFA_WinForms
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show($"Erro ao carregar origens: {ex.Message}");
             }
@@ -155,7 +147,7 @@ namespace GPSFA_WinForms
                 cbbDescricao.DropDownHeight = 300;
                 cbbDescricao.IntegralHeight = false;
             }
-            
+
 
             DataBaseConnection.CloseConnection();
         }
@@ -253,7 +245,7 @@ namespace GPSFA_WinForms
         //    return 0;
         //}
 
-        private int cadastrarProdutos(string descricao, int quantidade, decimal peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade,DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
+        private int cadastrarProdutos(string descricao, int quantidade, decimal peso, string unidade, string codBar, DateTime dataDeEntrada, DateTime dataDeValidade, DateTime dataLimiteDeSaida, int codUsu, int codOri, int codList)
         {
             // VALIDAÇÃO DOS IDs
             if (codOri <= 0)
@@ -491,7 +483,7 @@ namespace GPSFA_WinForms
                                 cbbUnidadeMedida.Enabled = false;
                                 txtPeso.Enabled = false;
 
-                                
+
                             }
                             else
                             {

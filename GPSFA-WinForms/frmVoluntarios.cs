@@ -1,24 +1,12 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using GPSFA_WinForms.classes;
+﻿using GPSFA_WinForms.classes;
 using MySql.Data.MySqlClient;
-using Mysqlx.Crud;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.Entity;
-using System.Drawing;
-using System.Linq;
 using System.Net.Http;
-using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static ClosedXML.Excel.XLPredefinedFormat;
 
 
 namespace GPSFA_WinForms
@@ -79,43 +67,43 @@ namespace GPSFA_WinForms
 
 
         //    -----    Métodos para ações CRUD e queries do banco de dados
-        
+
         // Busca os dados de um voluntário através do código - para busca de dados exata
         private void buscarDadosDoVoluntarioPeloCodigo(int codVoluntario)
-                {
-                    MySqlCommand comm = new MySqlCommand();
-                    comm.CommandText = $"SELECT * FROM tbVoluntarios WHERE codVol = @codVol;";
+        {
+            MySqlCommand comm = new MySqlCommand();
+            comm.CommandText = $"SELECT * FROM tbVoluntarios WHERE codVol = @codVol;";
 
-                    comm.CommandType = CommandType.Text;
-                    comm.Parameters.Clear();
+            comm.CommandType = CommandType.Text;
+            comm.Parameters.Clear();
 
-                    comm.Parameters.Add("@codVol", MySqlDbType.VarChar, 100).Value = codVoluntario;
+            comm.Parameters.Add("@codVol", MySqlDbType.VarChar, 100).Value = codVoluntario;
 
-                    comm.Connection = DataBaseConnection.OpenConnection();
+            comm.Connection = DataBaseConnection.OpenConnection();
 
-                    MySqlDataReader DR;
-                    DR = comm.ExecuteReader();
+            MySqlDataReader DR;
+            DR = comm.ExecuteReader();
 
-                    while (DR.Read())
-                    {
-                        isVoluntarioActive = DR.GetBoolean(11);
-                        codVolSelected = DR.GetInt32(0);
+            while (DR.Read())
+            {
+                isVoluntarioActive = DR.GetBoolean(11);
+                codVolSelected = DR.GetInt32(0);
 
-                        txtNomeVoluntario.Text = DR.GetString(1);
-                        mskTelefone.Text = DR.GetString(2);
-                        mskCep.Text = DR.GetString(4);
-                        txtRua.Text = DR.GetString(5);
-                        txtNumero.Text = DR.GetString(6);
-                        txtComplemento.Text = DR.GetString(7);
-                        txtBairro.Text = DR.GetString(8);
-                        txtCidade.Text = DR.GetString(9);
-                        mskCpf.Text = DR.GetValue(3).ToString();
+                txtNomeVoluntario.Text = DR.GetString(1);
+                mskTelefone.Text = DR.GetString(2);
+                mskCep.Text = DR.GetString(4);
+                txtRua.Text = DR.GetString(5);
+                txtNumero.Text = DR.GetString(6);
+                txtComplemento.Text = DR.GetString(7);
+                txtBairro.Text = DR.GetString(8);
+                txtCidade.Text = DR.GetString(9);
+                mskCpf.Text = DR.GetValue(3).ToString();
 
-                        SelecionarEstadoPorUF(DR.GetString(10));
-                    }
+                SelecionarEstadoPorUF(DR.GetString(10));
+            }
 
-                    DataBaseConnection.CloseConnection();
-                }
+            DataBaseConnection.CloseConnection();
+        }
 
         // Busca dados de um usuario com base no código do voluntário
         private void buscarUsuarioPorCodVol(int codVoluntario)
@@ -207,7 +195,7 @@ namespace GPSFA_WinForms
 
             return resp;
         }
-        
+
         // Busca o código do voluntário através do CPF - Método desabilitado
         //private void buscarCodVolPorCPF(string volCpf)
         //{
@@ -277,7 +265,7 @@ namespace GPSFA_WinForms
             }
         }
 
-        
+
 
         // Cria um novo usuário associado e o associa a um voluntário por meio do código dele
         private int cadastrarUsuario(bool isActive, string usuario, string senha, string tipoAcesso, int codVol)
@@ -359,7 +347,7 @@ namespace GPSFA_WinForms
             comm.CommandText = "UPDATE tbUsuarios SET usuario = @usuario, senha = @senha, tipo = @tipo, ativo = @ativo WHERE codVol = @codVol";
             comm.CommandType = CommandType.Text;
 
-            comm.Parameters.Clear(); 
+            comm.Parameters.Clear();
             comm.Parameters.Add("@usuario", MySqlDbType.VarChar, 20).Value = usuario;
             comm.Parameters.Add("@senha", MySqlDbType.VarChar, 20).Value = senha;
             comm.Parameters.Add("@tipo", MySqlDbType.VarChar, 20).Value = tipoAcesso;
@@ -391,7 +379,7 @@ namespace GPSFA_WinForms
         {
             MySqlCommand comm = new MySqlCommand();
             comm.CommandText = "UPDATE tbVoluntarios SET  telCel = '', cpf = NULL, cep = '', rua = '', numero = '', complemento  = '', bairro = '', cidade = '', estado = '', ativo = FALSE WHERE codVol = @codVol;";
-            
+
             comm.CommandType = CommandType.Text;
 
             comm.Parameters.Clear();
@@ -446,7 +434,7 @@ namespace GPSFA_WinForms
             }
             return 0;
         }
-        
+
 
 
         //    -----    Métodos para limpeza de dados da janela
@@ -589,7 +577,7 @@ namespace GPSFA_WinForms
                 {
                     // O viacep retorna dados apenas caso o cep eteja em sua base de dados
                     // Se~não houver dados sobre aquele cep, a api retorna erro.
-                    string url = $"https://viacep.com.br/ws/{cep}/json/"; 
+                    string url = $"https://viacep.com.br/ws/{cep}/json/";
 
                     var response = await client.GetAsync(url);
 
@@ -676,7 +664,7 @@ namespace GPSFA_WinForms
             }
             else
             {
-                 cpfFormated = mskCpf.Text;
+                cpfFormated = mskCpf.Text;
             }
 
             //    -----    Primeira etapa de validações -> dados de voluntário
@@ -689,8 +677,8 @@ namespace GPSFA_WinForms
                     MessageBoxDefaultButton.Button1);
                 txtNomeVoluntario.Focus();
             }
-            
-            
+
+
             //    -----    Segunda etapa de validações -> Os campos do voluntário estão preenchidos
             else
             {

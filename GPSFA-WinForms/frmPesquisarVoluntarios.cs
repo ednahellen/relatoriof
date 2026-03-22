@@ -1,13 +1,9 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GPSFA_WinForms
@@ -40,7 +36,7 @@ namespace GPSFA_WinForms
         private void frmListaVoluntarios_Load(object sender, EventArgs e)
         {
             CarregarDadosNaListaDeVoluntarios();
-            ConfigDgvVoluntarios(); 
+            ConfigDgvVoluntarios();
             this.dgvVoluntarios.AllowUserToAddRows = false;
         }
 
@@ -57,7 +53,7 @@ namespace GPSFA_WinForms
         }
 
         private void ConfigDgvVoluntarios()
-        { 
+        {
             // Ajustar para ocupar toda a largura
             dgvVoluntarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             // Alternar cores das linhas
@@ -72,8 +68,8 @@ namespace GPSFA_WinForms
             //// Ajustar seleção de célula
             dgvVoluntarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
-            dgvVoluntarios.MultiSelect = false; 
-            
+            dgvVoluntarios.MultiSelect = false;
+
             DataGridViewButtonColumn buttonColumn = new DataGridViewButtonColumn();
             buttonColumn.HeaderText = "Editar Dados";
             buttonColumn.Name = "EditarDados"; // Name for programmatic reference
@@ -143,7 +139,7 @@ namespace GPSFA_WinForms
                 comm.CommandText = query.ToString();
 
                 MySqlDataAdapter DA = new MySqlDataAdapter(comm);
-                    DA.Fill(tabela);
+                DA.Fill(tabela);
 
                 dgvVoluntarios.DataSource = tabela;
 
