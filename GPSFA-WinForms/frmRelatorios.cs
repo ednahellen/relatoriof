@@ -29,11 +29,13 @@ namespace GPSFA_WinForms
 
         private void frmRelatorios_Load(object sender, EventArgs e)
         {
-            ConfigurarGrid();
-
+            ConfigurarDataGridView();
             dtpDataInicialPeriodo.Value = DateTime.Now.AddDays(-30);
             dtpDataFinalPeriodo.Value = DateTime.Now;
 
+            CarregarUsuarios();
+            CarregarProdutos();
+            CarregarOrigens();
             CarregarDados();
         }
 
@@ -44,6 +46,9 @@ namespace GPSFA_WinForms
             {
                 dtpDataInicialPeriodo.Value = DateTime.Now.AddDays(-30);
                 dtpDataFinalPeriodo.Value = DateTime.Now;
+                cbxProduto.SelectedIndex = 0;
+                cbbUsuario.SelectedIndex = 0;
+                cbxOrigem.SelectedIndex = 0;
                 CarregarDados();
             };
 
@@ -51,7 +56,7 @@ namespace GPSFA_WinForms
             btnImprimir.Click += BtnExportarMenu_Click;
         }
 
-        private void ConfigurarGrid()
+        private void ConfigurarDataGridView()
         {
             dgvRelatorios.AutoGenerateColumns = true;
             dgvRelatorios.AllowUserToAddRows = false;
@@ -84,38 +89,73 @@ namespace GPSFA_WinForms
             {
                 using (var conexao = DataBaseConnection.OpenConnection())
                 {
-                    string sql = @"
-                                    SELECT 
-                                        p.codProd AS Codigo,
-                                        DATE_FORMAT(p.dataDeEntrada, '%d/%m/%Y %H:%i') AS Data,
-                                        l.descricao AS Produto,
-                                        p.quantidade AS Qtd,
-                                        o.nome AS Origem,
-                                        u.usuario AS Usuario
-                                    FROM tbProdutos p
-                                    INNER JOIN tbLista l ON p.codList = l.codList
-                                    INNER JOIN tbOrigemDoacao o ON o.codOri = p.codOri
-                                    INNER JOIN tbUsuarios u ON u.codUsu = p.codUsu
+                    StringBuilder sql = new StringBuilder();
+                    sql.AppendLine(@"
+                        SELECT 
+                            p.codProd AS Codigo,
+                            DATE_FORMAT(p.dataDeEntrada, '%d/%m/%Y %H:%i') AS Data,
+                            l.descricao AS Produto,
+                            p.quantidade AS Qtd,
+                            o.nome AS Origem,
+                            u.usuario AS Usuario,
+                            p.dataDeValidade AS Validade,
+                            CASE 
+                                WHEN p.dataDeValidade < CURDATE() THEN 'VENCIDO'
+                                WHEN DATEDIFF(p.dataDeValidade, CURDATE()) <= 7 THEN '7 DIAS'
+                                WHEN DATEDIFF(p.dataDeValidade, CURDATE()) <= 15 THEN '15 DIAS'
+                                WHEN DATEDIFF(p.dataDeValidade, CURDATE()) <= 30 THEN '30 DIAS'
+                                ELSE 'OK'
+                            END AS Status
+                        FROM tbProdutos p
+                        INNER JOIN tbLista l ON p.codList = l.codList
+                        INNER JOIN tbOrigemDoacao o ON o.codOri = p.codOri
+                        INNER JOIN tbUsuarios u ON u.codUsu = p.codUsu
+                        WHERE p.tipoMovimentacao = 'ENTRADA'
+                        AND p.quantidade > 0
+                        AND p.dataDeEntrada BETWEEN @ini AND @fim");
 
-                                    WHERE p.tipoMovimentacao = 'ENTRADA'
-                                    AND p.quantidade > 0
-                                    AND p.dataDeEntrada BETWEEN @ini AND @fim
-
-                                    ORDER BY p.dataDeEntrada DESC";
-
-
-                    using (var cmd = new MySqlCommand(sql, conexao))
+                    // Filtro por Produto
+                    if (cbxProduto.SelectedItem != null && cbxProduto.SelectedItem.ToString() != "TODOS")
                     {
+                        sql.AppendLine(" AND l.descricao = @produto");
+                    }
 
+                    // Filtro por Usuário
+                    if (cbbUsuario.SelectedItem != null && cbbUsuario.SelectedItem.ToString() != "TODOS")
+                    {
+                        sql.AppendLine(" AND u.usuario = @usuario");
+                    }
+
+                    // Filtro por Origem
+                    if (cbxOrigem.SelectedItem != null && cbxOrigem.SelectedItem.ToString() != "TODOS")
+                    {
+                        sql.AppendLine(" AND o.nome = @origem");
+                    }
+
+                    sql.AppendLine(" ORDER BY p.dataDeEntrada DESC");
+
+                    using (var cmd = new MySqlCommand(sql.ToString(), conexao))
+                    {
                         DateTime dataInicial = dtpDataInicialPeriodo.Value.Date;
                         DateTime dataFinal = dtpDataFinalPeriodo.Value.Date.AddDays(1).AddSeconds(-1);
 
                         cmd.Parameters.AddWithValue("@ini", dataInicial);
                         cmd.Parameters.AddWithValue("@fim", dataFinal);
 
-                        cmd.Parameters.AddWithValue("@produto", cbxProduto.SelectedItem?.ToString() ?? "TODOS");
-                        cmd.Parameters.AddWithValue("@usuario", cbbUsuario.SelectedItem?.ToString() ?? "TODOS");
-                        cmd.Parameters.AddWithValue("@tipo", cbxStatus.SelectedItem?.ToString() ?? "TODOS");
+                        if (cbxProduto.SelectedItem != null && cbxProduto.SelectedItem.ToString() != "TODOS")
+                        {
+                            cmd.Parameters.AddWithValue("@produto", cbxProduto.SelectedItem.ToString());
+                        }
+
+                        if (cbbUsuario.SelectedItem != null && cbbUsuario.SelectedItem.ToString() != "TODOS")
+                        {
+                            cmd.Parameters.AddWithValue("@usuario", cbbUsuario.SelectedItem.ToString());
+                        }
+
+                        if (cbxOrigem.SelectedItem != null && cbxOrigem.SelectedItem.ToString() != "TODOS")
+                        {
+                            cmd.Parameters.AddWithValue("@origem", cbxOrigem.SelectedItem.ToString());
+                        }
 
                         MySqlDataAdapter da = new MySqlDataAdapter(cmd);
                         da.Fill(tabela);
@@ -124,6 +164,7 @@ namespace GPSFA_WinForms
 
                 AdicionarTotal(tabela);
                 dgvRelatorios.DataSource = tabela;
+                ConfigurarAlinhamentoColunas();
             }
             catch (Exception ex)
             {
@@ -131,21 +172,153 @@ namespace GPSFA_WinForms
             }
         }
 
+        private void ConfigurarAlinhamentoColunas()
+        {
+            if (dgvRelatorios.Columns.Count == 0) return;
+
+            foreach (DataGridViewColumn col in dgvRelatorios.Columns)
+            {
+                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+                if (col.Name == "Codigo")
+                {
+                    col.FillWeight = 8;
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+                else if (col.Name == "Data")
+                {
+                    col.FillWeight = 15;
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+                else if (col.Name == "Produto")
+                {
+                    col.FillWeight = 25;
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                }
+                else if (col.Name == "Qtd")
+                {
+                    col.FillWeight = 10;
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                }
+                else if (col.Name == "Origem")
+                {
+                    col.FillWeight = 12;
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                }
+                else if (col.Name == "Usuario")
+                {
+                    col.FillWeight = 12;
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                }
+                else if (col.Name == "Validade")
+                {
+                    col.FillWeight = 12;
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+                else if (col.Name == "Status")
+                {
+                    col.FillWeight = 10;
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+                else if (col.Name == "Excluir")
+                {
+                    col.FillWeight = 8;
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+            }
+        }
+
+        private void CarregarOrigens()
+        {
+            if (cbxOrigem == null) return;
+            cbxOrigem.Items.Clear();
+            cbxOrigem.Items.Add("TODOS");
+
+            using (var conexao = DataBaseConnection.OpenConnection())
+            {
+                string sql = "SELECT nome FROM tbOrigemDoacao ORDER BY nome";
+                using (var cmd = new MySqlCommand(sql, conexao))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        cbxOrigem.Items.Add(reader["nome"].ToString());
+                    }
+                }
+            }
+            cbxOrigem.SelectedIndex = 0;
+        }
+
+        private void CarregarUsuarios()
+        {
+            if (cbbUsuario == null) return;
+            cbbUsuario.Items.Clear();
+            cbbUsuario.Items.Add("TODOS");
+
+            using (var conexao = DataBaseConnection.OpenConnection())
+            {
+                string sql = "SELECT usuario FROM tbUsuarios ORDER BY usuario";
+                using (var cmd = new MySqlCommand(sql, conexao))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        cbbUsuario.Items.Add(reader["usuario"].ToString());
+                    }
+                }
+            }
+
+            if (cbbUsuario.Items.Count == 0)
+            {
+                cbbUsuario.Items.Add("TODOS");
+            }
+            cbbUsuario.SelectedIndex = 0;
+        }
+
+        private void CarregarProdutos()
+        {
+            if (cbxProduto == null) return;
+            cbxProduto.Items.Clear();
+            cbxProduto.Items.Add("TODOS");
+
+            using (var conexao = DataBaseConnection.OpenConnection())
+            {
+                string sql = "SELECT descricao FROM tbLista ORDER BY descricao";
+                using (var cmd = new MySqlCommand(sql, conexao))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        cbxProduto.Items.Add(reader["descricao"].ToString());
+                    }
+                }
+            }
+            cbxProduto.SelectedIndex = 0;
+        }
+
         private void AdicionarTotal(DataTable tabela)
         {
             if (tabela.Rows.Count == 0) return;
 
-            int total = 0;
+            int totalQtd = 0;
 
             foreach (DataRow row in tabela.Rows)
             {
                 if (row["Qtd"] != DBNull.Value)
-                    total += Convert.ToInt32(row["Qtd"]);
+                {
+                    totalQtd += Convert.ToInt32(row["Qtd"]);
+                }
             }
 
             DataRow totalRow = tabela.NewRow();
             totalRow["Produto"] = "❖ TOTAL DE ENTRADAS ❖";
-            totalRow["Qtd"] = total;
+            totalRow["Qtd"] = totalQtd;
+            totalRow["Codigo"] = DBNull.Value;
+            totalRow["Data"] = DBNull.Value;
+            totalRow["Origem"] = DBNull.Value;
+            totalRow["Usuario"] = DBNull.Value;
+            totalRow["Validade"] = DBNull.Value;
+            totalRow["Status"] = DBNull.Value;
 
             tabela.Rows.Add(totalRow);
         }
@@ -154,19 +327,37 @@ namespace GPSFA_WinForms
         {
             if (e.RowIndex >= 0 && dgvRelatorios.Columns[e.ColumnIndex].Name == "Excluir")
             {
-                int cod = Convert.ToInt32(dgvRelatorios.Rows[e.RowIndex].Cells["Código"].Value);
-
-                if (MessageBox.Show("Excluir?", "Confirmação", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                // Verificar se é a linha de total
+                if (dgvRelatorios.Rows[e.RowIndex].Cells["Produto"].Value?.ToString() == "❖ TOTAL DE ENTRADAS ❖")
                 {
-                    using (var conexao = DataBaseConnection.OpenConnection())
-                    {
-                        string sql = "DELETE FROM tbProdutos WHERE codProd = @cod";
-                        var cmd = new MySqlCommand(sql, conexao);
-                        cmd.Parameters.AddWithValue("@cod", cod);
-                        cmd.ExecuteNonQuery();
-                    }
+                    MessageBox.Show("Não é possível excluir a linha de total.", "Aviso",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-                    CarregarDados();
+                int cod = Convert.ToInt32(dgvRelatorios.Rows[e.RowIndex].Cells["Codigo"].Value);
+
+                if (MessageBox.Show("Excluir este registro?", "Confirmação", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    try
+                    {
+                        using (var conexao = DataBaseConnection.OpenConnection())
+                        {
+                            string sql = "DELETE FROM tbProdutos WHERE codProd = @cod";
+                            var cmd = new MySqlCommand(sql, conexao);
+                            cmd.Parameters.AddWithValue("@cod", cod);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        MessageBox.Show("Registro excluído com sucesso!", "Sucesso",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        CarregarDados();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Erro ao excluir: " + ex.Message, "Erro",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
@@ -176,8 +367,8 @@ namespace GPSFA_WinForms
             ContextMenuStrip menu = new ContextMenuStrip();
 
             var itemImprimir = new ToolStripMenuItem("🖨️ Imprimir");
-            var itemExcel = new ToolStripMenuItem("📊 Excel");
-            var itemCSV = new ToolStripMenuItem("📄 CSV (Power BI)");
+            var itemExcel = new ToolStripMenuItem("📊 Exportar para Excel");
+            var itemCSV = new ToolStripMenuItem("📄 Exportar para CSV (Power BI)");
 
             itemImprimir.Click += (s, ev) => Imprimir();
             itemExcel.Click += (s, ev) => ExportarExcel();
@@ -190,92 +381,198 @@ namespace GPSFA_WinForms
 
         private void ExportarExcel()
         {
-            SaveFileDialog sfd = new SaveFileDialog
+            try
             {
-                Filter = "Excel (*.xlsx)|*.xlsx"
-            };
+                SaveFileDialog sfd = new SaveFileDialog
+                {
+                    Filter = "Arquivos Excel (*.xlsx)|*.xlsx",
+                    FileName = $"Relatorio_Estoque_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+                };
 
-            if (sfd.ShowDialog() != DialogResult.OK) return;
+                if (sfd.ShowDialog() != DialogResult.OK) return;
 
-            var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Relatorio");
+                using (var workbook = new XLWorkbook())
+                {
+                    var worksheet = workbook.Worksheets.Add("Relatorio");
 
-            for (int i = 0; i < dgvRelatorios.Columns.Count; i++)
-                ws.Cell(1, i + 1).Value = dgvRelatorios.Columns[i].HeaderText;
+                    for (int i = 0; i < dgvRelatorios.Columns.Count; i++)
+                    {
+                        worksheet.Cell(1, i + 1).Value = dgvRelatorios.Columns[i].HeaderText;
+                        worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+                        worksheet.Cell(1, i + 1).Style.Fill.BackgroundColor = XLColor.FromArgb(48, 112, 99);
+                        worksheet.Cell(1, i + 1).Style.Font.FontColor = XLColor.White;
+                    }
 
-            for (int i = 0; i < dgvRelatorios.Rows.Count; i++)
-                for (int j = 0; j < dgvRelatorios.Columns.Count; j++)
-                    ws.Cell(i + 2, j + 1).Value = dgvRelatorios.Rows[i].Cells[j].Value?.ToString();
+                    for (int i = 0; i < dgvRelatorios.Rows.Count; i++)
+                    {
+                        for (int j = 0; j < dgvRelatorios.Columns.Count; j++)
+                        {
+                            worksheet.Cell(i + 2, j + 1).Value = dgvRelatorios.Rows[i].Cells[j].Value?.ToString() ?? "";
+                        }
+                    }
 
-            wb.SaveAs(sfd.FileName);
+                    worksheet.Columns().AdjustToContents();
+                    workbook.SaveAs(sfd.FileName);
+                }
+
+                MessageBox.Show("✅ Relatório exportado com sucesso!", "Sucesso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Erro ao exportar: {ex.Message}", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ExportarCSV()
         {
-            SaveFileDialog sfd = new SaveFileDialog
+            try
             {
-                Filter = "CSV (*.csv)|*.csv"
-            };
+                SaveFileDialog sfd = new SaveFileDialog
+                {
+                    Filter = "Arquivos CSV (*.csv)|*.csv",
+                    FileName = $"Relatorio_Estoque_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
+                };
 
-            if (sfd.ShowDialog() != DialogResult.OK) return;
+                if (sfd.ShowDialog() != DialogResult.OK) return;
 
-            StringBuilder sb = new StringBuilder();
+                StringBuilder sb = new StringBuilder();
 
-            for (int i = 0; i < dgvRelatorios.Columns.Count; i++)
-                sb.Append(dgvRelatorios.Columns[i].HeaderText + ";");
-
-            sb.AppendLine();
-
-            foreach (DataGridViewRow row in dgvRelatorios.Rows)
-            {
-                if (row.IsNewRow) continue;
-
-                foreach (DataGridViewCell cell in row.Cells)
-                    sb.Append((cell.Value ?? "").ToString() + ";");
-
+                for (int i = 0; i < dgvRelatorios.Columns.Count; i++)
+                {
+                    sb.Append($"\"{dgvRelatorios.Columns[i].HeaderText}\"");
+                    if (i < dgvRelatorios.Columns.Count - 1)
+                        sb.Append(";");
+                }
                 sb.AppendLine();
-            }
 
-            System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                foreach (DataGridViewRow row in dgvRelatorios.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    for (int i = 0; i < dgvRelatorios.Columns.Count; i++)
+                    {
+                        string valor = row.Cells[i].Value?.ToString() ?? "";
+                        sb.Append($"\"{valor.Replace("\"", "\"\"")}\"");
+                        if (i < dgvRelatorios.Columns.Count - 1)
+                            sb.Append(";");
+                    }
+                    sb.AppendLine();
+                }
+
+                System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                MessageBox.Show($"✅ Relatório exportado com sucesso!\n\nLocal: {sfd.FileName}\n\nEste arquivo pode ser importado no Power BI.",
+                    "Exportação Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Erro ao exportar: {ex.Message}", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void Imprimir()
         {
-            linhaAtual = 0;
+            if (dgvRelatorios.Rows.Count == 0)
+            {
+                MessageBox.Show("Não há dados para imprimir.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            linhaAtual = 0;
             printDocument = new PrintDocument();
             printDocument.PrintPage += PrintPage;
 
-            new PrintPreviewDialog
+            PrintPreviewDialog preview = new PrintPreviewDialog
             {
                 Document = printDocument,
                 Width = 1000,
-                Height = 800
-            }.ShowDialog();
+                Height = 800,
+                WindowState = FormWindowState.Maximized
+            };
+            preview.ShowDialog();
         }
 
         private void PrintPage(object sender, PrintPageEventArgs e)
         {
-            int y = 50;
+            Font tituloFont = new Font("Segoe UI", 14, FontStyle.Bold);
+            Font subtituloFont = new Font("Segoe UI", 10, FontStyle.Regular);
+            Font cabecalhoFont = new Font("Segoe UI", 9, FontStyle.Bold);
+            Font textoFont = new Font("Segoe UI", 8, FontStyle.Regular);
 
-            foreach (DataGridViewRow row in dgvRelatorios.Rows)
+            float yPos = e.MarginBounds.Top;
+            float leftMargin = e.MarginBounds.Left;
+            float pageWidth = e.MarginBounds.Width;
+
+            // Título
+            e.Graphics.DrawString("RELATÓRIO DE ENTRADAS - ESTOQUE", tituloFont, Brushes.Black, leftMargin, yPos);
+            yPos += 35;
+
+            // Período
+            e.Graphics.DrawString($"Período: {dtpDataInicialPeriodo.Value:dd/MM/yyyy} a {dtpDataFinalPeriodo.Value:dd/MM/yyyy}",
+                subtituloFont, Brushes.Black, leftMargin, yPos);
+            yPos += 25;
+
+            // Total de registros
+            e.Graphics.DrawString($"Total de registros: {dgvRelatorios.Rows.Count - 1} entradas",
+                subtituloFont, Brushes.Black, leftMargin, yPos);
+            yPos += 30;
+
+            // Cabeçalho da tabela
+            float colWidth = pageWidth / dgvRelatorios.Columns.Count;
+            float colX = leftMargin;
+
+            e.Graphics.FillRectangle(Brushes.LightGray, leftMargin, yPos, pageWidth, 22);
+
+            for (int i = 0; i < dgvRelatorios.Columns.Count; i++)
             {
-                int x = 50;
+                e.Graphics.DrawString(dgvRelatorios.Columns[i].HeaderText, cabecalhoFont, Brushes.Black,
+                    colX + 3, yPos + 3);
+                colX += colWidth;
+            }
 
-                foreach (DataGridViewCell cell in row.Cells)
+            yPos += 25;
+
+            // Dados
+            for (int i = linhaAtual; i < dgvRelatorios.Rows.Count; i++)
+            {
+                DataGridViewRow row = dgvRelatorios.Rows[i];
+                if (row.IsNewRow) continue;
+
+                colX = leftMargin;
+
+                if (yPos + 22 > e.MarginBounds.Bottom)
                 {
-                    e.Graphics.DrawString(cell.Value?.ToString(), new Font("Arial", 9), Brushes.Black, x, y);
-                    x += 120;
-                }
-
-                y += 25;
-
-                if (y > e.MarginBounds.Bottom)
-                {
+                    linhaAtual = i;
                     e.HasMorePages = true;
                     return;
                 }
+
+                bool isTotal = row.Cells["Produto"].Value?.ToString() == "❖ TOTAL DE ENTRADAS ❖";
+                if (isTotal)
+                {
+                    e.Graphics.FillRectangle(Brushes.DarkGray, leftMargin, yPos, pageWidth, 22);
+                }
+
+                for (int j = 0; j < dgvRelatorios.Columns.Count; j++)
+                {
+                    string valor = row.Cells[j].Value?.ToString() ?? "";
+                    e.Graphics.DrawString(valor, textoFont, isTotal ? Brushes.White : Brushes.Black,
+                        colX + 3, yPos + 3);
+                    colX += colWidth;
+                }
+
+                yPos += 22;
             }
+
+            linhaAtual = 0;
+            e.HasMorePages = false;
+
+            // Rodapé
+            e.Graphics.DrawString($"Emissão: {DateTime.Now:dd/MM/yyyy HH:mm:ss}",
+                subtituloFont, Brushes.Gray, leftMargin, yPos + 10);
         }
 
         private void btnMenu_Click(object sender, EventArgs e)

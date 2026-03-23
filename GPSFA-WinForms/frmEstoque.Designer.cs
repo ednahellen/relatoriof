@@ -47,6 +47,7 @@
             this.lblTitleEstoque = new System.Windows.Forms.Label();
             this.btnExportar = new System.Windows.Forms.Button();
             this.gpbFiltrosDoRelatorio = new System.Windows.Forms.GroupBox();
+            this.btnCadastrar = new System.Windows.Forms.Button();
             this.btnMenu = new System.Windows.Forms.Button();
             this.btnProdutosPrincipais = new System.Windows.Forms.Button();
             this.btnSair = new System.Windows.Forms.Button();
@@ -61,7 +62,6 @@
             this.btnAplicarFiltros = new System.Windows.Forms.Button();
             this.lblProduto = new System.Windows.Forms.Label();
             this.pnlFiltrosDeBusca = new System.Windows.Forms.Panel();
-            this.btnCadastrar = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.tbEstoque.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -98,10 +98,10 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add(this.dgvEstoque);
-            this.tabPage1.Location = new System.Drawing.Point(4, 36);
+            this.tabPage1.Location = new System.Drawing.Point(4, 30);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1309, 417);
+            this.tabPage1.Size = new System.Drawing.Size(1309, 423);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Estoque";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -175,20 +175,20 @@
             // 
             // tabPageSaidas
             // 
-            this.tabPageSaidas.Location = new System.Drawing.Point(4, 36);
+            this.tabPageSaidas.Location = new System.Drawing.Point(4, 30);
             this.tabPageSaidas.Name = "tabPageSaidas";
             this.tabPageSaidas.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSaidas.Size = new System.Drawing.Size(1309, 417);
+            this.tabPageSaidas.Size = new System.Drawing.Size(1309, 423);
             this.tabPageSaidas.TabIndex = 1;
             this.tabPageSaidas.Text = "Histórico de Saídas";
             this.tabPageSaidas.UseVisualStyleBackColor = true;
             // 
             // tabPageRegistrarSaida
             // 
-            this.tabPageRegistrarSaida.Location = new System.Drawing.Point(4, 36);
+            this.tabPageRegistrarSaida.Location = new System.Drawing.Point(4, 30);
             this.tabPageRegistrarSaida.Name = "tabPageRegistrarSaida";
             this.tabPageRegistrarSaida.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageRegistrarSaida.Size = new System.Drawing.Size(1309, 417);
+            this.tabPageRegistrarSaida.Size = new System.Drawing.Size(1309, 423);
             this.tabPageRegistrarSaida.TabIndex = 2;
             this.tabPageRegistrarSaida.Text = "Registrar Saida";
             this.tabPageRegistrarSaida.UseVisualStyleBackColor = true;
@@ -237,7 +237,7 @@
             this.lblTitleEstoque.Location = new System.Drawing.Point(8, 12);
             this.lblTitleEstoque.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblTitleEstoque.Name = "lblTitleEstoque";
-            this.lblTitleEstoque.Size = new System.Drawing.Size(225, 25);
+            this.lblTitleEstoque.Size = new System.Drawing.Size(186, 20);
             this.lblTitleEstoque.TabIndex = 11;
             this.lblTitleEstoque.Text = "Controle de Alimentos";
             // 
@@ -269,6 +269,16 @@
             this.gpbFiltrosDoRelatorio.TabIndex = 16;
             this.gpbFiltrosDoRelatorio.TabStop = false;
             this.gpbFiltrosDoRelatorio.Text = "Filtros";
+            // 
+            // btnCadastrar
+            // 
+            this.btnCadastrar.Location = new System.Drawing.Point(925, 24);
+            this.btnCadastrar.Name = "btnCadastrar";
+            this.btnCadastrar.Size = new System.Drawing.Size(152, 43);
+            this.btnCadastrar.TabIndex = 82;
+            this.btnCadastrar.Text = "Cadastrar";
+            this.btnCadastrar.UseVisualStyleBackColor = true;
+            this.btnCadastrar.Click += new System.EventHandler(this.btnCadastrar_Click);
             // 
             // btnMenu
             // 
@@ -318,7 +328,7 @@
             this.dtpDataValidade.Location = new System.Drawing.Point(189, 23);
             this.dtpDataValidade.Margin = new System.Windows.Forms.Padding(5);
             this.dtpDataValidade.Name = "dtpDataValidade";
-            this.dtpDataValidade.Size = new System.Drawing.Size(186, 34);
+            this.dtpDataValidade.Size = new System.Drawing.Size(186, 29);
             this.dtpDataValidade.TabIndex = 8;
             // 
             // lblValidadeAte
@@ -329,7 +339,7 @@
             this.lblValidadeAte.Location = new System.Drawing.Point(40, 33);
             this.lblValidadeAte.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblValidadeAte.Name = "lblValidadeAte";
-            this.lblValidadeAte.Size = new System.Drawing.Size(135, 27);
+            this.lblValidadeAte.Size = new System.Drawing.Size(109, 21);
             this.lblValidadeAte.TabIndex = 7;
             this.lblValidadeAte.Text = "Validade até:";
             // 
@@ -354,7 +364,7 @@
             this.cbxModoExibicao.Location = new System.Drawing.Point(243, 12);
             this.cbxModoExibicao.Margin = new System.Windows.Forms.Padding(5);
             this.cbxModoExibicao.Name = "cbxModoExibicao";
-            this.cbxModoExibicao.Size = new System.Drawing.Size(186, 35);
+            this.cbxModoExibicao.Size = new System.Drawing.Size(186, 29);
             this.cbxModoExibicao.TabIndex = 1;
             // 
             // panel4
@@ -386,7 +396,7 @@
             this.cbxprodutoSelecionado.FormattingEnabled = true;
             this.cbxprodutoSelecionado.Location = new System.Drawing.Point(17, 31);
             this.cbxprodutoSelecionado.Name = "cbxprodutoSelecionado";
-            this.cbxprodutoSelecionado.Size = new System.Drawing.Size(513, 35);
+            this.cbxprodutoSelecionado.Size = new System.Drawing.Size(513, 29);
             this.cbxprodutoSelecionado.TabIndex = 14;
             // 
             // btnAplicarFiltros
@@ -407,7 +417,7 @@
             this.lblProduto.Location = new System.Drawing.Point(24, 1);
             this.lblProduto.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblProduto.Name = "lblProduto";
-            this.lblProduto.Size = new System.Drawing.Size(183, 27);
+            this.lblProduto.Size = new System.Drawing.Size(146, 21);
             this.lblProduto.TabIndex = 2;
             this.lblProduto.Text = "Código ou Nome:";
             // 
@@ -424,19 +434,9 @@
             this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1337, 1435);
             this.pnlFiltrosDeBusca.TabIndex = 15;
             // 
-            // btnCadastrar
-            // 
-            this.btnCadastrar.Location = new System.Drawing.Point(925, 24);
-            this.btnCadastrar.Name = "btnCadastrar";
-            this.btnCadastrar.Size = new System.Drawing.Size(152, 43);
-            this.btnCadastrar.TabIndex = 82;
-            this.btnCadastrar.Text = "Cadastrar";
-            this.btnCadastrar.UseVisualStyleBackColor = true;
-            this.btnCadastrar.Click += new System.EventHandler(this.btnCadastrar_Click);
-            // 
             // frmEstoque
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 27F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(208)))), ((int)(((byte)(200)))));
             this.ClientSize = new System.Drawing.Size(1337, 712);

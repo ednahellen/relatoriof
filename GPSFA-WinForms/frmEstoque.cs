@@ -1,4 +1,5 @@
-﻿using ExcelDataReader;
+﻿using ClosedXML.Excel;
+using ExcelDataReader;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -1693,25 +1694,305 @@ namespace GPSFA_WinForms
         }
 
         // ===== MÉTODO PARA EXPORTAR =====
+        //private void BtnExportar_Click(object sender, EventArgs e)
+        //{
+        //    // Criar menu de contexto para escolher o tipo de exportação
+        //    ContextMenuStrip menuExportar = new ContextMenuStrip();
+
+        //    ToolStripMenuItem itemCSV = new ToolStripMenuItem("📄 Exportar para CSV");
+        //    ToolStripMenuItem itemExcel = new ToolStripMenuItem("📊 Exportar para Excel");
+        //    ToolStripMenuItem itemImprimir = new ToolStripMenuItem("🖨️ Imprimir");
+
+        //    itemCSV.Click += (s, ev) => ExportarParaCSV();
+        //    itemExcel.Click += (s, ev) => ExportarParaExcel();
+        //    itemImprimir.Click += (s, ev) => ImprimirEstoque();
+
+        //    menuExportar.Items.AddRange(new ToolStripItem[] { itemCSV, itemExcel, itemImprimir });
+
+        //    Button btn = sender as Button;
+        //    menuExportar.Show(btn, new Point(0, btn.Height));
+        //}
+
         private void BtnExportar_Click(object sender, EventArgs e)
         {
-            // Criar menu de contexto para escolher o tipo de exportação
-            ContextMenuStrip menuExportar = new ContextMenuStrip();
+            try
+            {
+                // Verificar se está na aba de saídas
+                if (tabPageSaidas != null && tabPageSaidas.Visible && dgvHistoricoSaidas != null && dgvHistoricoSaidas.Rows.Count > 0)
+                {
+                    // Menu para histórico de saídas
+                    ContextMenuStrip menuExportar = new ContextMenuStrip();
 
-            ToolStripMenuItem itemCSV = new ToolStripMenuItem("📄 Exportar para CSV");
-            ToolStripMenuItem itemExcel = new ToolStripMenuItem("📊 Exportar para Excel");
-            ToolStripMenuItem itemImprimir = new ToolStripMenuItem("🖨️ Imprimir");
+                    ToolStripMenuItem itemCSV = new ToolStripMenuItem("📄 Exportar Histórico para CSV (Power BI)");
+                    ToolStripMenuItem itemExcel = new ToolStripMenuItem("📊 Exportar Histórico para Excel");
 
-            itemCSV.Click += (s, ev) => ExportarParaCSV();
-            itemExcel.Click += (s, ev) => ExportarParaExcel();
-            itemImprimir.Click += (s, ev) => ImprimirEstoque();
+                    itemCSV.Click += (s, ev) => ExportarHistoricoParaCSV();
+                    itemExcel.Click += (s, ev) => ExportarHistoricoParaExcel();
 
-            menuExportar.Items.AddRange(new ToolStripItem[] { itemCSV, itemExcel, itemImprimir });
+                    menuExportar.Items.AddRange(new ToolStripItem[] { itemCSV, itemExcel });
 
-            Button btn = sender as Button;
-            menuExportar.Show(btn, new Point(0, btn.Height));
+                    Button btn = sender as Button;
+                    if (btn != null)
+                        menuExportar.Show(btn, new Point(0, btn.Height));
+                }
+                else
+                {
+                    // Menu para estoque
+                    ContextMenuStrip menuExportar = new ContextMenuStrip();
+
+                    ToolStripMenuItem itemCSV = new ToolStripMenuItem("📄 Exportar Estoque para CSV (Power BI)");
+                    ToolStripMenuItem itemExcel = new ToolStripMenuItem("📊 Exportar Estoque para Excel");
+                    ToolStripMenuItem itemImprimir = new ToolStripMenuItem("🖨️ Imprimir Estoque");
+
+                    itemCSV.Click += (s, ev) => ExportarParaCSV();
+                    itemExcel.Click += (s, ev) => ExportarParaExcel();
+                    itemImprimir.Click += (s, ev) => ImprimirEstoque();
+
+                    menuExportar.Items.AddRange(new ToolStripItem[] { itemCSV, itemExcel, itemImprimir });
+
+                    Button btn = sender as Button;
+                    if (btn != null)
+                        menuExportar.Show(btn, new Point(0, btn.Height));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erro: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
+        private void ExportarHistoricoParaCSV()
+        {
+            if (dgvHistoricoSaidas == null || dgvHistoricoSaidas.Rows.Count == 0)
+            {
+                MessageBox.Show("Não há dados no histórico para exportar.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Filter = "Arquivos CSV (*.csv)|*.csv",
+                Title = "Exportar Histórico de Saídas para CSV",
+                FileName = $"Historico_Saidas_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
+            };
+
+            if (sfd.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+
+                // Cabeçalho
+                for (int i = 0; i < dgvHistoricoSaidas.Columns.Count; i++)
+                {
+                    sb.Append($"\"{dgvHistoricoSaidas.Columns[i].HeaderText}\"");
+                    if (i < dgvHistoricoSaidas.Columns.Count - 1)
+                        sb.Append(";");
+                }
+                sb.AppendLine();
+
+                // Dados
+                foreach (DataGridViewRow row in dgvHistoricoSaidas.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    for (int i = 0; i < dgvHistoricoSaidas.Columns.Count; i++)
+                    {
+                        string valor = row.Cells[i].Value?.ToString() ?? "";
+                        sb.Append($"\"{valor.Replace("\"", "\"\"")}\"");
+                        if (i < dgvHistoricoSaidas.Columns.Count - 1)
+                            sb.Append(";");
+                    }
+                    sb.AppendLine();
+                }
+
+                System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                MessageBox.Show($"✅ Histórico exportado com sucesso!\n\nLocal: {sfd.FileName}\n\nEste arquivo pode ser importado no Power BI.",
+                    "Exportação Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Erro ao exportar: {ex.Message}", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private void ExportarHistoricoParaExcel()
+        {
+            if (dgvHistoricoSaidas == null || dgvHistoricoSaidas.Rows.Count == 0)
+            {
+                MessageBox.Show("Não há dados no histórico para exportar.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Filter = "Arquivos Excel (*.xlsx)|*.xlsx",
+                Title = "Exportar Histórico de Saídas para Excel",
+                FileName = $"Historico_Saidas_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+            };
+
+            if (sfd.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                using (var workbook = new XLWorkbook())
+                {
+                    var worksheet = workbook.Worksheets.Add("Historico_Saidas");
+
+                    // Cabeçalhos
+                    for (int i = 0; i < dgvHistoricoSaidas.Columns.Count; i++)
+                    {
+                        worksheet.Cell(1, i + 1).Value = dgvHistoricoSaidas.Columns[i].HeaderText;
+                        worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+                        worksheet.Cell(1, i + 1).Style.Fill.BackgroundColor = XLColor.FromArgb(52, 73, 94);
+                        worksheet.Cell(1, i + 1).Style.Font.FontColor = XLColor.White;
+                    }
+
+                    // Dados
+                    for (int i = 0; i < dgvHistoricoSaidas.Rows.Count; i++)
+                    {
+                        for (int j = 0; j < dgvHistoricoSaidas.Columns.Count; j++)
+                        {
+                            var cell = dgvHistoricoSaidas.Rows[i].Cells[j];
+                            worksheet.Cell(i + 2, j + 1).Value = cell.Value?.ToString() ?? "";
+                        }
+                    }
+
+                    worksheet.Columns().AdjustToContents();
+                    workbook.SaveAs(sfd.FileName);
+                }
+
+                MessageBox.Show($"✅ Histórico exportado com sucesso!\n\nLocal: {sfd.FileName}\n\nEste arquivo pode ser importado no Power BI.",
+                    "Exportação Concluída", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"❌ Erro ao exportar: {ex.Message}", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+
+
+        // ===== IMPRIMIR HISTÓRICO DE SAÍDAS =====
+        private void ImprimirHistoricoSaidas()
+{
+    if (dgvHistoricoSaidas == null || dgvHistoricoSaidas.Rows.Count == 0)
+    {
+        MessageBox.Show("Não há registros de saídas para imprimir.", "Aviso", 
+            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+    }
+
+    PrintDialog printDialog = new PrintDialog();
+    PrintDocument printDocument = new PrintDocument();
+    int linhaAtual = 0;
+
+    printDocument.PrintPage += (senderPrint, ePrint) =>
+    {
+        Font tituloFont = new Font("Segoe UI", 14, FontStyle.Bold);
+        Font subtituloFont = new Font("Segoe UI", 10, FontStyle.Regular);
+        Font cabecalhoFont = new Font("Segoe UI", 9, FontStyle.Bold);
+        Font textoFont = new Font("Segoe UI", 8, FontStyle.Regular);
+
+        float yPos = ePrint.MarginBounds.Top;
+        float leftMargin = ePrint.MarginBounds.Left;
+        float pageWidth = ePrint.MarginBounds.Width;
+
+        // Título
+        ePrint.Graphics.DrawString("RELATÓRIO DE SAÍDAS - ESTOQUE", tituloFont, Brushes.Black, leftMargin, yPos);
+        yPos += 30;
+
+        // Data de emissão
+        ePrint.Graphics.DrawString($"Data de emissão: {DateTime.Now:dd/MM/yyyy HH:mm:ss}", subtituloFont, Brushes.Black, leftMargin, yPos);
+        yPos += 25;
+
+        // Total de registros
+        ePrint.Graphics.DrawString($"Total de saídas: {dgvHistoricoSaidas.Rows.Count} registros", subtituloFont, Brushes.Black, leftMargin, yPos);
+        yPos += 30;
+
+        // Desenhar cabeçalho da tabela
+        float[] colWidths = { 100, 200, 60, 100, 150 };
+        float colX = leftMargin;
+
+        // Fundo do cabeçalho
+        ePrint.Graphics.FillRectangle(Brushes.LightGray, leftMargin, yPos, pageWidth, 22);
+
+        // Escrever cabeçalhos
+        string[] headers = { "Data/Hora", "Produto", "Qtd", "Usuário", "Destino" };
+        for (int i = 0; i < headers.Length; i++)
+        {
+            ePrint.Graphics.DrawString(headers[i], cabecalhoFont, Brushes.Black, colX + 3, yPos + 3);
+            colX += colWidths[i];
+        }
+
+        yPos += 25;
+
+        // Escrever dados
+        for (int i = linhaAtual; i < dgvHistoricoSaidas.Rows.Count; i++)
+        {
+            DataGridViewRow row = dgvHistoricoSaidas.Rows[i];
+            if (row.IsNewRow) continue;
+
+            colX = leftMargin;
+
+            // Verificar se precisa de nova página
+            if (yPos + 25 > ePrint.MarginBounds.Bottom)
+            {
+                linhaAtual = i;
+                ePrint.HasMorePages = true;
+                return;
+            }
+
+            // Data/Hora
+            string data = row.Cells["data"].Value?.ToString() ?? "";
+            ePrint.Graphics.DrawString(data, textoFont, Brushes.Black, colX + 3, yPos + 3);
+            colX += colWidths[0];
+
+            // Produto
+            string produto = row.Cells["produto"].Value?.ToString() ?? "";
+            ePrint.Graphics.DrawString(produto, textoFont, Brushes.Black, colX + 3, yPos + 3);
+            colX += colWidths[1];
+
+            // Quantidade
+            string qtd = row.Cells["quantidade"].Value?.ToString() ?? "";
+            ePrint.Graphics.DrawString(qtd, textoFont, Brushes.Black, colX + 3, yPos + 3);
+            colX += colWidths[2];
+
+            // Usuário
+            string usuario = row.Cells["usuario"].Value?.ToString() ?? "";
+            ePrint.Graphics.DrawString(usuario, textoFont, Brushes.Black, colX + 3, yPos + 3);
+            colX += colWidths[3];
+
+            // Destino
+            string destino = row.Cells["destino"].Value?.ToString() ?? "";
+            ePrint.Graphics.DrawString(destino, textoFont, Brushes.Black, colX + 3, yPos + 3);
+
+            yPos += 22;
+        }
+
+        linhaAtual = 0;
+        ePrint.HasMorePages = false;
+
+        // Rodapé
+        ePrint.Graphics.DrawString($"Relatório gerado pelo Sistema GPSFA", subtituloFont, Brushes.Gray, leftMargin, yPos + 10);
+    };
+
+    printDialog.Document = printDocument;
+
+    if (printDialog.ShowDialog() == DialogResult.OK)
+    {
+        linhaAtual = 0;
+        printDocument.Print();
+    }
+}
         // ===== EXPORTAR PARA CSV =====
         private void ExportarParaCSV()
         {

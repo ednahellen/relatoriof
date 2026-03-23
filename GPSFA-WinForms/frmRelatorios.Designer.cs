@@ -37,16 +37,16 @@
             this.lblTitleRelatórios = new System.Windows.Forms.Label();
             this.gpbFiltrosDoRelatorio = new System.Windows.Forms.GroupBox();
             this.lblStatus = new System.Windows.Forms.Label();
-            this.cbxStatus = new System.Windows.Forms.ComboBox();
+            this.cbxOrigem = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cbxProduto = new System.Windows.Forms.ComboBox();
             this.cbbUsuario = new System.Windows.Forms.ComboBox();
-            this.btnLimparFiltros = new System.Windows.Forms.Button();
             this.dtpDataFinalPeriodo = new System.Windows.Forms.DateTimePicker();
             this.lblE = new System.Windows.Forms.Label();
             this.lblDataInicial = new System.Windows.Forms.Label();
             this.dtpDataInicialPeriodo = new System.Windows.Forms.DateTimePicker();
+            this.btnLimparFiltros = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.dgvRelatorios = new System.Windows.Forms.DataGridView();
@@ -132,7 +132,7 @@
             // gpbFiltrosDoRelatorio
             // 
             this.gpbFiltrosDoRelatorio.Controls.Add(this.lblStatus);
-            this.gpbFiltrosDoRelatorio.Controls.Add(this.cbxStatus);
+            this.gpbFiltrosDoRelatorio.Controls.Add(this.cbxOrigem);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.label2);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.label1);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.cbxProduto);
@@ -157,17 +157,17 @@
             this.lblStatus.ForeColor = System.Drawing.SystemColors.Window;
             this.lblStatus.Location = new System.Drawing.Point(772, 25);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(57, 21);
+            this.lblStatus.Size = new System.Drawing.Size(67, 21);
             this.lblStatus.TabIndex = 86;
-            this.lblStatus.Text = "Status";
+            this.lblStatus.Text = "Origem";
             // 
-            // cbxStatus
+            // cbxOrigem
             // 
-            this.cbxStatus.FormattingEnabled = true;
-            this.cbxStatus.Location = new System.Drawing.Point(776, 54);
-            this.cbxStatus.Name = "cbxStatus";
-            this.cbxStatus.Size = new System.Drawing.Size(213, 29);
-            this.cbxStatus.TabIndex = 85;
+            this.cbxOrigem.FormattingEnabled = true;
+            this.cbxOrigem.Location = new System.Drawing.Point(776, 54);
+            this.cbxOrigem.Name = "cbxOrigem";
+            this.cbxOrigem.Size = new System.Drawing.Size(213, 29);
+            this.cbxOrigem.TabIndex = 85;
             // 
             // label2
             // 
@@ -206,15 +206,6 @@
             this.cbbUsuario.Name = "cbbUsuario";
             this.cbbUsuario.Size = new System.Drawing.Size(223, 29);
             this.cbbUsuario.TabIndex = 81;
-            // 
-            // btnLimparFiltros
-            // 
-            this.btnLimparFiltros.Location = new System.Drawing.Point(333, 12);
-            this.btnLimparFiltros.Name = "btnLimparFiltros";
-            this.btnLimparFiltros.Size = new System.Drawing.Size(152, 43);
-            this.btnLimparFiltros.TabIndex = 9;
-            this.btnLimparFiltros.Text = "&Limpar filtros";
-            this.btnLimparFiltros.UseVisualStyleBackColor = true;
             // 
             // dtpDataFinalPeriodo
             // 
@@ -255,6 +246,15 @@
             this.dtpDataInicialPeriodo.Name = "dtpDataInicialPeriodo";
             this.dtpDataInicialPeriodo.Size = new System.Drawing.Size(123, 29);
             this.dtpDataInicialPeriodo.TabIndex = 1;
+            // 
+            // btnLimparFiltros
+            // 
+            this.btnLimparFiltros.Location = new System.Drawing.Point(333, 12);
+            this.btnLimparFiltros.Name = "btnLimparFiltros";
+            this.btnLimparFiltros.Size = new System.Drawing.Size(152, 43);
+            this.btnLimparFiltros.TabIndex = 9;
+            this.btnLimparFiltros.Text = "&Limpar filtros";
+            this.btnLimparFiltros.UseVisualStyleBackColor = true;
             // 
             // tabControl1
             // 
@@ -329,7 +329,7 @@
         private System.Windows.Forms.Label lblE;
         private System.Windows.Forms.ComboBox cbbUsuario;
         private System.Windows.Forms.ComboBox cbxProduto;
-        private System.Windows.Forms.ComboBox cbxStatus;
+        private System.Windows.Forms.ComboBox cbxOrigem;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblStatus;
