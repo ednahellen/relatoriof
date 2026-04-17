@@ -81,6 +81,8 @@ namespace GPSFA_WinForms
             dgvRelatorios.CellClick += DgvRelatorios_CellClick;
         }
 
+        
+
         private void CarregarDados()
         {
             DataTable tabela = new DataTable();
@@ -91,42 +93,42 @@ namespace GPSFA_WinForms
                 {
                     StringBuilder sql = new StringBuilder();
                     sql.AppendLine(@"
-                        SELECT 
-                            p.codProd AS Codigo,
-                            DATE_FORMAT(p.dataDeEntrada, '%d/%m/%Y %H:%i') AS Data,
-                            l.descricao AS Produto,
-                            p.quantidade AS Qtd,
-                            o.nome AS Origem,
-                            u.usuario AS Usuario,
-                            p.dataDeValidade AS Validade,
-                            CASE 
-                                WHEN p.dataDeValidade < CURDATE() THEN 'VENCIDO'
-                                WHEN DATEDIFF(p.dataDeValidade, CURDATE()) <= 7 THEN '7 DIAS'
-                                WHEN DATEDIFF(p.dataDeValidade, CURDATE()) <= 15 THEN '15 DIAS'
-                                WHEN DATEDIFF(p.dataDeValidade, CURDATE()) <= 30 THEN '30 DIAS'
-                                ELSE 'OK'
-                            END AS Status
-                        FROM tbProdutos p
-                        INNER JOIN tbLista l ON p.codList = l.codList
-                        INNER JOIN tbOrigemDoacao o ON o.codOri = p.codOri
-                        INNER JOIN tbUsuarios u ON u.codUsu = p.codUsu
-                        WHERE p.tipoMovimentacao = 'ENTRADA'
-                        AND p.quantidade > 0
-                        AND p.dataDeEntrada BETWEEN @ini AND @fim");
+                SELECT 
+                    p.codProd AS Codigo,
+                    DATE_FORMAT(p.dataDeEntrada, '%d/%m/%Y %H:%i') AS Data,
+                    l.descricao AS Produto,
+                    p.quantidade AS Qtd,
+                    l.peso AS Peso,
+                    (p.quantidade * l.peso / 1000) AS PesoTotal,
+                    l.unidade AS Unidade,
+                    o.nome AS Origem,
+                    u.usuario AS Usuario,
+                    p.dataDeValidade AS Validade,
+                    CASE 
+                        WHEN p.dataDeValidade < CURDATE() THEN 'VENCIDO'
+                        WHEN DATEDIFF(p.dataDeValidade, CURDATE()) <= 7 THEN '7 DIAS'
+                        WHEN DATEDIFF(p.dataDeValidade, CURDATE()) <= 15 THEN '15 DIAS'
+                        WHEN DATEDIFF(p.dataDeValidade, CURDATE()) <= 30 THEN '30 DIAS'
+                        ELSE 'OK'
+                    END AS Status
+                FROM tbProdutos p
+                INNER JOIN tbLista l ON p.codList = l.codList
+                INNER JOIN tbOrigemDoacao o ON o.codOri = p.codOri
+                INNER JOIN tbUsuarios u ON u.codUsu = p.codUsu
+                WHERE p.tipoMovimentacao = 'ENTRADA'
+                AND p.quantidade > 0
+                AND p.dataDeEntrada BETWEEN @ini AND @fim");
 
-                    // Filtro por Produto
                     if (cbxProduto.SelectedItem != null && cbxProduto.SelectedItem.ToString() != "TODOS")
                     {
                         sql.AppendLine(" AND l.descricao = @produto");
                     }
 
-                    // Filtro por Usuário
                     if (cbbUsuario.SelectedItem != null && cbbUsuario.SelectedItem.ToString() != "TODOS")
                     {
                         sql.AppendLine(" AND u.usuario = @usuario");
                     }
 
-                    // Filtro por Origem
                     if (cbxOrigem.SelectedItem != null && cbxOrigem.SelectedItem.ToString() != "TODOS")
                     {
                         sql.AppendLine(" AND o.nome = @origem");
@@ -162,6 +164,46 @@ namespace GPSFA_WinForms
                     }
                 }
 
+                // Formatar números - CORRIGIDO
+                foreach (DataRow row in tabela.Rows)
+                {
+                    // Corrigir Peso
+                    if (row["Peso"] != DBNull.Value)
+                    {
+                        string pesoStr = row["Peso"].ToString();
+                        // Remove pontos e substitui vírgula
+                        pesoStr = pesoStr.Replace(".", "").Replace(",", "");
+                        if (int.TryParse(pesoStr, out int pesoInt))
+                        {
+                            row["Peso"] = pesoInt;
+                        }
+                        else
+                        {
+                            row["Peso"] = 0;
+                        }
+                    }
+
+                    // Corrigir PesoTotal (remover "kg" e converter)
+                    if (row["PesoTotal"] != DBNull.Value)
+                    {
+                        string pesoTotalStr = row["PesoTotal"].ToString();
+                        // Remover "kg" se existir
+                        pesoTotalStr = pesoTotalStr.Replace("kg", "").Replace("KG", "").Trim();
+                        // Substituir vírgula por ponto
+                        pesoTotalStr = pesoTotalStr.Replace(".", "").Replace(",", ".");
+
+                        if (decimal.TryParse(pesoTotalStr, System.Globalization.NumberStyles.Any,
+                            System.Globalization.CultureInfo.InvariantCulture, out decimal pesoTotal))
+                        {
+                            row["PesoTotal"] = pesoTotal;
+                        }
+                        else
+                        {
+                            row["PesoTotal"] = 0;
+                        }
+                    }
+                }
+
                 AdicionarTotal(tabela);
                 dgvRelatorios.DataSource = tabela;
                 ConfigurarAlinhamentoColunas();
@@ -187,42 +229,61 @@ namespace GPSFA_WinForms
                 }
                 else if (col.Name == "Data")
                 {
-                    col.FillWeight = 15;
+                    col.FillWeight = 12;
                     col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 else if (col.Name == "Produto")
                 {
-                    col.FillWeight = 25;
+                    col.FillWeight = 18;
                     col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 }
                 else if (col.Name == "Qtd")
                 {
-                    col.FillWeight = 10;
+                    col.FillWeight = 8;
                     col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                }
+                else if (col.Name == "Peso")
+                {
+                    col.FillWeight = 10;
+                    col.HeaderText = "Peso (g)";
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                }
+                else if (col.Name == "PesoTotal")
+                {
+                    col.FillWeight = 12;
+                    col.HeaderText = "Peso Total (kg)";
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    col.DefaultCellStyle.Format = "N2";
+                }
+
+                else if (col.Name == "Unidade")
+                {
+                    col.FillWeight = 8;
+                    col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 }
                 else if (col.Name == "Origem")
                 {
-                    col.FillWeight = 12;
+                    col.FillWeight = 10;
                     col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 }
                 else if (col.Name == "Usuario")
                 {
-                    col.FillWeight = 12;
+                    col.FillWeight = 10;
                     col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
                 }
                 else if (col.Name == "Validade")
                 {
-                    col.FillWeight = 12;
+                    col.FillWeight = 10;
                     col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 else if (col.Name == "Status")
                 {
-                    col.FillWeight = 10;
+                    col.FillWeight = 8;
                     col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
                 else if (col.Name == "Excluir")
                 {
-                    col.FillWeight = 8;
+                    col.FillWeight = 6;
                     col.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
             }
@@ -296,25 +357,47 @@ namespace GPSFA_WinForms
             cbxProduto.SelectedIndex = 0;
         }
 
+        
+
         private void AdicionarTotal(DataTable tabela)
         {
             if (tabela.Rows.Count == 0) return;
 
             int totalQtd = 0;
+            decimal totalPesoGramas = 0;
 
             foreach (DataRow row in tabela.Rows)
             {
+                if (row["Produto"].ToString() == "❖ TOTAL DE ENTRADAS ❖") continue;
+
+                int qtd = 0;
                 if (row["Qtd"] != DBNull.Value)
                 {
-                    totalQtd += Convert.ToInt32(row["Qtd"]);
+                    int.TryParse(row["Qtd"].ToString(), out qtd);
                 }
+
+                decimal peso = 0;
+                if (row["Peso"] != DBNull.Value)
+                {
+                    // Converter corretamente
+                    string pesoStr = row["Peso"].ToString();
+                    pesoStr = pesoStr.Replace(".", "").Replace(",", "");
+                    int.TryParse(pesoStr, out int pesoInt);
+                    peso = pesoInt;
+                }
+
+                totalQtd += qtd;
+                totalPesoGramas += (qtd * peso);
             }
 
             DataRow totalRow = tabela.NewRow();
             totalRow["Produto"] = "❖ TOTAL DE ENTRADAS ❖";
             totalRow["Qtd"] = totalQtd;
+            totalRow["PesoTotal"] = (totalPesoGramas / 1000).ToString("N2");
             totalRow["Codigo"] = DBNull.Value;
             totalRow["Data"] = DBNull.Value;
+            totalRow["Peso"] = DBNull.Value;
+            totalRow["Unidade"] = DBNull.Value;
             totalRow["Origem"] = DBNull.Value;
             totalRow["Usuario"] = DBNull.Value;
             totalRow["Validade"] = DBNull.Value;
@@ -327,7 +410,6 @@ namespace GPSFA_WinForms
         {
             if (e.RowIndex >= 0 && dgvRelatorios.Columns[e.ColumnIndex].Name == "Excluir")
             {
-                // Verificar se é a linha de total
                 if (dgvRelatorios.Rows[e.RowIndex].Cells["Produto"].Value?.ToString() == "❖ TOTAL DE ENTRADAS ❖")
                 {
                     MessageBox.Show("Não é possível excluir a linha de total.", "Aviso",
@@ -386,14 +468,14 @@ namespace GPSFA_WinForms
                 SaveFileDialog sfd = new SaveFileDialog
                 {
                     Filter = "Arquivos Excel (*.xlsx)|*.xlsx",
-                    FileName = $"Relatorio_Estoque_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
+                    FileName = $"Relatorio_Entradas_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx"
                 };
 
                 if (sfd.ShowDialog() != DialogResult.OK) return;
 
                 using (var workbook = new XLWorkbook())
                 {
-                    var worksheet = workbook.Worksheets.Add("Relatorio");
+                    var worksheet = workbook.Worksheets.Add("Relatorio_Entradas");
 
                     for (int i = 0; i < dgvRelatorios.Columns.Count; i++)
                     {
@@ -432,7 +514,7 @@ namespace GPSFA_WinForms
                 SaveFileDialog sfd = new SaveFileDialog
                 {
                     Filter = "Arquivos CSV (*.csv)|*.csv",
-                    FileName = $"Relatorio_Estoque_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
+                    FileName = $"Relatorio_Entradas_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
                 };
 
                 if (sfd.ShowDialog() != DialogResult.OK) return;
@@ -506,21 +588,17 @@ namespace GPSFA_WinForms
             float leftMargin = e.MarginBounds.Left;
             float pageWidth = e.MarginBounds.Width;
 
-            // Título
             e.Graphics.DrawString("RELATÓRIO DE ENTRADAS - ESTOQUE", tituloFont, Brushes.Black, leftMargin, yPos);
             yPos += 35;
 
-            // Período
             e.Graphics.DrawString($"Período: {dtpDataInicialPeriodo.Value:dd/MM/yyyy} a {dtpDataFinalPeriodo.Value:dd/MM/yyyy}",
                 subtituloFont, Brushes.Black, leftMargin, yPos);
             yPos += 25;
 
-            // Total de registros
             e.Graphics.DrawString($"Total de registros: {dgvRelatorios.Rows.Count - 1} entradas",
                 subtituloFont, Brushes.Black, leftMargin, yPos);
             yPos += 30;
 
-            // Cabeçalho da tabela
             float colWidth = pageWidth / dgvRelatorios.Columns.Count;
             float colX = leftMargin;
 
@@ -535,7 +613,6 @@ namespace GPSFA_WinForms
 
             yPos += 25;
 
-            // Dados
             for (int i = linhaAtual; i < dgvRelatorios.Rows.Count; i++)
             {
                 DataGridViewRow row = dgvRelatorios.Rows[i];
@@ -570,7 +647,6 @@ namespace GPSFA_WinForms
             linhaAtual = 0;
             e.HasMorePages = false;
 
-            // Rodapé
             e.Graphics.DrawString($"Emissão: {DateTime.Now:dd/MM/yyyy HH:mm:ss}",
                 subtituloFont, Brushes.Gray, leftMargin, yPos + 10);
         }

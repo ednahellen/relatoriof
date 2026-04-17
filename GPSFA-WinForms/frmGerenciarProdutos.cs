@@ -373,7 +373,8 @@ namespace GPSFA_WinForms
                                $"📦 Produto: {produtoSelecionado}\n" +
                                $"📊 Quantidade: {quantidade}",
                     "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                
+                carregarProdutosCbb();
                 limparCampos();
                 desativaCampos();
                 desativaBotoes();
@@ -414,6 +415,7 @@ namespace GPSFA_WinForms
         {
 
         }
+
 
         private void btnVoltar_Click(object sender, EventArgs e)
         {

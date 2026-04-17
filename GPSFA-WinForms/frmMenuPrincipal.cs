@@ -82,48 +82,65 @@ namespace GPSFA_WinForms
             this.Hide();
         }
 
-        private void btnVoluntarios_Click(object sender, EventArgs e)
+        //private void btnVoluntarios_Click(object sender, EventArgs e)
+        //{
+        //    //ActiveButton(btnVoluntarios);
+        //    //FormShow(new frmGestaoDeVoluntarios());
+
+        //    if (tipoAcessoUsuLogado.Equals("ADMIN")) // validação simples para limitar o acesso do usuário
+        //    {
+        //        frmVoluntarios abrir = new frmVoluntarios(codUsuLogado);
+
+        //        abrir.Show();
+        //        this.Hide();
+        //    }
+        //    else
+        //    {
+        //        MessageBox.Show("Acesso negado!\n\nVocê precisa ser um administrador para acessar esta função.", "Mensagem do sistema",
+        //            MessageBoxButtons.OK,
+        //            MessageBoxIcon.Exclamation);
+        //    }
+        //}
+
+
+        //private void btnRelatorios_Click(object sender, EventArgs e)
+        //{
+        //    //ActiveButton(btnRelatorios);
+        //    //FormShow(new frmRelatorios());
+
+        //    frmRelatorios abrir = new frmRelatorios(codUsuLogado);
+
+        //    abrir.Show();
+        //    this.Hide();
+        //}
+
+        private void btnEstoque_Click(object sender, EventArgs e)
         {
-            //ActiveButton(btnVoluntarios);
-            //FormShow(new frmGestaoDeVoluntarios());
-
-            if (tipoAcessoUsuLogado.Equals("ADMIN")) // validação simples para limitar o acesso do usuário
-            {
-                frmVoluntarios abrir = new frmVoluntarios(codUsuLogado);
-
-                abrir.Show();
-                this.Hide();
-            }
-            else
-            {
-                MessageBox.Show("Acesso negado!\n\nVocê precisa ser um administrador para acessar esta função.", "Mensagem do sistema",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Exclamation);
-            }
+            frmEstoque estoque = new frmEstoque(codUsuLogado);
+            estoque.Show();
+            this.Close(); 
         }
 
 
         private void btnRelatorios_Click(object sender, EventArgs e)
         {
-            //ActiveButton(btnRelatorios);
-            //FormShow(new frmRelatorios());
-
             frmRelatorios abrir = new frmRelatorios(codUsuLogado);
-
             abrir.Show();
-            this.Hide();
+            this.Close();  // FECHA em vez de Hide
         }
 
-        private void btnEstoque_Click(object sender, EventArgs e)
+        private void btnVoluntarios_Click(object sender, EventArgs e)
         {
-            //ActiveButton(btnAlimentos);
-            //FormShow(new frmEstoque());
-
-            frmEstoque abrir = new frmEstoque(codUsuLogado);
-
-            abrir.Show();
-            this.Hide();
-
+            if (tipoAcessoUsuLogado.Equals("ADMIN"))
+            {
+                frmVoluntarios abrir = new frmVoluntarios(codUsuLogado);
+                abrir.Show();
+                this.Close();  // FECHA em vez de Hide
+            }
+            else
+            {
+                MessageBox.Show("Acesso negado!");
+            }
         }
 
         private void frmMenuPrincipal_Load(object sender, EventArgs e)
@@ -154,7 +171,7 @@ namespace GPSFA_WinForms
         {
             frmTipoDeArrecadacao abrir = new frmTipoDeArrecadacao(codUsuLogado);
             abrir.Show();
-            this.Hide();
+            this.Close();
         }
 
         private void btnCestas_Click(object sender, EventArgs e)

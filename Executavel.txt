@@ -1,0 +1,87 @@
+## 📦 Gerando um novo arquivo executável no Visual Studio
+
+### Passo 1: Compilar o projeto
+
+No Visual Studio:
+
+1. **Build → Clean Solution** (limpar soluções anteriores)
+2. **Build → Rebuild Solution** (recriar tudo do zero)
+
+Ou use os atalhos:
+- `Ctrl + Shift + B` (Build)
+- Ou clique com botão direito no projeto → **Rebuild**
+
+### Passo 2: Localizar o executável
+
+Após compilar com sucesso, o executável estará em:
+
+```
+📁 SeuProjeto\bin\Release\GPSFA_WinForms.exe
+```
+
+Ou se compilou em Debug:
+```
+📁 SeuProjeto\bin\Debug\GPSFA_WinForms.exe
+```
+
+### Passo 3: Configurar para Release (recomendado)
+
+Para gerar um executável otimizado:
+
+1. No menu superior do Visual Studio, mude de **Debug** para **Release**:
+   ```
+   [Debug ▼] → Release
+   ```
+
+2. **Build → Rebuild Solution**
+
+3. O executável estará em:
+   ```
+   📁 SeuProjeto\bin\Release\
+   ```
+
+### Passo 4: Copiar todos os arquivos necessários
+
+Além do `.exe`, você pode precisar copiar:
+
+| Arquivo/Diretório | Obrigatório? |
+|-------------------|--------------|
+| `GPSFA_WinForms.exe` | ✅ Sim |
+| `DLLs` (ClosedXML, ExcelDataReader, MySql.Data) | ✅ Sim (estão na pasta) |
+| `config` (se tiver connection string) | ✅ Sim |
+| `DatabaseConnection.cs` (já compilado no .exe) | ❌ Não, já está dentro do .exe |
+
+### Passo 5: Onde salvar o executável
+
+Sugiro criar uma pasta organizada:
+
+```
+📁 C:\SistemaGPSFA\
+   📄 GPSFA_WinForms.exe
+   📁 lib\ (se precisar de DLLs extras)
+```
+
+## 📋 Verificação pré-compilação
+
+Antes de compilar, confirme:
+
+- [ ] Nenhum erro no **Error List** (`Ctrl + \`, `E`)
+- [ ] O projeto está em **Release**
+- [ ] Todos os arquivos estão salvos (`Ctrl + Shift + S`)
+
+## 🚀 Compilação rápida
+
+Se preferir linha de comando:
+
+```cmd
+cd "C:\caminho\do\seu\projeto"
+msbuild GPSFA_WinForms.csproj /p:Configuration=Release
+```
+
+## ✅ Após compilar
+
+1. **Teste o executável** na pasta `bin\Release\`
+2. **Copie a pasta inteira** para o local de produção
+3. **Crie um atalho** na área de trabalho se desejar
+
+Qual versão do Visual Studio você está usando? Posso dar instruções mais específicas se necessário.

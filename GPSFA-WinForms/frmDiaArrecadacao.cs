@@ -94,5 +94,10 @@ namespace GPSFA_WinForms
             }
 
         }
+
+        private void frmTipoDeArrecadacao_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

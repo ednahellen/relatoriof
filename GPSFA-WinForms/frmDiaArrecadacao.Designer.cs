@@ -95,6 +95,7 @@
             this.Name = "frmTipoDeArrecadacao";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Grupo Socorrista São Francisco de Assis - Tipo de Arrecação";
+            this.Load += new System.EventHandler(this.frmTipoDeArrecadacao_Load);
             this.gpbCamposArrecadacao.ResumeLayout(false);
             this.gpbCamposArrecadacao.PerformLayout();
             this.ResumeLayout(false);
