@@ -34,8 +34,7 @@
 - .NET Framework 4.7.2
 - XAMPP (servidor)
 
-## Desenvolvido por
-Edna Hellen
+## Desenvolvido em
 https://github.com/ednahellen/relatoriof
 
 
