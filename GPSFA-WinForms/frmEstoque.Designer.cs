@@ -42,10 +42,13 @@
             this.tabPageSaidas = new System.Windows.Forms.TabPage();
             this.tabPageRegistrarSaida = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnProdutosPrincipais = new System.Windows.Forms.Button();
             this.btnImportar = new System.Windows.Forms.Button();
             this.lblTitleEstoque = new System.Windows.Forms.Label();
             this.btnExportar = new System.Windows.Forms.Button();
             this.gpbFiltrosDoRelatorio = new System.Windows.Forms.GroupBox();
+            this.lblProduto = new System.Windows.Forms.Label();
+            this.cbxprodutoSelecionado = new System.Windows.Forms.ComboBox();
             this.btnCadastrar = new System.Windows.Forms.Button();
             this.btnMenu = new System.Windows.Forms.Button();
             this.btnSair = new System.Windows.Forms.Button();
@@ -55,10 +58,7 @@
             this.btnLimparFiltros = new System.Windows.Forms.Button();
             this.btnAplicarFiltros = new System.Windows.Forms.Button();
             this.pnlFiltrosDeBusca = new System.Windows.Forms.Panel();
-            this.cbxprodutoSelecionado = new System.Windows.Forms.ComboBox();
-            this.btnProdutosPrincipais = new System.Windows.Forms.Button();
-            this.lblProduto = new System.Windows.Forms.Label();
-            this.btnSincronizar = new System.Windows.Forms.Button();
+            this.btnConfirmarAjustes = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.tbEstoque.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -206,6 +206,15 @@
             this.panel1.Size = new System.Drawing.Size(1323, 146);
             this.panel1.TabIndex = 18;
             // 
+            // btnProdutosPrincipais
+            // 
+            this.btnProdutosPrincipais.Location = new System.Drawing.Point(697, 17);
+            this.btnProdutosPrincipais.Name = "btnProdutosPrincipais";
+            this.btnProdutosPrincipais.Size = new System.Drawing.Size(235, 37);
+            this.btnProdutosPrincipais.TabIndex = 82;
+            this.btnProdutosPrincipais.Text = "Produtos Principais";
+            this.btnProdutosPrincipais.UseVisualStyleBackColor = true;
+            // 
             // btnImportar
             // 
             this.btnImportar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
@@ -240,7 +249,7 @@
             // 
             // gpbFiltrosDoRelatorio
             // 
-            this.gpbFiltrosDoRelatorio.Controls.Add(this.btnSincronizar);
+            this.gpbFiltrosDoRelatorio.Controls.Add(this.btnConfirmarAjustes);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.lblProduto);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.cbxprodutoSelecionado);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.btnCadastrar);
@@ -256,6 +265,25 @@
             this.gpbFiltrosDoRelatorio.TabIndex = 16;
             this.gpbFiltrosDoRelatorio.TabStop = false;
             this.gpbFiltrosDoRelatorio.Text = "Filtros";
+            // 
+            // lblProduto
+            // 
+            this.lblProduto.AutoSize = true;
+            this.lblProduto.Font = new System.Drawing.Font("Microsoft YaHei", 12F);
+            this.lblProduto.Location = new System.Drawing.Point(16, 31);
+            this.lblProduto.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.lblProduto.Name = "lblProduto";
+            this.lblProduto.Size = new System.Drawing.Size(146, 21);
+            this.lblProduto.TabIndex = 84;
+            this.lblProduto.Text = "Código ou Nome:";
+            // 
+            // cbxprodutoSelecionado
+            // 
+            this.cbxprodutoSelecionado.FormattingEnabled = true;
+            this.cbxprodutoSelecionado.Location = new System.Drawing.Point(166, 27);
+            this.cbxprodutoSelecionado.Name = "cbxprodutoSelecionado";
+            this.cbxprodutoSelecionado.Size = new System.Drawing.Size(513, 29);
+            this.cbxprodutoSelecionado.TabIndex = 83;
             // 
             // btnCadastrar
             // 
@@ -355,44 +383,14 @@
             this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1337, 1435);
             this.pnlFiltrosDeBusca.TabIndex = 15;
             // 
-            // cbxprodutoSelecionado
+            // btnConfirmarAjustes
             // 
-            this.cbxprodutoSelecionado.FormattingEnabled = true;
-            this.cbxprodutoSelecionado.Location = new System.Drawing.Point(166, 27);
-            this.cbxprodutoSelecionado.Name = "cbxprodutoSelecionado";
-            this.cbxprodutoSelecionado.Size = new System.Drawing.Size(513, 29);
-            this.cbxprodutoSelecionado.TabIndex = 83;
-            // 
-            // btnProdutosPrincipais
-            // 
-            this.btnProdutosPrincipais.Location = new System.Drawing.Point(697, 17);
-            this.btnProdutosPrincipais.Name = "btnProdutosPrincipais";
-            this.btnProdutosPrincipais.Size = new System.Drawing.Size(235, 37);
-            this.btnProdutosPrincipais.TabIndex = 82;
-            this.btnProdutosPrincipais.Text = "Produtos Principais";
-            this.btnProdutosPrincipais.UseVisualStyleBackColor = true;
-            // 
-            // lblProduto
-            // 
-            this.lblProduto.AutoSize = true;
-            this.lblProduto.Font = new System.Drawing.Font("Microsoft YaHei", 12F);
-            this.lblProduto.Location = new System.Drawing.Point(16, 31);
-            this.lblProduto.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            this.lblProduto.Name = "lblProduto";
-            this.lblProduto.Size = new System.Drawing.Size(146, 21);
-            this.lblProduto.TabIndex = 84;
-            this.lblProduto.Text = "Código ou Nome:";
-            // 
-            // btnSincronizar
-            // 
-            this.btnSincronizar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.btnSincronizar.Location = new System.Drawing.Point(776, 23);
-            this.btnSincronizar.Name = "btnSincronizar";
-            this.btnSincronizar.Size = new System.Drawing.Size(152, 43);
-            this.btnSincronizar.TabIndex = 85;
-            this.btnSincronizar.Text = "Sincronizar";
-            this.btnSincronizar.UseVisualStyleBackColor = false;
-            this.btnSincronizar.Click += new System.EventHandler(this.btnSincronizar_Click);
+            this.btnConfirmarAjustes.Location = new System.Drawing.Point(771, 21);
+            this.btnConfirmarAjustes.Name = "btnConfirmarAjustes";
+            this.btnConfirmarAjustes.Size = new System.Drawing.Size(152, 43);
+            this.btnConfirmarAjustes.TabIndex = 85;
+            this.btnConfirmarAjustes.Text = "Ajustar ";
+            this.btnConfirmarAjustes.UseVisualStyleBackColor = true;
             // 
             // frmEstoque
             // 
@@ -424,6 +422,7 @@
             this.pnlFiltrosDeBusca.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
+            
 
         }
 
@@ -460,6 +459,7 @@
         private System.Windows.Forms.Button btnProdutosPrincipais;
         private System.Windows.Forms.Label lblProduto;
         private System.Windows.Forms.ComboBox cbxprodutoSelecionado;
-        private System.Windows.Forms.Button btnSincronizar;
+        private System.Windows.Forms.Button btnConfirmarAjustes;
+
     }
 }

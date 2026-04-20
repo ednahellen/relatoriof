@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCestas));
             this.gpbGerirCestas = new System.Windows.Forms.GroupBox();
+            this.btnDistribuir = new System.Windows.Forms.Button();
             this.btnExportar = new System.Windows.Forms.Button();
             this.btnVoltar = new System.Windows.Forms.Button();
             this.dgvItensDaCesta = new System.Windows.Forms.DataGridView();
@@ -47,6 +48,7 @@
             // 
             // gpbGerirCestas
             // 
+            this.gpbGerirCestas.Controls.Add(this.btnDistribuir);
             this.gpbGerirCestas.Controls.Add(this.btnExportar);
             this.gpbGerirCestas.Controls.Add(this.btnVoltar);
             this.gpbGerirCestas.Controls.Add(this.dgvItensDaCesta);
@@ -64,10 +66,20 @@
             this.gpbGerirCestas.TabIndex = 0;
             this.gpbGerirCestas.TabStop = false;
             // 
+            // btnDistribuir
+            // 
+            this.btnDistribuir.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.btnDistribuir.Location = new System.Drawing.Point(786, 47);
+            this.btnDistribuir.Name = "btnDistribuir";
+            this.btnDistribuir.Size = new System.Drawing.Size(152, 43);
+            this.btnDistribuir.TabIndex = 83;
+            this.btnDistribuir.Text = "Distribuir";
+            this.btnDistribuir.UseVisualStyleBackColor = false;
+            // 
             // btnExportar
             // 
             this.btnExportar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.btnExportar.Location = new System.Drawing.Point(913, 44);
+            this.btnExportar.Location = new System.Drawing.Point(949, 44);
             this.btnExportar.Name = "btnExportar";
             this.btnExportar.Size = new System.Drawing.Size(152, 43);
             this.btnExportar.TabIndex = 82;
@@ -93,10 +105,10 @@
             // dgvItensDaCesta
             // 
             this.dgvItensDaCesta.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvItensDaCesta.Location = new System.Drawing.Point(18, 118);
+            this.dgvItensDaCesta.Location = new System.Drawing.Point(18, 115);
             this.dgvItensDaCesta.Name = "dgvItensDaCesta";
             this.dgvItensDaCesta.RowHeadersWidth = 51;
-            this.dgvItensDaCesta.Size = new System.Drawing.Size(1097, 332);
+            this.dgvItensDaCesta.Size = new System.Drawing.Size(1111, 337);
             this.dgvItensDaCesta.TabIndex = 3;
             // 
             // btnMontar
@@ -223,6 +235,7 @@
             this.gpbGerirCestas.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItensDaCesta)).EndInit();
             this.ResumeLayout(false);
+
         }
 
         #endregion
@@ -239,5 +252,6 @@
         private System.Windows.Forms.Button btnMontar;
         private System.Windows.Forms.Button btnVoltar;
         private System.Windows.Forms.Button btnExportar;
+        private System.Windows.Forms.Button btnDistribuir;
     }
 }
