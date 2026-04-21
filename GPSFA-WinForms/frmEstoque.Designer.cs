@@ -58,7 +58,6 @@
             this.btnLimparFiltros = new System.Windows.Forms.Button();
             this.btnAplicarFiltros = new System.Windows.Forms.Button();
             this.pnlFiltrosDeBusca = new System.Windows.Forms.Panel();
-            this.btnConfirmarAjustes = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.tbEstoque.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -249,7 +248,6 @@
             // 
             // gpbFiltrosDoRelatorio
             // 
-            this.gpbFiltrosDoRelatorio.Controls.Add(this.btnConfirmarAjustes);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.lblProduto);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.cbxprodutoSelecionado);
             this.gpbFiltrosDoRelatorio.Controls.Add(this.btnCadastrar);
@@ -273,9 +271,9 @@
             this.lblProduto.Location = new System.Drawing.Point(16, 31);
             this.lblProduto.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.lblProduto.Name = "lblProduto";
-            this.lblProduto.Size = new System.Drawing.Size(146, 21);
+            this.lblProduto.Size = new System.Drawing.Size(76, 21);
             this.lblProduto.TabIndex = 84;
-            this.lblProduto.Text = "Código ou Nome:";
+            this.lblProduto.Text = "Produto:";
             // 
             // cbxprodutoSelecionado
             // 
@@ -383,15 +381,6 @@
             this.pnlFiltrosDeBusca.Size = new System.Drawing.Size(1337, 1435);
             this.pnlFiltrosDeBusca.TabIndex = 15;
             // 
-            // btnConfirmarAjustes
-            // 
-            this.btnConfirmarAjustes.Location = new System.Drawing.Point(771, 21);
-            this.btnConfirmarAjustes.Name = "btnConfirmarAjustes";
-            this.btnConfirmarAjustes.Size = new System.Drawing.Size(152, 43);
-            this.btnConfirmarAjustes.TabIndex = 85;
-            this.btnConfirmarAjustes.Text = "Ajustar ";
-            this.btnConfirmarAjustes.UseVisualStyleBackColor = true;
-            // 
             // frmEstoque
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
@@ -422,7 +411,6 @@
             this.pnlFiltrosDeBusca.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
-            
 
         }
 
@@ -459,7 +447,6 @@
         private System.Windows.Forms.Button btnProdutosPrincipais;
         private System.Windows.Forms.Label lblProduto;
         private System.Windows.Forms.ComboBox cbxprodutoSelecionado;
-        private System.Windows.Forms.Button btnConfirmarAjustes;
 
     }
 }
