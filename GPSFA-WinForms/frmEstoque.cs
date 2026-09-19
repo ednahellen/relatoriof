@@ -361,6 +361,39 @@ namespace GPSFA_WinForms
             return "";
         }
 
+        //private void CarregarProdutosSaida()
+        //{
+        //    if (cmbProdutoSaida == null) return;
+        //    cmbProdutoSaida.Items.Clear();
+
+        //    using (var conn = DataBaseConnection.OpenConnection())
+        //    {
+        //        string sql = @"
+        //    SELECT l.descricao, 
+        //           COALESCE(SUM(CASE WHEN p.quantidade > 0 THEN p.quantidade ELSE 0 END), 0) -
+        //           COALESCE(SUM(CASE WHEN p.quantidade < 0 THEN ABS(p.quantidade) ELSE 0 END), 0) as saldo
+        //    FROM tbLista l
+        //    INNER JOIN tbProdutos p ON p.codList = l.codList
+        //    GROUP BY l.codList, l.descricao
+        //    HAVING saldo > 0
+        //    ORDER BY l.descricao";
+
+        //        using (var cmd = new MySqlCommand(sql, conn))
+        //        using (var reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                string nome = reader["descricao"].ToString();
+        //                int qtd = Convert.ToInt32(reader["saldo"]);
+        //                cmbProdutoSaida.Items.Add($"{nome} | Estoque: {qtd}");
+        //            }
+        //        }
+        //    }
+
+        //    if (cmbProdutoSaida.Items.Count == 0)
+        //        cmbProdutoSaida.Items.Add("Nenhum produto com estoque");
+        //}
+
         private void CarregarProdutosSaida()
         {
             if (cmbProdutoSaida == null) return;
@@ -368,13 +401,16 @@ namespace GPSFA_WinForms
 
             using (var conn = DataBaseConnection.OpenConnection())
             {
+                // 🔥 CORRIGIDO: Especificar a tabela 'p' para a coluna quantidade
                 string sql = @"
-                    SELECT l.descricao, COALESCE(SUM(p.quantidade), 0) as saldo
-                    FROM tbLista l
-                    LEFT JOIN tbProdutos p ON p.codList = l.codList
-                    GROUP BY l.codList, l.descricao
-                    HAVING saldo > 0
-                    ORDER BY l.descricao";
+            SELECT l.descricao, 
+                   COALESCE(SUM(CASE WHEN p.quantidade > 0 THEN p.quantidade ELSE 0 END), 0) -
+                   COALESCE(SUM(CASE WHEN p.quantidade < 0 THEN ABS(p.quantidade) ELSE 0 END), 0) as saldo
+            FROM tbLista l
+            INNER JOIN tbProdutos p ON p.codList = l.codList
+            GROUP BY l.codList, l.descricao
+            HAVING saldo > 0
+            ORDER BY l.descricao";
 
                 using (var cmd = new MySqlCommand(sql, conn))
                 using (var reader = cmd.ExecuteReader())
@@ -387,43 +423,225 @@ namespace GPSFA_WinForms
                     }
                 }
             }
+
             if (cmbProdutoSaida.Items.Count == 0)
                 cmbProdutoSaida.Items.Add("Nenhum produto com estoque");
         }
 
+
+        //private void CarregarProdutosSaida()
+        //{
+        //    if (cmbProdutoSaida == null) return;
+        //    cmbProdutoSaida.Items.Clear();
+
+        //    using (var conn = DataBaseConnection.OpenConnection())
+        //    {
+        //        string sql = @"
+        //            SELECT l.descricao, COALESCE(SUM(p.quantidade), 0) as saldo
+        //            FROM tbLista l
+        //            LEFT JOIN tbProdutos p ON p.codList = l.codList
+        //            GROUP BY l.codList, l.descricao
+        //            HAVING saldo > 0
+        //            ORDER BY l.descricao";
+
+        //        using (var cmd = new MySqlCommand(sql, conn))
+        //        using (var reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                string nome = reader["descricao"].ToString();
+        //                int qtd = Convert.ToInt32(reader["saldo"]);
+        //                cmbProdutoSaida.Items.Add($"{nome} | Estoque: {qtd}");
+        //            }
+        //        }
+        //    }
+        //    if (cmbProdutoSaida.Items.Count == 0)
+        //        cmbProdutoSaida.Items.Add("Nenhum produto com estoque");
+        //}
+
+        //private void CmbProdutoSaida_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    if (cmbProdutoSaida == null || cmbProdutoSaida.SelectedItem == null) return;
+        //    string item = cmbProdutoSaida.SelectedItem.ToString();
+        //    if (item == "Nenhum produto com estoque") return;
+
+        //    string produto = item.Split('|')[0].Trim();
+        //    if (lblProdutoSelecionado != null)
+        //        lblProdutoSelecionado.Text = produto;
+
+        //    using (var conn = DataBaseConnection.OpenConnection())
+        //    {
+        //        string sql = @"
+        //            SELECT COALESCE(SUM(p.quantidade), 0)
+        //            FROM tbProdutos p
+        //            INNER JOIN tbLista l ON l.codList = p.codList
+        //            WHERE l.descricao = @produto";
+
+        //        using (var cmd = new MySqlCommand(sql, conn))
+        //        {
+        //            cmd.Parameters.AddWithValue("@produto", produto);
+        //            object result = cmd.ExecuteScalar();
+        //            int saldo = result != null ? Convert.ToInt32(result) : 0;
+        //            if (lblSaldoAtual != null)
+        //                lblSaldoAtual.Text = saldo.ToString();
+        //            if (numQuantidadeSaida != null)
+        //            {
+        //                numQuantidadeSaida.Maximum = saldo > 0 ? saldo : 0;
+        //                numQuantidadeSaida.Value = 0;
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private void CmbProdutoSaida_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    if (cmbProdutoSaida.SelectedItem == null) return;
+        //    string itemSelecionado = cmbProdutoSaida.SelectedItem.ToString();
+        //    if (itemSelecionado == "Nenhum produto com estoque") return;
+
+        //    string produtoEscolhido = itemSelecionado.Split('|')[0].Trim();
+        //    lblProdutoSelecionado.Text = produtoEscolhido;
+
+        //    using (var conexao = DataBaseConnection.OpenConnection())
+        //    {
+        //        // 🔥 CORRIGIDO: Calcular saldo diretamente da tbProdutos
+        //        string sqlCalculoSaldo = @"
+        //    SELECT COALESCE(SUM(CASE WHEN quantidade > 0 THEN quantidade ELSE 0 END), 0) -
+        //           COALESCE(SUM(CASE WHEN quantidade < 0 THEN ABS(quantidade) ELSE 0 END), 0) as saldo_atual
+        //    FROM tbProdutos p
+        //    INNER JOIN tbLista l ON l.codList = p.codList
+        //    WHERE l.descricao = @produto";
+
+        //        using (var comando = new MySqlCommand(sqlCalculoSaldo, conexao))
+        //        {
+        //            comando.Parameters.AddWithValue("@produto", produtoEscolhido);
+        //            object saldoObtido = comando.ExecuteScalar();
+        //            int saldoDisponivel = saldoObtido != null ? Convert.ToInt32(saldoObtido) : 0;
+        //            lblSaldoAtual.Text = saldoDisponivel.ToString();
+        //            numQuantidadeSaida.Maximum = saldoDisponivel;
+        //            numQuantidadeSaida.Value = 0;
+        //        }
+        //    }
+        //}
+
         private void CmbProdutoSaida_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cmbProdutoSaida == null || cmbProdutoSaida.SelectedItem == null) return;
-            string item = cmbProdutoSaida.SelectedItem.ToString();
-            if (item == "Nenhum produto com estoque") return;
+            if (cmbProdutoSaida.SelectedItem == null) return;
+            string itemSelecionado = cmbProdutoSaida.SelectedItem.ToString();
+            if (itemSelecionado == "Nenhum produto com estoque") return;
 
-            string produto = item.Split('|')[0].Trim();
-            if (lblProdutoSelecionado != null)
-                lblProdutoSelecionado.Text = produto;
+            string produtoEscolhido = itemSelecionado.Split('|')[0].Trim();
+            lblProdutoSelecionado.Text = produtoEscolhido;
 
-            using (var conn = DataBaseConnection.OpenConnection())
+            using (var conexao = DataBaseConnection.OpenConnection())
             {
-                string sql = @"
-                    SELECT COALESCE(SUM(p.quantidade), 0)
-                    FROM tbProdutos p
-                    INNER JOIN tbLista l ON l.codList = p.codList
-                    WHERE l.descricao = @produto";
+                // 🔥 CORRIGIDO: Especificar a tabela 'p' para a coluna quantidade
+                string sqlCalculoSaldo = @"
+            SELECT COALESCE(SUM(CASE WHEN p.quantidade > 0 THEN p.quantidade ELSE 0 END), 0) -
+                   COALESCE(SUM(CASE WHEN p.quantidade < 0 THEN ABS(p.quantidade) ELSE 0 END), 0) as saldo_atual
+            FROM tbProdutos p
+            INNER JOIN tbLista l ON l.codList = p.codList
+            WHERE l.descricao = @produto";
 
-                using (var cmd = new MySqlCommand(sql, conn))
+                using (var comando = new MySqlCommand(sqlCalculoSaldo, conexao))
                 {
-                    cmd.Parameters.AddWithValue("@produto", produto);
-                    object result = cmd.ExecuteScalar();
-                    int saldo = result != null ? Convert.ToInt32(result) : 0;
-                    if (lblSaldoAtual != null)
-                        lblSaldoAtual.Text = saldo.ToString();
-                    if (numQuantidadeSaida != null)
-                    {
-                        numQuantidadeSaida.Maximum = saldo > 0 ? saldo : 0;
-                        numQuantidadeSaida.Value = 0;
-                    }
+                    comando.Parameters.AddWithValue("@produto", produtoEscolhido);
+                    object saldoObtido = comando.ExecuteScalar();
+                    int saldoDisponivel = saldoObtido != null ? Convert.ToInt32(saldoObtido) : 0;
+                    lblSaldoAtual.Text = saldoDisponivel.ToString();
+                    numQuantidadeSaida.Maximum = saldoDisponivel;
+                    numQuantidadeSaida.Value = 0;
                 }
             }
         }
+
+        //private void RegistrarSaida(string produto, int quantidade, string destino)
+        //{
+        //    using (var conn = DataBaseConnection.OpenConnection())
+        //    using (var trans = conn.BeginTransaction())
+        //    {
+        //        try
+        //        {
+        //            int codList = 0;
+        //            int peso = 0;
+
+        //            using (var cmd = new MySqlCommand("SELECT codList, peso FROM tbLista WHERE descricao = @produto", conn, trans))
+        //            {
+        //                cmd.Parameters.AddWithValue("@produto", produto);
+        //                using (var reader = cmd.ExecuteReader())
+        //                {
+        //                    if (reader.Read())
+        //                    {
+        //                        codList = Convert.ToInt32(reader["codList"]);
+        //                        peso = Convert.ToInt32(reader["peso"]);
+        //                    }
+        //                }
+        //            }
+
+        //            if (codList == 0)
+        //                throw new Exception($"Produto '{produto}' não encontrado.");
+
+        //            int saldoAtual = 0;
+        //            string sqlSaldo = @"
+        //                SELECT COALESCE(SUM(CASE WHEN tipoMovimentacao = 'ENTRADA' THEN quantidade ELSE 0 END),0) -
+        //                       COALESCE(SUM(CASE WHEN tipoMovimentacao = 'SAIDA' THEN ABS(quantidade) ELSE 0 END),0)
+        //                FROM tbProdutos WHERE codList = @codList";
+
+        //            using (var cmd = new MySqlCommand(sqlSaldo, conn, trans))
+        //            {
+        //                cmd.Parameters.AddWithValue("@codList", codList);
+        //                saldoAtual = Convert.ToInt32(cmd.ExecuteScalar());
+        //            }
+
+        //            if (saldoAtual < quantidade)
+        //                throw new Exception($"Estoque insuficiente!\nDisponível: {saldoAtual}");
+
+        //            int codOri = 1;
+        //            using (var cmd = new MySqlCommand("SELECT codOri FROM tbOrigemDoacao LIMIT 1", conn, trans))
+        //            {
+        //                var result = cmd.ExecuteScalar();
+        //                if (result != null) codOri = Convert.ToInt32(result);
+        //            }
+
+        //            string sqlInsert = @"
+        //                INSERT INTO tbProdutos 
+        //                    (descricao, quantidade, peso, unidade, dataDeEntrada, 
+        //                     dataDeValidade, dataLimiteDeSaida, tipoMovimentacao, 
+        //                     codUsu, codOri, codList, destino)
+        //                VALUES 
+        //                    (@descricao, @quantidade, @peso, 'UNIDADES (UN)', NOW(),
+        //                     DATE_ADD(NOW(), INTERVAL 30 DAY), DATE_ADD(NOW(), INTERVAL 60 DAY),
+        //                     'SAIDA', @codUsu, @codOri, @codList, @destino)";
+
+        //            using (var cmd = new MySqlCommand(sqlInsert, conn, trans))
+        //            {
+        //                cmd.Parameters.AddWithValue("@descricao", produto);
+        //                cmd.Parameters.AddWithValue("@quantidade", -quantidade);
+        //                cmd.Parameters.AddWithValue("@peso", peso);
+        //                cmd.Parameters.AddWithValue("@codUsu", codUsuLogado);
+        //                cmd.Parameters.AddWithValue("@codOri", codOri);
+        //                cmd.Parameters.AddWithValue("@codList", codList);
+        //                cmd.Parameters.AddWithValue("@destino", string.IsNullOrEmpty(destino) ? "Não informado" : destino);
+        //                cmd.ExecuteNonQuery();
+        //            }
+
+        //            trans.Commit();
+
+        //            int novoSaldo = saldoAtual - quantidade;
+        //            MessageBox.Show($"Saída registrada!\n\nProduto: {produto}\nQtd: {quantidade}\nSaldo anterior: {saldoAtual}\nNovo saldo: {novoSaldo}",
+        //                "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        //            CarregarDados();
+        //            CarregarProdutosSaida();
+        //            CarregarHistoricoSaidas("");
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            if (trans.Connection != null) trans.Rollback();
+        //            MessageBox.Show($"Erro: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        }
+        //    }
+        //}
 
         private void RegistrarSaida(string produto, int quantidade, string destino)
         {
@@ -432,61 +650,68 @@ namespace GPSFA_WinForms
             {
                 try
                 {
+                    // 1. Buscar código e peso do produto
                     int codList = 0;
                     int peso = 0;
-
-                    using (var cmd = new MySqlCommand("SELECT codList, peso FROM tbLista WHERE descricao = @produto", conn, trans))
+                    string sqlProduto = "SELECT codList, peso FROM tbLista WHERE descricao = @produto";
+                    using (var cmd = new MySqlCommand(sqlProduto, conn, trans))
                     {
                         cmd.Parameters.AddWithValue("@produto", produto);
                         using (var reader = cmd.ExecuteReader())
                         {
-                            if (reader.Read())
-                            {
-                                codList = Convert.ToInt32(reader["codList"]);
-                                peso = Convert.ToInt32(reader["peso"]);
-                            }
+                            if (!reader.Read())
+                                throw new Exception("Produto não encontrado");
+                            codList = Convert.ToInt32(reader["codList"]);
+                            peso = Convert.ToInt32(reader["peso"]);
                         }
                     }
 
-                    if (codList == 0)
-                        throw new Exception($"Produto '{produto}' não encontrado.");
+                    // 🔥 CORRIGIDO: Calcular saldo atual DIRETAMENTE da tbProdutos
+                    string sqlSaldo = @"
+                SELECT COALESCE(SUM(CASE WHEN quantidade > 0 THEN quantidade ELSE 0 END), 0) -
+                       COALESCE(SUM(CASE WHEN quantidade < 0 THEN ABS(quantidade) ELSE 0 END), 0)
+                FROM tbProdutos 
+                WHERE codList = @codList";
 
                     int saldoAtual = 0;
-                    string sqlSaldo = @"
-                        SELECT COALESCE(SUM(CASE WHEN tipoMovimentacao = 'ENTRADA' THEN quantidade ELSE 0 END),0) -
-                               COALESCE(SUM(CASE WHEN tipoMovimentacao = 'SAIDA' THEN ABS(quantidade) ELSE 0 END),0)
-                        FROM tbProdutos WHERE codList = @codList";
-
                     using (var cmd = new MySqlCommand(sqlSaldo, conn, trans))
                     {
                         cmd.Parameters.AddWithValue("@codList", codList);
-                        saldoAtual = Convert.ToInt32(cmd.ExecuteScalar());
+                        object result = cmd.ExecuteScalar();
+                        saldoAtual = result != null ? Convert.ToInt32(result) : 0;
                     }
 
                     if (saldoAtual < quantidade)
-                        throw new Exception($"Estoque insuficiente!\nDisponível: {saldoAtual}");
-
-                    int codOri = 1;
-                    using (var cmd = new MySqlCommand("SELECT codOri FROM tbOrigemDoacao LIMIT 1", conn, trans))
                     {
-                        var result = cmd.ExecuteScalar();
-                        if (result != null) codOri = Convert.ToInt32(result);
+                        trans.Rollback();
+                        MessageBox.Show($"Estoque insuficiente!\n\nDisponível: {saldoAtual}\nSolicitado: {quantidade}");
+                        return;
                     }
 
+                    // 3. Buscar código de origem
+                    int codOri = 0;
+                    string sqlOri = "SELECT codOri FROM tbOrigemDoacao LIMIT 1";
+                    using (var cmd = new MySqlCommand(sqlOri, conn, trans))
+                    {
+                        object result = cmd.ExecuteScalar();
+                        codOri = result != null ? Convert.ToInt32(result) : 1;
+                    }
+
+                    // 4. Registrar a saída (como valor negativo)
                     string sqlInsert = @"
-                        INSERT INTO tbProdutos 
-                            (descricao, quantidade, peso, unidade, dataDeEntrada, 
-                             dataDeValidade, dataLimiteDeSaida, tipoMovimentacao, 
-                             codUsu, codOri, codList, destino)
-                        VALUES 
-                            (@descricao, @quantidade, @peso, 'UNIDADES (UN)', NOW(),
-                             DATE_ADD(NOW(), INTERVAL 30 DAY), DATE_ADD(NOW(), INTERVAL 60 DAY),
-                             'SAIDA', @codUsu, @codOri, @codList, @destino)";
+                INSERT INTO tbProdutos 
+                    (descricao, quantidade, peso, unidade, dataDeEntrada, 
+                     dataDeValidade, dataLimiteDeSaida, tipoMovimentacao, 
+                     codUsu, codOri, codList, destino)
+                VALUES 
+                    (@descricao, @qtd, @peso, 'UNIDADES (UN)', NOW(),
+                     DATE_ADD(NOW(), INTERVAL 30 DAY), DATE_ADD(NOW(), INTERVAL 60 DAY),
+                     'SAIDA', @codUsu, @codOri, @codList, @destino)";
 
                     using (var cmd = new MySqlCommand(sqlInsert, conn, trans))
                     {
                         cmd.Parameters.AddWithValue("@descricao", produto);
-                        cmd.Parameters.AddWithValue("@quantidade", -quantidade);
+                        cmd.Parameters.AddWithValue("@qtd", -quantidade);
                         cmd.Parameters.AddWithValue("@peso", peso);
                         cmd.Parameters.AddWithValue("@codUsu", codUsuLogado);
                         cmd.Parameters.AddWithValue("@codOri", codOri);
@@ -495,20 +720,32 @@ namespace GPSFA_WinForms
                         cmd.ExecuteNonQuery();
                     }
 
+                    // 🔥 CORRIGIDO: Calcular o novo saldo DIRETAMENTE da tbProdutos
+                    int novoSaldo = 0;
+                    using (var cmd = new MySqlCommand(sqlSaldo, conn, trans))
+                    {
+                        cmd.Parameters.AddWithValue("@codList", codList);
+                        object result = cmd.ExecuteScalar();
+                        novoSaldo = result != null ? Convert.ToInt32(result) : 0;
+                    }
+
                     trans.Commit();
 
-                    int novoSaldo = saldoAtual - quantidade;
-                    MessageBox.Show($"Saída registrada!\n\nProduto: {produto}\nQtd: {quantidade}\nSaldo anterior: {saldoAtual}\nNovo saldo: {novoSaldo}",
-                        "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"✅ Saída de {quantidade} unidades registrada!\n" +
+                                  $"Produto: {produto}\n" +
+                                  $"Destino: {(string.IsNullOrEmpty(destino) ? "Não informado" : destino)}\n" +
+                                  $"Saldo anterior: {saldoAtual}\n" +
+                                  $"Novo saldo: {novoSaldo}");
 
+                    // Atualizar telas
                     CarregarDados();
                     CarregarProdutosSaida();
                     CarregarHistoricoSaidas("");
                 }
                 catch (Exception ex)
                 {
-                    if (trans.Connection != null) trans.Rollback();
-                    MessageBox.Show($"Erro: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    trans.Rollback();
+                    MessageBox.Show($"❌ Erro: {ex.Message}");
                 }
             }
         }
