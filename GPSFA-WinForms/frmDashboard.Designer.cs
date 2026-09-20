@@ -156,7 +156,7 @@
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(206, 26);
             this.textBox5.TabIndex = 22;
-            this.textBox5.Text = "Total de itens:";
+            this.textBox5.Text = "Total Peso:";
             // 
             // textBox3
             // 
@@ -164,7 +164,7 @@
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(206, 26);
             this.textBox3.TabIndex = 20;
-            this.textBox3.Text = "Total de Quantidade:";
+            this.textBox3.Text = "Total Quantidade:";
             // 
             // lbTotalPeso
             // 
@@ -172,7 +172,7 @@
             this.lbTotalPeso.Name = "lbTotalPeso";
             this.lbTotalPeso.Size = new System.Drawing.Size(207, 26);
             this.lbTotalPeso.TabIndex = 19;
-            this.lbTotalPeso.Text = "Total de Peso:";
+            this.lbTotalPeso.Text = "Peso médio:";
             // 
             // lblPeso
             // 
